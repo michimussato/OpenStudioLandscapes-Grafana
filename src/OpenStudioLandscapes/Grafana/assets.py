@@ -254,8 +254,6 @@ def compose_grafana(
 
     volumes_dict = {
         "volumes": [
-            f"{env.get('NFS_ENTRY_POINT')}:{env.get('NFS_ENTRY_POINT')}",
-            f"{env.get('NFS_ENTRY_POINT')}:{env.get('NFS_ENTRY_POINT_LNS')}",
             f"{var_lib.as_posix()}:/var/lib/grafana:rw",
             f"{grafana_ini.as_posix()}:/etc/grafana/grafana.ini:ro",
             f"{defaults_ini.as_posix()}:/usr/share/grafana/conf/defaults.ini:ro",
