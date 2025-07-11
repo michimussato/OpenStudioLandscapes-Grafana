@@ -277,27 +277,6 @@ def compose_grafana(
                     "oss": "docker.io/grafana/grafana-oss",
                 }["oss"],
                 **copy.deepcopy(network_dict),
-                # "environment": {
-                #     "DAGSTER_HOME": env_base.get('DAGSTER_HOME'),
-                #     # Todo
-                #     #  - [ ] fix hard code here (from deadline-dagster .env)
-                #     "DAGSTER_DEPLOYMENT": "farm",
-                #     "DAGSTER_JOBS_IN": "/data/share/nfs/in",
-                # },
-                # "healthcheck": {
-                #     "test": ["CMD", "curl", "-f", f"http://localhost:{env_base.get('DAGSTER_DEV_PORT_CONTAINER')}"],
-                #     "interval": "10s",
-                #     "timeout": "2s",
-                #     "retries": "3",
-                # },
-                # "command": [
-                #     "--workspace",
-                #     env_base.get('DAGSTER_WORKSPACE'),
-                #     "--host",
-                #     env_base.get('DAGSTER_HOST'),
-                #     "--port",
-                #     env_base.get('DAGSTER_DEV_PORT_CONTAINER'),
-                # ],
                 **copy.deepcopy(ports_dict),
                 **copy.deepcopy(volumes_dict),
             },
