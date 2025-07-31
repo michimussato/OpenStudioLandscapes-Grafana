@@ -103,7 +103,7 @@ def grafana_ini(
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
     # @formatter:off
     grafana_ini = textwrap.dedent(
-        """
+        """\
         # {auto_generated}
         # {dagster_url}
         # Full documentation
