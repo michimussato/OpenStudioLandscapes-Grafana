@@ -291,7 +291,9 @@ def compose_grafana(
 
     service_name = "grafana"
     container_name = "--".join([service_name, env.get("LANDSCAPE", "default")])
-    host_name = ".".join([env["HOSTNAME"] or service_name, env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]])
+    host_name = ".".join(
+        [env["HOSTNAME"] or service_name, env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]]
+    )
 
     docker_dict = {
         "services": {
