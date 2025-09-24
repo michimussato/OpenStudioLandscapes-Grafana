@@ -38,7 +38,9 @@ ASSET_HEADER = {
 FEATURE_CONFIGS = {
     OpenStudioLandscapesConfig.DEFAULT: {
         "DOCKER_USE_CACHE": DOCKER_USE_CACHE,
-        "GRAFANA_HOSTNAME": "grafana",
+        "HOSTNAME": "grafana",
+        "TELEPORT_ENTRY_POINT_HOST": "{{HOSTNAME}}",  # Either a hardcoded str or a ref to a Variable (with double {{ }}!)
+        "TELEPORT_ENTRY_POINT_PORT": "{{GRAFANA_PORT_HOST}}",  # Either a hardcoded str or a ref to a Variable (with double {{ }}!)
         "ADMIN_USER": "openstudiolandscapes",
         "ADMIN_PASSWORD": "openstudiolandscapes",
         "GRAFANA_PORT_HOST": "3030",
@@ -56,8 +58,6 @@ FEATURE_CONFIGS = {
         )
         .expanduser()
         .as_posix(),
-        "TELEPORT_ENTRY_POINT_HOST": "{{GRAFANA_HOSTNAME}}",  # Either a hardcoded str or a ref to a Variable (with double {{ }}!)
-        "TELEPORT_ENTRY_POINT_PORT": "{{GRAFANA_PORT_HOST}}",  # Either a hardcoded str or a ref to a Variable (with double {{ }}!)
     }
 }
 # @formatter:on
