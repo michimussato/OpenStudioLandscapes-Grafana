@@ -451,7 +451,7 @@
         "endColumn": null,
         "path": "src/OpenStudioLandscapes/Grafana/__init__.py",
         "symbol": "duplicate-code",
-        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.Grafana.assets:[379:384]\n==OpenStudioLandscapes.Grafana.constants:[52:57]\n        \"usr\",\n        \"share\",\n        \"grafana\",\n        \"conf\",\n        \"defaults.ini\",",
+        "message": "Similar lines in 2 files\n==OpenStudioLandscapes.Grafana.assets:[379:384]\n==OpenStudioLandscapes.Grafana.constants:[52:57]\n            \"usr\",\n            \"share\",\n            \"grafana\",\n            \"conf\",\n            \"defaults.ini\",",
         "message-id": "R0801"
     }
 ]

@@ -40,11 +40,11 @@ src/OpenStudioLandscapes/Grafana/__init__.py:11:4: C0103: Constant name "dist_na
 src/OpenStudioLandscapes/Grafana/__init__.py:1:0: R0801: Similar lines in 2 files
 ==OpenStudioLandscapes.Grafana.assets:[379:384]
 ==OpenStudioLandscapes.Grafana.constants:[52:57]
-        "usr",
-        "share",
-        "grafana",
-        "conf",
-        "defaults.ini", (duplicate-code)
+            "usr",
+            "share",
+            "grafana",
+            "conf",
+            "defaults.ini", (duplicate-code)
 
 ------------------------------------------------------------------
 Your code has been rated at 7.37/10 (previous run: 7.39/10, -0.03)
