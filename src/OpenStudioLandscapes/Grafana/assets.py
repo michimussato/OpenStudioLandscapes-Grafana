@@ -231,11 +231,11 @@ def compose_grafana(
         network_dict = {"networks": list(compose_networks.get("networks", {}).keys())}
         ports_dict = {
             "ports": [
-                f"{env.get('GRAFANA_PORT_HOST')}:{env.get('GRAFANA_PORT_CONTAINER')}",
+                f"{env['GRAFANA_PORT_HOST']}:{env['GRAFANA_PORT_CONTAINER']}",
             ]
         }
     elif "network_mode" in compose_networks:
-        network_dict = {"network_mode": compose_networks.get("network_mode")}
+        network_dict = {"network_mode": compose_networks["network_mode"]}
 
     var_lib = pathlib.Path(
         env["DOT_LANDSCAPES"],
@@ -300,7 +300,7 @@ def compose_grafana(
             service_name: {
                 "container_name": container_name,
                 "hostname": host_name,
-                "domainname": env.get("OPENSTUDIOLANDSCAPES__DOMAIN_LAN"),
+                "domainname": env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"],
                 "restart": "always",
                 # https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/
                 "image": {
@@ -368,7 +368,7 @@ def defaults_ini(
     env: dict,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization | Any, None, None]:
 
-    defaults_ini_file_src = pathlib.Path(env.get("GRAFANA_DEFAULTS_INI"))
+    defaults_ini_file_src = pathlib.Path(env["GRAFANA_DEFAULTS_INI"])
 
     with open(defaults_ini_file_src) as fo:
         defaults_ini_ = fo.read()
