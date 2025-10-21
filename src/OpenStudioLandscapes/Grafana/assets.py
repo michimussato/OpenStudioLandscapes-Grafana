@@ -302,11 +302,7 @@ def compose_grafana(
                 "hostname": host_name,
                 "domainname": env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"],
                 "restart": "always",
-                # https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/
-                "image": {
-                    "enterprise": "docker.io/grafana/grafana-enterprise",
-                    "oss": "docker.io/grafana/grafana-oss",
-                }["oss"],
+                "image": f"{env['GRAFANA_DOCKER_IMAGE']}:{env['GRAFANA_DOCKER_IMAGE_VERSION']}",
                 **copy.deepcopy(network_dict),
                 **copy.deepcopy(ports_dict),
                 **copy.deepcopy(volumes_dict),

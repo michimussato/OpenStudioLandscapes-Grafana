@@ -58,6 +58,16 @@ FEATURE_CONFIGS = {
         )
         .expanduser()
         .as_posix(),
+        # https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/
+        "GRAFANA_DOCKER_IMAGE": {
+            "enterprise": "docker.io/grafana/grafana-enterprise",
+            "oss": "docker.io/grafana/grafana-oss",
+        }["oss"],
+        # Locked to version
+        "GRAFANA_DOCKER_IMAGE_VERSION": [
+            "latest",
+            "11.6.5",
+        ][1],
     }
 }
 # @formatter:on
