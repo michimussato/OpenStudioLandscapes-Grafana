@@ -61,13 +61,17 @@ FEATURE_CONFIGS = {
         # https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/
         "GRAFANA_DOCKER_IMAGE": {
             "enterprise": "docker.io/grafana/grafana-enterprise",
-            "oss": "docker.io/grafana/grafana-oss",
+            "oss_legacy": "docker.io/grafana/grafana-oss",
+            "oss": "docker.io/grafana/grafana",
         }["oss"],
-        # Locked to version
-        "GRAFANA_DOCKER_IMAGE_VERSION": [
-            "latest",
-            "11.6.5",
-        ][1],
+        "GRAFANA_DOCKER_IMAGE_VERSION": {
+            "latest": "latest",
+            "latest-ubuntu": "latest-ubuntu",
+            "main": "main",
+            "main-ubuntu": "main-ubuntu",
+            "11.6": "11.6",
+            "11.6-ubuntu": "11.6-ubuntu",
+        }["latest-ubuntu"],
     }
 }
 # @formatter:on

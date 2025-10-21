@@ -35,6 +35,7 @@ from OpenStudioLandscapes.engine.utils import *
 
 from OpenStudioLandscapes.Grafana.constants import *
 
+
 constants = get_constants(
     ASSET_HEADER=ASSET_HEADER,
 )
@@ -210,9 +211,6 @@ def compose_networks(
         "grafana_ini": AssetIn(
             AssetKey([*ASSET_HEADER["key_prefix"], "grafana_ini"]),
         ),
-        "defaults_ini": AssetIn(
-            AssetKey([*ASSET_HEADER["key_prefix"], "defaults_ini"]),
-        ),
     },
 )
 def compose_grafana(
@@ -220,7 +218,6 @@ def compose_grafana(
     env: dict,  # pylint: disable=redefined-outer-name
     compose_networks: dict,  # pylint: disable=redefined-outer-name
     grafana_ini: pathlib.Path,  # pylint: disable=redefined-outer-name
-    defaults_ini: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
     """ """
 
@@ -258,7 +255,6 @@ def compose_grafana(
 
     volumes_dict = {
         "volumes": [
-            f"{defaults_ini.as_posix()}:/usr/share/grafana/conf/defaults.ini:ro",
             f"{var_lib.as_posix()}:/var/lib/grafana:rw",
             f"{grafana_ini.as_posix()}:/etc/grafana/grafana.ini:ro",
         ]
@@ -347,51 +343,6 @@ def compose_maps(
         asset_key=context.asset_key,
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(ret),
-        },
-    )
-
-
-@asset(
-    **ASSET_HEADER,
-    ins={
-        "env": AssetIn(
-            AssetKey([*ASSET_HEADER["key_prefix"], "env"]),
-        ),
-    },
-)
-def defaults_ini(
-    context: AssetExecutionContext,
-    env: dict,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[pathlib.Path] | AssetMaterialization | Any, None, None]:
-
-    defaults_ini_file_src = pathlib.Path(env["GRAFANA_DEFAULTS_INI"])
-
-    with open(defaults_ini_file_src) as fo:
-        defaults_ini_ = fo.read()
-
-    defaults_ini_file = pathlib.Path(
-        env["DOT_LANDSCAPES"],
-        env.get("LANDSCAPE", "default"),
-        f"{ASSET_HEADER['group_name']}__{'__'.join(ASSET_HEADER['key_prefix'])}",
-        "usr",
-        "share",
-        "grafana",
-        "conf",
-        "defaults.ini",
-    ).expanduser()
-
-    defaults_ini_file.parent.mkdir(parents=True, exist_ok=True)
-
-    with open(defaults_ini_file, "w") as fw:
-        fw.write(defaults_ini_)
-
-    yield Output(defaults_ini_file)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.path(defaults_ini_file),
-            "filebrowser_dict": MetadataValue.md(f"```\n{defaults_ini_}\n```"),
         },
     )
 

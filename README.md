@@ -14,6 +14,12 @@
    6. [Variables](#variables)
       1. [Feature Configs](#feature-configs)
 2. [Community](#community)
+3. [Official Resources](#official-resources)
+   1. [Official Documentation](#official-documentation)
+   2. [Configure Grafana](#configure-grafana)
+      1. [Default Paths](#default-paths)
+      2. [`defaults.ini`](#defaultsini)
+      3. [`grafana.ini`](#grafanaini)
 
 ***
 
@@ -164,17 +170,19 @@ The following variables are being declared in `OpenStudioLandscapes.Grafana.cons
 
 #### Feature Config: default
 
-| Variable                    | Type   | Value                                                                                             |
-| :-------------------------- | :----- | :------------------------------------------------------------------------------------------------ |
-| `DOCKER_USE_CACHE`          | `bool` | `False`                                                                                           |
-| `HOSTNAME`                  | `str`  | `grafana`                                                                                         |
-| `TELEPORT_ENTRY_POINT_HOST` | `str`  | `{{HOSTNAME}}`                                                                                    |
-| `TELEPORT_ENTRY_POINT_PORT` | `str`  | `{{GRAFANA_PORT_HOST}}`                                                                           |
-| `ADMIN_USER`                | `str`  | `openstudiolandscapes`                                                                            |
-| `ADMIN_PASSWORD`            | `str`  | `openstudiolandscapes`                                                                            |
-| `GRAFANA_PORT_HOST`         | `str`  | `3030`                                                                                            |
-| `GRAFANA_PORT_CONTAINER`    | `str`  | `3000`                                                                                            |
-| `GRAFANA_DEFAULTS_INI`      | `str`  | `{DOT_FEATURES}/OpenStudioLandscapes-Grafana/.payload/config/usr/share/grafana/conf/defaults.ini` |
+| Variable                       | Type   | Value                                                                                             |
+| :----------------------------- | :----- | :------------------------------------------------------------------------------------------------ |
+| `DOCKER_USE_CACHE`             | `bool` | `False`                                                                                           |
+| `HOSTNAME`                     | `str`  | `grafana`                                                                                         |
+| `TELEPORT_ENTRY_POINT_HOST`    | `str`  | `{{HOSTNAME}}`                                                                                    |
+| `TELEPORT_ENTRY_POINT_PORT`    | `str`  | `{{GRAFANA_PORT_HOST}}`                                                                           |
+| `ADMIN_USER`                   | `str`  | `openstudiolandscapes`                                                                            |
+| `ADMIN_PASSWORD`               | `str`  | `openstudiolandscapes`                                                                            |
+| `GRAFANA_PORT_HOST`            | `str`  | `3030`                                                                                            |
+| `GRAFANA_PORT_CONTAINER`       | `str`  | `3000`                                                                                            |
+| `GRAFANA_DEFAULTS_INI`         | `str`  | `{DOT_FEATURES}/OpenStudioLandscapes-Grafana/.payload/config/usr/share/grafana/conf/defaults.ini` |
+| `GRAFANA_DOCKER_IMAGE`         | `str`  | `docker.io/grafana/grafana`                                                                       |
+| `GRAFANA_DOCKER_IMAGE_VERSION` | `str`  | `latest-ubuntu`                                                                                   |
 
 # Community
 
@@ -192,3 +200,55 @@ To follow up on the previous LinkedIn publications, visit:
 
 - [OpenStudioLandscapes on LinkedIn](https://www.linkedin.com/company/106731439/).
 - [Search for tag #OpenStudioLandscapes on LinkedIn](https://www.linkedin.com/search/results/all/?keywords=%23openstudiolandscapes).
+
+***
+
+# Official Resources
+
+> [!CAUTION]
+> 
+> Starting with Grafana release `12.4.0`, 
+> the `grafana/grafana-oss` Docker Hub 
+> repository will no longer be updated. 
+> Instead, we encourage you to use 
+> the `grafana/grafana` Docker Hub 
+> repository. These two repositories 
+> have the same Grafana OSS docker images.
+> 
+> ([Source](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/))            
+
+[![Logo Grafana ](https://grafana.com/media/products/cloud/grafana/grafana-product-logo.svg)](https://grafana.com/grafana/)
+
+Grafana is written and maintained by Grafana Labs.
+
+Grafana Labs offers different versions of Grafana:
+
+- OSS
+- Enterprise
+
+`OpenStudioLandscapes-Grafana` is based on the [OSS](https://ynput.io/ayon/pricing/) version provided by their own Docker image:
+
+- [`docker.io/grafana/grafana`](https://hub.docker.com/r/grafana/grafana)
+
+## Official Documentation
+
+- [Setup](https://grafana.com/docs/grafana/latest/setup-grafana/)
+- [Install](https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/)
+- [Configure a Docker Image](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/)
+- [Administration](https://grafana.com/docs/grafana/latest/administration/)
+
+## Configure Grafana
+
+### Default Paths
+
+- [Default paths](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/#default-paths)
+
+### `defaults.ini`
+
+As it turned out, the contents of the `defaults.ini` file are tied to the Grafana version. A mismatch can lead to a non-functional container (see [issue](https://github.com/michimussato/OpenStudioLandscapes-Grafana/issues/7)). Hence, the `defaults.ini` file can't be managed by an OpenStudioLandscapes Dagster asset without compromising cross-version compatibility. The main entry point for Grafana configuration is therefore the [`grafana.ini`](#grafanaini) file (exclusively).
+
+### `grafana.ini`
+
+- [Configure Grafana](https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/)
+
+***
