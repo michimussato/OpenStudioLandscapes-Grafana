@@ -16,15 +16,15 @@ def readme_feature(doc: snakemd.Document) -> snakemd.Document:
         text=textwrap.dedent(
             """\
             > [!CAUTION]
-            > 
-            > Starting with Grafana release `12.4.0`, 
-            > the `grafana/grafana-oss` Docker Hub 
-            > repository will no longer be updated. 
-            > Instead, we encourage you to use 
-            > the `grafana/grafana` Docker Hub 
-            > repository. These two repositories 
+            >
+            > Starting with Grafana release `12.4.0`,
+            > the `grafana/grafana-oss` Docker Hub
+            > repository will no longer be updated.
+            > Instead, we encourage you to use
+            > the `grafana/grafana` Docker Hub
+            > repository. These two repositories
             > have the same Grafana OSS docker images.
-            > 
+            >
             > ([Source](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/))\
             """
         )

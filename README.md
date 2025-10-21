@@ -206,15 +206,15 @@ To follow up on the previous LinkedIn publications, visit:
 # Official Resources
 
 > [!CAUTION]
-> 
-> Starting with Grafana release `12.4.0`, 
-> the `grafana/grafana-oss` Docker Hub 
-> repository will no longer be updated. 
-> Instead, we encourage you to use 
-> the `grafana/grafana` Docker Hub 
-> repository. These two repositories 
+>
+> Starting with Grafana release `12.4.0`,
+> the `grafana/grafana-oss` Docker Hub
+> repository will no longer be updated.
+> Instead, we encourage you to use
+> the `grafana/grafana` Docker Hub
+> repository. These two repositories
 > have the same Grafana OSS docker images.
-> 
+>
 > ([Source](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/))            
 
 [![Logo Grafana ](https://grafana.com/media/products/cloud/grafana/grafana-product-logo.svg)](https://grafana.com/grafana/)

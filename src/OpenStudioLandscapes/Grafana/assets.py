@@ -35,7 +35,6 @@ from OpenStudioLandscapes.engine.utils import *
 
 from OpenStudioLandscapes.Grafana.constants import *
 
-
 constants = get_constants(
     ASSET_HEADER=ASSET_HEADER,
 )
