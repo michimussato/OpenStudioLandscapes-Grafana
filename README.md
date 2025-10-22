@@ -16,6 +16,7 @@
 2. [Community](#community)
 3. [Official Resources](#official-resources)
    1. [Official Documentation](#official-documentation)
+      1. [Grafana Alloy](#grafana-alloy)
    2. [Configure Grafana](#configure-grafana)
       1. [Default Paths](#default-paths)
       2. [`defaults.ini`](#defaultsini)
@@ -170,19 +171,18 @@ The following variables are being declared in `OpenStudioLandscapes.Grafana.cons
 
 #### Feature Config: default
 
-| Variable                       | Type   | Value                                                                                             |
-| :----------------------------- | :----- | :------------------------------------------------------------------------------------------------ |
-| `DOCKER_USE_CACHE`             | `bool` | `False`                                                                                           |
-| `HOSTNAME`                     | `str`  | `grafana`                                                                                         |
-| `TELEPORT_ENTRY_POINT_HOST`    | `str`  | `{{HOSTNAME}}`                                                                                    |
-| `TELEPORT_ENTRY_POINT_PORT`    | `str`  | `{{GRAFANA_PORT_HOST}}`                                                                           |
-| `ADMIN_USER`                   | `str`  | `openstudiolandscapes`                                                                            |
-| `ADMIN_PASSWORD`               | `str`  | `openstudiolandscapes`                                                                            |
-| `GRAFANA_PORT_HOST`            | `str`  | `3030`                                                                                            |
-| `GRAFANA_PORT_CONTAINER`       | `str`  | `3000`                                                                                            |
-| `GRAFANA_DEFAULTS_INI`         | `str`  | `{DOT_FEATURES}/OpenStudioLandscapes-Grafana/.payload/config/usr/share/grafana/conf/defaults.ini` |
-| `GRAFANA_DOCKER_IMAGE`         | `str`  | `docker.io/grafana/grafana`                                                                       |
-| `GRAFANA_DOCKER_IMAGE_VERSION` | `str`  | `latest-ubuntu`                                                                                   |
+| Variable                       | Type   | Value                       |
+| :----------------------------- | :----- | :-------------------------- |
+| `DOCKER_USE_CACHE`             | `bool` | `False`                     |
+| `HOSTNAME`                     | `str`  | `grafana`                   |
+| `TELEPORT_ENTRY_POINT_HOST`    | `str`  | `{{HOSTNAME}}`              |
+| `TELEPORT_ENTRY_POINT_PORT`    | `str`  | `{{GRAFANA_PORT_HOST}}`     |
+| `GRAFANA_ADMIN_USER`           | `str`  | `openstudiolandscapes`      |
+| `GRAFANA_ADMIN_PASSWORD`       | `str`  | `openstudiolandscapes`      |
+| `GRAFANA_PORT_HOST`            | `str`  | `3030`                      |
+| `GRAFANA_PORT_CONTAINER`       | `str`  | `3000`                      |
+| `GRAFANA_DOCKER_IMAGE`         | `str`  | `docker.io/grafana/grafana` |
+| `GRAFANA_DOCKER_IMAGE_VERSION` | `str`  | `latest-ubuntu`             |
 
 # Community
 
@@ -236,6 +236,18 @@ Grafana Labs offers different versions of Grafana:
 - [Install](https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/)
 - [Configure a Docker Image](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/)
 - [Administration](https://grafana.com/docs/grafana/latest/administration/)
+
+### Grafana Alloy
+
+Alloy can collect, process, and export telemetry signals to scale and future-proof your observability approach. More info:
+
+- [https://grafana.com/docs/alloy/latest/](https://grafana.com/docs/alloy/latest/)
+
+#### Alloy Scenarios
+
+This repository contains scenarios that demonstrate how to use Grafana Alloy to monitor various data sources. Each scenario is a self-contained example which will include an LGMT stack (Loki, Grafana, Metrics, Tempo) and an Alloy configuration file.
+
+- [https://github.com/grafana/alloy-scenarios/](https://github.com/grafana/alloy-scenarios/)
 
 ## Configure Grafana
 
