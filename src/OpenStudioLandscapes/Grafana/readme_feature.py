@@ -113,6 +113,53 @@ def readme_feature(doc: snakemd.Document) -> snakemd.Document:
     )
 
     doc.add_heading(
+        text="Grafana Alloy",
+        level=3,
+    )
+
+    doc.add_paragraph(
+        text=textwrap.dedent(
+            """\
+            Alloy can collect, process, 
+            and export telemetry signals to 
+            scale and future-proof your observability approach.
+            More info:\
+            """
+        )
+    )
+
+    doc.add_unordered_list(
+        [
+            "[https://grafana.com/docs/alloy/latest/](https://grafana.com/docs/alloy/latest/)",
+        ]
+    )
+
+    doc.add_heading(
+        text="Alloy Scenarios",
+        level=4,
+    )
+
+    doc.add_paragraph(
+        text=textwrap.dedent(
+            """\
+            This repository contains scenarios that 
+            demonstrate how to use Grafana Alloy to 
+            monitor various data sources. 
+            Each scenario is a self-contained example 
+            which will include an LGMT stack 
+            (Loki, Grafana, Metrics, Tempo) and an 
+            Alloy configuration file.\
+            """
+        )
+    )
+
+    doc.add_unordered_list(
+        [
+            "[https://github.com/grafana/alloy-scenarios/](https://github.com/grafana/alloy-scenarios/)",
+        ]
+    )
+
+    doc.add_heading(
         text="Configure Grafana",
         level=2,
     )
