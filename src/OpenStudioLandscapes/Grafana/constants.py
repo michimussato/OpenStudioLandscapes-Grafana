@@ -41,23 +41,10 @@ FEATURE_CONFIGS = {
         "HOSTNAME": "grafana",
         "TELEPORT_ENTRY_POINT_HOST": "{{HOSTNAME}}",  # Either a hardcoded str or a ref to a Variable (with double {{ }}!)
         "TELEPORT_ENTRY_POINT_PORT": "{{GRAFANA_PORT_HOST}}",  # Either a hardcoded str or a ref to a Variable (with double {{ }}!)
-        "ADMIN_USER": "openstudiolandscapes",
-        "ADMIN_PASSWORD": "openstudiolandscapes",
+        "GRAFANA_ADMIN_USER": "openstudiolandscapes",
+        "GRAFANA_ADMIN_PASSWORD": "openstudiolandscapes",
         "GRAFANA_PORT_HOST": "3030",
         "GRAFANA_PORT_CONTAINER": "3000",
-        "GRAFANA_DEFAULTS_INI": pathlib.Path(
-            "{DOT_FEATURES}",
-            FEATURE,
-            ".payload",
-            "config",
-            "usr",
-            "share",
-            "grafana",
-            "conf",
-            "defaults.ini",
-        )
-        .expanduser()
-        .as_posix(),
         # https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/
         "GRAFANA_DOCKER_IMAGE": {
             "enterprise": "docker.io/grafana/grafana-enterprise",
