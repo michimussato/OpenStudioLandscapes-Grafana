@@ -22,11 +22,11 @@ src/OpenStudioLandscapes/Grafana/assets.py:36:0: W0614: Unused import(s) DOCKER_
 src/OpenStudioLandscapes/Grafana/definitions.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 ************* Module OpenStudioLandscapes.Grafana.readme_feature
 src/OpenStudioLandscapes/Grafana/readme_feature.py:110:0: C0301: Line too long (114/100) (line-too-long)
-src/OpenStudioLandscapes/Grafana/readme_feature.py:138:0: C0301: Line too long (114/100) (line-too-long)
-src/OpenStudioLandscapes/Grafana/readme_feature.py:155:0: C0301: Line too long (117/100) (line-too-long)
-src/OpenStudioLandscapes/Grafana/readme_feature.py:169:0: C0301: Line too long (107/100) (line-too-long)
-src/OpenStudioLandscapes/Grafana/readme_feature.py:172:0: C0301: Line too long (109/100) (line-too-long)
-src/OpenStudioLandscapes/Grafana/readme_feature.py:185:0: C0301: Line too long (108/100) (line-too-long)
+src/OpenStudioLandscapes/Grafana/readme_feature.py:158:0: C0301: Line too long (105/100) (line-too-long)
+src/OpenStudioLandscapes/Grafana/readme_feature.py:174:0: C0301: Line too long (117/100) (line-too-long)
+src/OpenStudioLandscapes/Grafana/readme_feature.py:188:0: C0301: Line too long (107/100) (line-too-long)
+src/OpenStudioLandscapes/Grafana/readme_feature.py:191:0: C0301: Line too long (109/100) (line-too-long)
+src/OpenStudioLandscapes/Grafana/readme_feature.py:204:0: C0301: Line too long (108/100) (line-too-long)
 src/OpenStudioLandscapes/Grafana/readme_feature.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/Grafana/readme_feature.py:6:0: C0116: Missing function or method docstring (missing-function-docstring)
 src/OpenStudioLandscapes/Grafana/readme_feature.py:36:8: C2801: Unnecessarily calls dunder method __str__. Use str built-in function. (unnecessary-dunder-call)
@@ -46,5 +46,5 @@ src/OpenStudioLandscapes/Grafana/__init__.py:1:0: C0103: Module name "Grafana" d
 src/OpenStudioLandscapes/Grafana/__init__.py:11:4: C0103: Constant name "dist_name" doesn't conform to UPPER_CASE naming style (invalid-name)
 
 ------------------------------------------------------------------
-Your code has been rated at 7.35/10 (previous run: 7.14/10, +0.22)
+Your code has been rated at 7.39/10 (previous run: 7.14/10, +0.25)
 
