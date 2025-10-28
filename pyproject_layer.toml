@@ -1,0 +1,31 @@
+[project]
+name = "OpenStudioLandscapes-Grafana"
+description = "Grafana Feature for OpenStudioLandscapes"
+
+[project.urls]
+Homepage = "https://github.com/michimussato/OpenStudioLandscapes-Grafana"
+
+[project.optional-dependencies]
+sbom = [
+    "OpenStudioLandscapes-Grafana[graphviz]",
+]
+nox = [
+    "OpenStudioLandscapes-Grafana[testing]",
+]
+dev = [
+    "OpenStudioLandscapes-Grafana[testing]",
+    "OpenStudioLandscapes-Grafana[lint]",
+    "OpenStudioLandscapes-Grafana[nox]",
+    "OpenStudioLandscapes-Grafana[sbom]",
+    "OpenStudioLandscapes-Grafana[coverage]",
+    "OpenStudioLandscapes-Grafana[readme]",
+]
+
+[tool.setuptools]
+packages = [
+    "OpenStudioLandscapes.Grafana"
+]
+
+[tool.dagster]
+module_name = "OpenStudioLandscapes.Grafana.definitions"
+code_location_name = "OpenStudioLandscapes-Grafana"
