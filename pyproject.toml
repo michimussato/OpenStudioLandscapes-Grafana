@@ -94,9 +94,13 @@ code_location_name = "OpenStudioLandscapes-Grafana"
 module_name = "OpenStudioLandscapes.Grafana.definitions"
 
 [tool.setuptools]
+include-package-data = true
 packages = [
     "OpenStudioLandscapes.Grafana",
 ]
 platforms = [
     "Linux",
 ]
+
+[tool.setuptools.package-dir]
+"" = "src"
