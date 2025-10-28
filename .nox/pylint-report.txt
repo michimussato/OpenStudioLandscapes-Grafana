@@ -46,5 +46,5 @@ src/OpenStudioLandscapes/Grafana/__init__.py:1:0: C0103: Module name "Grafana" d
 src/OpenStudioLandscapes/Grafana/__init__.py:11:4: C0103: Constant name "dist_name" doesn't conform to UPPER_CASE naming style (invalid-name)
 
 ------------------------------------------------------------------
-Your code has been rated at 7.39/10 (previous run: 7.14/10, +0.25)
+Your code has been rated at 7.39/10 (previous run: 7.08/10, +0.30)
 
