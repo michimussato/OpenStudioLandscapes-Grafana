@@ -1,0 +1,24 @@
+project:
+  description: Grafana Feature for OpenStudioLandscapes
+  name: OpenStudioLandscapes-Grafana
+  optional-dependencies:
+    dev:
+    - OpenStudioLandscapes-Grafana[testing]
+    - OpenStudioLandscapes-Grafana[lint]
+    - OpenStudioLandscapes-Grafana[nox]
+    - OpenStudioLandscapes-Grafana[sbom]
+    - OpenStudioLandscapes-Grafana[coverage]
+    - OpenStudioLandscapes-Grafana[readme]
+    nox:
+    - OpenStudioLandscapes-Grafana[testing]
+    sbom:
+    - OpenStudioLandscapes-Grafana[graphviz]
+  urls:
+    Homepage: https://github.com/michimussato/OpenStudioLandscapes-Grafana
+tool:
+  dagster:
+    code_location_name: OpenStudioLandscapes-Grafana
+    module_name: OpenStudioLandscapes.Grafana.definitions
+  setuptools:
+    packages:
+    - OpenStudioLandscapes.Grafana
