@@ -159,9 +159,9 @@ def compose_networks(
     Output[dict[str, dict[str, dict[str, str]]]] | AssetMaterialization, None, None
 ]:
 
-    compose_network_mode = ComposeNetworkMode.DEFAULT
+    compose_network_mode = DockerComposePolicies.NETWORK_MODE.DEFAULT
 
-    if compose_network_mode == ComposeNetworkMode.DEFAULT:
+    if compose_network_mode is DockerComposePolicies.NETWORK_MODE.DEFAULT:
         docker_dict = {
             "networks": {
                 "mongodb": {
@@ -296,7 +296,7 @@ def compose_grafana(
                 "container_name": container_name,
                 "hostname": host_name,
                 "domainname": env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"],
-                "restart": "always",
+                "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS.value,
                 "image": f"{env['GRAFANA_DOCKER_IMAGE']}:{env['GRAFANA_DOCKER_IMAGE_VERSION']}",
                 **copy.deepcopy(network_dict),
                 **copy.deepcopy(ports_dict),
