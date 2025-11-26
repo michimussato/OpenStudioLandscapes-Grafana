@@ -174,9 +174,6 @@ The following variables are being declared in `OpenStudioLandscapes.Grafana.cons
 | Variable                       | Type   | Value                       |
 | :----------------------------- | :----- | :-------------------------- |
 | `DOCKER_USE_CACHE`             | `bool` | `False`                     |
-| `HOSTNAME`                     | `str`  | `grafana`                   |
-| `TELEPORT_ENTRY_POINT_HOST`    | `str`  | `{{HOSTNAME}}`              |
-| `TELEPORT_ENTRY_POINT_PORT`    | `str`  | `{{GRAFANA_PORT_HOST}}`     |
 | `GRAFANA_ADMIN_USER`           | `str`  | `openstudiolandscapes`      |
 | `GRAFANA_ADMIN_PASSWORD`       | `str`  | `openstudiolandscapes`      |
 | `GRAFANA_PORT_HOST`            | `str`  | `3030`                      |
