@@ -38,9 +38,7 @@ ASSET_HEADER = {
 FEATURE_CONFIGS = {
     OpenStudioLandscapesConfig.DEFAULT: {
         "DOCKER_USE_CACHE": DOCKER_USE_CACHE,
-        "HOSTNAME": "grafana",
-        "TELEPORT_ENTRY_POINT_HOST": "{{HOSTNAME}}",  # Either a hardcoded str or a ref to a Variable (with double {{ }}!)
-        "TELEPORT_ENTRY_POINT_PORT": "{{GRAFANA_PORT_HOST}}",  # Either a hardcoded str or a ref to a Variable (with double {{ }}!)
+        # "HOSTNAME": "grafana",
         "GRAFANA_ADMIN_USER": "openstudiolandscapes",
         "GRAFANA_ADMIN_PASSWORD": "openstudiolandscapes",
         "GRAFANA_PORT_HOST": "3030",
