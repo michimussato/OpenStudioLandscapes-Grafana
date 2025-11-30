@@ -49,7 +49,6 @@ dev = [
     "OpenStudioLandscapes-Grafana[readme]",
     "OpenStudioLandscapes-Grafana[sbom]",
     "OpenStudioLandscapes-Grafana[testing]",
-    "dagster-webserver==1.9.11",
 ]
 graphviz = [
     "graphviz",
