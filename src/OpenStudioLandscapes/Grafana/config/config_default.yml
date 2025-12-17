@@ -1,0 +1,15 @@
+# Base Information
+group_name: "OpenStudioLandscapes_Grafana"
+key_prefixes:
+  - "OpenStudioLandscapes_Grafana"
+
+compose_scope: "default"
+
+#grafana_admin_user: "openstudiolandscapes"
+#grafana_admin_password: "openstudiolandscapes"
+
+#grafana_port_host: 3030
+#grafana_port_container: 3000
+
+#grafana_image: "oss"
+#grafana_image_version: "latest-ubuntu"
