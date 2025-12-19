@@ -5,7 +5,6 @@
 1. [Feature: OpenStudioLandscapes-Grafana](#feature-openstudiolandscapes-grafana)
    1. [Brief](#brief)
    2. [Configuration](#configuration)
-   3. [Official Resources](#official-resources)
 2. [Official Resources](#official-resources)
    1. [Official Documentation](#official-documentation)
       1. [Grafana Alloy](#grafana-alloy)
@@ -86,12 +85,10 @@ key_prefixes:
 
 ***
 
-## Official Resources
-
 # Official Resources
 
 > [!CAUTION]
->
+> 
 > Starting with Grafana release `12.4.0`,
 > the `grafana/grafana-oss` Docker Hub
 > repository will no longer be updated.
@@ -99,7 +96,7 @@ key_prefixes:
 > the `grafana/grafana` Docker Hub
 > repository. These two repositories
 > have the same Grafana OSS docker images.
->
+> 
 > ([Source](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/))            
 
 [![Logo Grafana ](https://grafana.com/media/products/cloud/grafana/grafana-product-logo.svg)](https://grafana.com/grafana/)
@@ -271,4 +268,4 @@ Currently, the following Python interpreters are enabled for testing:
 
 ***
 
-Last changed: **2025-12-19 15:51:33 UTC**.
+Last changed: **2025-12-19 16:41:28 UTC**
