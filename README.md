@@ -5,7 +5,7 @@
 1. [Feature: OpenStudioLandscapes-Grafana](#feature-openstudiolandscapes-grafana)
    1. [Brief](#brief)
    2. [Configuration](#configuration)
-2. [Official Resources](#official-resources)
+2. [External Resources](#external-resources)
    1. [Official Documentation](#official-documentation)
       1. [Grafana Alloy](#grafana-alloy)
    2. [Configure Grafana](#configure-grafana)
@@ -85,7 +85,7 @@ key_prefixes:
 
 ***
 
-# Official Resources
+# External Resources
 
 > [!CAUTION]
 > 
@@ -266,4 +266,4 @@ Currently, the following Python interpreters are enabled for testing:
 
 ***
 
-Last changed: **2025-12-19 16:47:52 UTC**
+Last changed: **2025-12-19 21:11:33 UTC**

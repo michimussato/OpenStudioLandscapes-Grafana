@@ -3,12 +3,15 @@ import textwrap
 import snakemd
 
 
-def readme_feature(doc: snakemd.Document) -> snakemd.Document:
+def readme_feature(
+        doc: snakemd.Document,
+        main_header: str,
+) -> snakemd.Document:
 
     # Some Specific information
 
     doc.add_heading(
-        text="Official Resources",
+        text=main_header,
         level=1,
     )
 
@@ -16,7 +19,7 @@ def readme_feature(doc: snakemd.Document) -> snakemd.Document:
         text=textwrap.dedent(
             """\
             [!CAUTION]
-            
+
             Starting with Grafana release `12.4.0`,
             the `grafana/grafana-oss` Docker Hub
             repository will no longer be updated.
@@ -24,7 +27,7 @@ def readme_feature(doc: snakemd.Document) -> snakemd.Document:
             the `grafana/grafana` Docker Hub
             repository. These two repositories
             have the same Grafana OSS docker images.
-            
+
             ([Source](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/))\
             """
         )
