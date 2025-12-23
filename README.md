@@ -444,27 +444,18 @@ To follow up on the previous LinkedIn publications, visit:
 
 ### This Feature
 
-Clone this repository into `OpenStudioLandscapes/.features`:
+Clone this repository into `OpenStudioLandscapes/.features` (assuming the current working directory to be the Git repository root `./OpenStudioLandscapes`):
 
 ```shell
-# cd .features
-git clone https://github.com/michimussato/OpenStudioLandscapes-Grafana.git
+git -C ./.features clone https://github.com/michimussato/OpenStudioLandscapes-Grafana.git
 ```
 
-Create `venv`:
+Install into OpenStudioLandscapes `venv` (`./OpenStudioLandscapes/.venv`):
 
 ```shell
-# cd .features/OpenStudioLandscapes-Grafana
-python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip setuptools
-```
-
-Configure `venv`:
-
-```shell
-# cd .features/OpenStudioLandscapes-Grafana
-pip install -e "../../[dev]"
+pip install -e "./.features/OpenStudioLandscapes-Grafana[dev]"
 pip install -e ".[dev]"
 ```
 
@@ -531,4 +522,4 @@ Currently, the following Python interpreters are enabled for testing:
 
 ***
 
-Last changed: **2025-12-23 13:37:20 UTC**
+Last changed: **2025-12-23 22:08:06 UTC**
