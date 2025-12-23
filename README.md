@@ -69,10 +69,17 @@ The following settings are available in `OpenStudioLandscapes-Grafana` and are a
 #
 # Type: typing.Dict
 # Base Class:
+#     Required: False
 #     Description:
 #         None
 #     Default value:
 #         None
+# Description:
+#     None
+# Required: False
+#     None
+# Examples:
+#     None
 
 
 # =============
@@ -81,10 +88,17 @@ The following settings are available in `OpenStudioLandscapes-Grafana` and are a
 #
 # Type: <class 'OpenStudioLandscapes.engine.config.models.ConfigEngine'>
 # Base Class:
+#     Required: False
 #     Description:
 #         None
 #     Default value:
 #         None
+# Description:
+#     None
+# Required: False
+#     None
+# Examples:
+#     None
 
 
 # =============
@@ -93,10 +107,17 @@ The following settings are available in `OpenStudioLandscapes-Grafana` and are a
 #
 # Type: <class 'OpenStudioLandscapes.engine.config.models.FeatureBaseModel'>
 # Base Class:
+#     Required: False
 #     Description:
 #         None
 #     Default value:
 #         None
+# Description:
+#     None
+# Required: False
+#     None
+# Examples:
+#     None
 
 
 # ============
@@ -105,10 +126,17 @@ The following settings are available in `OpenStudioLandscapes-Grafana` and are a
 #
 # Type: <class 'importlib.metadata.Distribution'>
 # Base Class:
+#     Required: False
 #     Description:
 #         None
 #     Default value:
 #         None
+# Description:
+#     None
+# Required: False
+#     None
+# Examples:
+#     None
 
 
 # ==========
@@ -117,10 +145,17 @@ The following settings are available in `OpenStudioLandscapes-Grafana` and are a
 #
 # Type: <class 'str'>
 # Base Class:
+#     Required: False
 #     Description:
 #         None
 #     Default value:
 #         None
+# Description:
+#     None
+# Required: False
+#     None
+# Examples:
+#     None
 
 
 # ============
@@ -129,10 +164,17 @@ The following settings are available in `OpenStudioLandscapes-Grafana` and are a
 #
 # Type: typing.List[str]
 # Base Class:
+#     Required: False
 #     Description:
 #         None
 #     Default value:
 #         None
+# Description:
+#     None
+# Required: False
+#     None
+# Examples:
+#     None
 
 
 # =======
@@ -141,10 +183,17 @@ The following settings are available in `OpenStudioLandscapes-Grafana` and are a
 #
 # Type: <class 'bool'>
 # Base Class:
+#     Required: False
 #     Description:
 #         Whether the Feature is enabled or not.
 #     Default value:
 #         True
+# Description:
+#     Whether the Feature is enabled or not.
+# Required: False
+#     Whether the Feature is enabled or not.
+# Examples:
+#     None
 
 
 # =============
@@ -153,10 +202,17 @@ The following settings are available in `OpenStudioLandscapes-Grafana` and are a
 #
 # Type: <class 'str'>
 # Base Class:
+#     Required: False
 #     Description:
 #         None
 #     Default value:
 #         default
+# Description:
+#     None
+# Required: False
+#     None
+# Examples:
+#     ['default', 'license_server', 'worker']
 
 
 # ============
@@ -165,10 +221,17 @@ The following settings are available in `OpenStudioLandscapes-Grafana` and are a
 #
 # Type: <class 'str'>
 # Base Class:
+#     Required: True
 #     Description:
 #         The name of the feature. It is derived from the `OpenStudioLandscapes.<Feature>.dist` attribute.
 #     Default value:
 #         PydanticUndefined
+# Description:
+#     None
+# Required: False
+#     None
+# Examples:
+#     None
 feature_name: OpenStudioLandscapes-Grafana
 
 
@@ -178,10 +241,17 @@ feature_name: OpenStudioLandscapes-Grafana
 #
 # Type: <class 'pathlib.Path'>
 # Base Class:
+#     Required: False
 #     Description:
 #         The path to the `docker-compose.yml` file.
 #     Default value:
 #         {DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml
+# Description:
+#     The path to the `docker-compose.yml` file.
+# Required: False
+#     The path to the `docker-compose.yml` file.
+# Examples:
+#     None
 
 
 # ==================
@@ -189,7 +259,9 @@ feature_name: OpenStudioLandscapes-Grafana
 # ------------------
 #
 # Type: <class 'str'>
-# Sub Class Description:
+# Description:
+#     The Grafana Admin username.
+# Required: False
 #     The Grafana Admin username.
 # Examples:
 #     None
@@ -201,7 +273,9 @@ grafana_admin_user: openstudiolandscapes
 # ----------------------
 #
 # Type: <class 'str'>
-# Sub Class Description:
+# Description:
+#     The Grafana Admin password.
+# Required: False
 #     The Grafana Admin password.
 # Examples:
 #     None
@@ -213,7 +287,9 @@ grafana_admin_password: openstudiolandscapes
 # ----------------------
 #
 # Type: <class 'int'>
-# Sub Class Description:
+# Description:
+#     The Grafana container port.
+# Required: False
 #     The Grafana container port.
 # Examples:
 #     None
@@ -225,7 +301,9 @@ grafana_port_container: 3000
 # -----------------
 #
 # Type: <class 'int'>
-# Sub Class Description:
+# Description:
+#     The Grafana host port.
+# Required: False
 #     The Grafana host port.
 # Examples:
 #     None
@@ -237,7 +315,9 @@ grafana_port_host: 3030
 # -------------
 #
 # Type: <enum 'GrafanaDockerImage'>
-# Sub Class Description:
+# Description:
+#     None
+# Required: False
 #     None
 # Examples:
 #     ['enterprise', 'oss_legacy', 'oss']
@@ -249,7 +329,9 @@ grafana_image: docker.io/grafana/grafana
 # ---------------------
 #
 # Type: <enum 'GrafanaDockerImageVersion'>
-# Sub Class Description:
+# Description:
+#     None
+# Required: False
 #     None
 # Examples:
 #     ['latest', 'latest_ubuntu', 'main', 'main_ubuntu', 'version_11_6', 'version_11_6_ubuntu']
@@ -442,4 +524,4 @@ Currently, the following Python interpreters are enabled for testing:
 
 ***
 
-Last changed: **2025-12-23 12:26:16 UTC**
+Last changed: **2025-12-23 12:48:36 UTC**
