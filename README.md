@@ -346,9 +346,6 @@ grafana_image: docker.io/grafana/grafana
 # Examples:
 #     ['latest', 'latest_ubuntu', 'main', 'main_ubuntu', 'version_11_6', 'version_11_6_ubuntu']
 grafana_image_version: latest-ubuntu
-
-
-
 ```
 
 ***
@@ -534,4 +531,4 @@ Currently, the following Python interpreters are enabled for testing:
 
 ***
 
-Last changed: **2025-12-23 13:35:00 UTC**
+Last changed: **2025-12-23 13:37:20 UTC**
