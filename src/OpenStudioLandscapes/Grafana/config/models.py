@@ -9,12 +9,12 @@ from pydantic import (
 
 LOGGER = get_dagster_logger(__name__)
 
+from OpenStudioLandscapes.engine.config.str_gen import get_config_str
 from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
 
 from OpenStudioLandscapes.Grafana import dist
 
 config_default = pathlib.Path(__file__).parent.joinpath("config_default.yml")
-CONFIG_STR = config_default.read_text()
 
 
 class GrafanaDockerImage(enum.StrEnum):
@@ -35,8 +35,6 @@ class GrafanaDockerImageVersion(enum.StrEnum):
 class Config(FeatureBaseModel):
 
     feature_name: str = dist.name
-
-    definitions: str = "OpenStudioLandscapes.Ayon.definitions"
 
     grafana_admin_user: str = Field(
         default="openstudiolandscapes",
@@ -70,3 +68,9 @@ class Config(FeatureBaseModel):
         default=GrafanaDockerImageVersion.latest_ubuntu,
         examples=[i.name for i in GrafanaDockerImageVersion],
     )
+
+
+CONFIG_STR = get_config_str(
+    Config=Config,
+)
+
