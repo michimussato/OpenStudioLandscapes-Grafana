@@ -1,5 +1,4 @@
 import enum
-import pathlib
 
 from dagster import get_dagster_logger
 from pydantic import (
@@ -13,8 +12,6 @@ from OpenStudioLandscapes.engine.config.str_gen import get_config_str
 from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
 
 from OpenStudioLandscapes.Grafana import dist
-
-config_default = pathlib.Path(__file__).parent.joinpath("config_default.yml")
 
 
 class GrafanaDockerImage(enum.StrEnum):
