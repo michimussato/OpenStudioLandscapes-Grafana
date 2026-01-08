@@ -61,6 +61,17 @@ class Config(FeatureBaseModel):
         frozen=False,
     )
 
+    grafana_loki_port_container: PositiveInt = Field(
+        default=3100,
+        description="The Grafana Loki container port.",
+        frozen=True,
+    )
+    grafana_loki_port_host: PositiveInt = Field(
+        default=3100,
+        description="The Grafana Loki host port.",
+        frozen=False,
+    )
+
     grafana_image: GrafanaDockerImage = Field(
         default=GrafanaDockerImage.oss,
         examples=[i.name for i in GrafanaDockerImage],
@@ -69,6 +80,11 @@ class Config(FeatureBaseModel):
     grafana_image_version: GrafanaDockerImageVersion = Field(
         default=GrafanaDockerImageVersion.latest_ubuntu,
         examples=[i.name for i in GrafanaDockerImageVersion],
+    )
+
+    grafana_loki_image: str = Field(
+        default="docker.io/grafana/loki:latest",
+        # examples=[i.name for i in GrafanaDockerImage],
     )
 
 
