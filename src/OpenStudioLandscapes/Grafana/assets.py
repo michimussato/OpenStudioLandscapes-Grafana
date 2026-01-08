@@ -47,7 +47,6 @@ yaml.SafeDumper.add_multi_representer(
     representer=yaml.representer.SafeRepresenter.represent_str,
 )
 
-
 compose_scope_group__cmd: AssetsDefinition = get_compose_scope_group__cmd(
     ASSET_HEADER=ASSET_HEADER,
 )
@@ -68,21 +67,17 @@ group_out: AssetsDefinition = get_group_out(
     ASSET_HEADER=ASSET_HEADER,
 )
 
-
 docker_compose_graph: AssetsDefinition = get_docker_compose_graph(
     ASSET_HEADER=ASSET_HEADER,
 )
-
 
 compose: AssetsDefinition = get_compose(
     ASSET_HEADER=ASSET_HEADER,
 )
 
-
 feature_out_v2: AssetsDefinition = get_feature_out_v2(
     ASSET_HEADER=ASSET_HEADER,
 )
-
 
 # Produces
 # - feature_in_parent
@@ -101,12 +96,16 @@ feature_in_parent: Union[AssetsDefinition, None] = get_feature_in_parent(
             AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
         ),
     },
+    description=textwrap.dedent(
+        """
+        - https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/
+        """
+    )
 )
 def grafana_ini(
-    context: AssetExecutionContext,
-    CONFIG: Config,  # pylint: disable=redefined-outer-name
+        context: AssetExecutionContext,
+        CONFIG: Config,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
-
     env: Dict = CONFIG.env
 
     # @formatter:off
@@ -166,19 +165,31 @@ def grafana_ini(
             AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
         ),
     },
+    description=textwrap.dedent(
+        """
+        Verify that Loki is up and running.
+
+        - To view readiness, navigate to http://localhost:3100/ready.
+        - To view metrics, navigate to http://localhost:3100/metrics.
+        
+        Official Resources:
+        - https://grafana.com/docs/loki/latest/configure/
+        """
+    )
 )
 def loki_yaml(
-    context: AssetExecutionContext,
-    CONFIG: Config,  # pylint: disable=redefined-outer-name
+        context: AssetExecutionContext,
+        CONFIG: Config,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
-
     env: Dict = CONFIG.env
 
     loki_dict = {
         "auth_enabled": False,
         "server": {
-            "http_listen_port": CONFIG.grafana_port_container,
+            "http_listen_port": CONFIG.grafana_loki_port_container,
             "grpc_listen_port": 9096,
+            "log_level": "debug",
+            "grpc_server_max_concurrent_streams": 1000,
         },
         "common": {
             "instance_addr": "127.0.0.1",
@@ -206,6 +217,9 @@ def loki_yaml(
                 },
             },
         },
+        "limits_config": {
+            "metric_aggregation_enabled": True,
+        },
         "schema_config": {
             "configs": [
                 {
@@ -220,8 +234,17 @@ def loki_yaml(
                 }
             ],
         },
+        "pattern_ingester": {
+            "enabled": True,
+            "metric_aggregation": {
+                "loki_address": "localhost:3100",
+            },
+        },
         "ruler": {
             "alertmanager_url": "http://localhost:9093",
+        },
+        "frontend": {
+            "encoding": "protobuf",
         },
         "analytics": {
             "reporting_enabled": False,
@@ -340,17 +363,26 @@ def loki_yaml(
     },
     description=textwrap.dedent(
         """
-        - [https://grafana.com/docs/grafana/latest/administration/provisioning/#data-sources]()
-        - [https://grafana.com/docs/grafana/latest/datasources/loki/#provision-the-data-source]()
+        - [](https://grafana.com/docs/grafana/latest/administration/provisioning/#data-sources)
+        - [](https://grafana.com/docs/grafana/latest/datasources/loki/#provision-the-data-source)
         """
     )
 )
 def data_sources_loki(
-    context: AssetExecutionContext,
-    CONFIG: Config,  # pylint: disable=redefined-outer-name
+        context: AssetExecutionContext,
+        CONFIG: Config,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
-
     env: Dict = CONFIG.env
+
+    # config_engine: ConfigEngine = CONFIG.config_engine
+
+    service_name_loki = "loki"
+    # container_name_loki, host_name_loki = get_docker_compose_names(
+    #     context=context,
+    #     service_name=service_name_loki,
+    #     landscape_id=env.get("LANDSCAPE", "default"),
+    #     domain_lan=config_engine.openstudiolandscapes__domain_lan,
+    # )
 
     datasources_loki_dict = {
         "apiVersion": 1,
@@ -359,7 +391,12 @@ def data_sources_loki(
                 "name": "Loki",
                 "type": "loki",
                 "access": "proxy",
-                "url": f"http://localhost:{CONFIG.grafana_loki_port_host}",
+                "orgId": 1,
+                "url": f"http://{service_name_loki}:{CONFIG.grafana_loki_port_container}",
+                "basicAuth": False,
+                "isDefault": True,
+                "version": 1,
+                "editable": False,
                 "jsonData": {
                     "timeout": 60,
                     "maxLines": 1000,
@@ -394,6 +431,81 @@ def data_sources_loki(
     )
 
 
+# @asset(
+#     **ASSET_HEADER,
+#     ins={
+#         "CONFIG": AssetIn(
+#             AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
+#         ),
+#     },
+#     description=textwrap.dedent(
+#         """
+#         """
+#     )
+# )
+# def dashboard_minifarm(
+#         context: AssetExecutionContext,
+#         CONFIG: Config,  # pylint: disable=redefined-outer-name
+# ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
+#     env: Dict = CONFIG.env
+#
+#     # config_engine: ConfigEngine = CONFIG.config_engine
+#
+#     service_name_loki = "loki"
+#     # container_name_loki, host_name_loki = get_docker_compose_names(
+#     #     context=context,
+#     #     service_name=service_name_loki,
+#     #     landscape_id=env.get("LANDSCAPE", "default"),
+#     #     domain_lan=config_engine.openstudiolandscapes__domain_lan,
+#     # )
+#
+#     datasources_loki_dict = {
+#         "apiVersion": 1,
+#         "datasources": [
+#             {
+#                 "name": "Loki",
+#                 "type": "loki",
+#                 "access": "proxy",
+#                 "orgId": 1,
+#                 "url": f"http://{service_name_loki}:{CONFIG.grafana_loki_port_container}",
+#                 "basicAuth": False,
+#                 "isDefault": True,
+#                 "version": 1,
+#                 "editable": False,
+#                 "jsonData": {
+#                     "timeout": 60,
+#                     "maxLines": 1000,
+#                 },
+#             },
+#         ],
+#     }
+#
+#     datasources_loki_dict_yaml = yaml.dump(datasources_loki_dict)
+#
+#     loki_yaml_path = pathlib.Path(
+#         env["DOT_LANDSCAPES"],
+#         env.get("LANDSCAPE", "default"),
+#         f"{dist.name}",
+#         "datasources",
+#         "loki.yaml",
+#     ).expanduser()
+#
+#     loki_yaml_path.parent.mkdir(parents=True, exist_ok=True)
+#
+#     with open(loki_yaml_path, "w") as fw:
+#         fw.write(datasources_loki_dict_yaml)
+#
+#     yield Output(loki_yaml_path)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             "__".join(context.asset_key.path): MetadataValue.path(loki_yaml_path),
+#             "datasources_loki_dict_yaml": MetadataValue.md(f"```yaml\n{datasources_loki_dict_yaml}\n```"),
+#         },
+#     )
+
+
 @asset(
     **ASSET_HEADER,
     ins={
@@ -403,12 +515,11 @@ def data_sources_loki(
     },
 )
 def compose_networks(
-    context: AssetExecutionContext,
-    CONFIG: Config,  # pylint: disable=redefined-outer-name
+        context: AssetExecutionContext,
+        CONFIG: Config,  # pylint: disable=redefined-outer-name
 ) -> Generator[
     Output[Dict[str, Dict[str, Dict[str, str]]]] | AssetMaterialization, None, None
 ]:
-
     env: Dict = CONFIG.env
 
     compose_network_mode = DockerComposePolicies.NETWORK_MODE.BRIDGE
@@ -453,12 +564,12 @@ def compose_networks(
     },
 )
 def compose_grafana(
-    context: AssetExecutionContext,
-    CONFIG: Config,  # pylint: disable=redefined-outer-name
-    compose_networks: Dict,  # pylint: disable=redefined-outer-name
-    grafana_ini: pathlib.Path,  # pylint: disable=redefined-outer-name
-    loki_yaml: pathlib.Path,  # pylint: disable=redefined-outer-name
-    data_sources_loki: pathlib.Path,  # pylint: disable=redefined-outer-name
+        context: AssetExecutionContext,
+        CONFIG: Config,  # pylint: disable=redefined-outer-name
+        compose_networks: Dict,  # pylint: disable=redefined-outer-name
+        grafana_ini: pathlib.Path,  # pylint: disable=redefined-outer-name
+        loki_yaml: pathlib.Path,  # pylint: disable=redefined-outer-name
+        data_sources_loki: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[Dict] | AssetMaterialization, None, None]:
     """ """
 
@@ -502,7 +613,7 @@ def compose_grafana(
         "volumes": [
             f"{var_lib.as_posix()}:/var/lib/grafana:rw",
             f"{grafana_ini.as_posix()}:/etc/grafana/grafana.ini:ro",
-            f"{data_sources_loki.as_posix()}:/usr/share/grafana/conf/provisioning/datasources/loki.yaml:ro",
+            f"{data_sources_loki.as_posix()}:/etc/grafana/provisioning/datasources/loki.yaml:ro",
         ]
     }
 
@@ -511,7 +622,6 @@ def compose_grafana(
     _volume_relative = []
 
     for v in volumes_dict["volumes"]:
-
         host, container = v.split(":", maxsplit=1)
 
         volume_dir_host_rel_path = get_relative_path_via_common_root(
@@ -552,7 +662,6 @@ def compose_grafana(
     _volume_relative_loki = []
 
     for v in volumes_dict_loki["volumes"]:
-
         host, container = v.split(":", maxsplit=1)
 
         volume_dir_host_rel_path = get_relative_path_via_common_root(
@@ -580,7 +689,7 @@ def compose_grafana(
         domain_lan=config_engine.openstudiolandscapes__domain_lan,
     )
 
-    service_name_loki = "grafana-loki"
+    service_name_loki = "loki"
     container_name_loki, host_name_loki = get_docker_compose_names(
         context=context,
         service_name=service_name_loki,
@@ -641,10 +750,9 @@ def compose_grafana(
     },
 )
 def compose_maps(
-    context: AssetExecutionContext,
-    **kwargs,  # pylint: disable=redefined-outer-name
+        context: AssetExecutionContext,
+        **kwargs,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[List[Dict]] | AssetMaterialization, None, None]:
-
     ret = list(kwargs.values())
 
     context.log.info(ret)
