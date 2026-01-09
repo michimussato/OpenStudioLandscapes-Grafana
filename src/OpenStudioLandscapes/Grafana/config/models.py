@@ -141,7 +141,7 @@ class Config(FeatureBaseModel):
               level  = "%s"
               format = "logfmt"
             }
-            """ % GrafanaLogLevel.INFO
+            """ % GrafanaLogLevel.INFO.value
         )
     )
 

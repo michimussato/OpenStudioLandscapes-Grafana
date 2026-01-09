@@ -231,7 +231,7 @@ def loki_yaml(
         "server": {
             "http_listen_port": CONFIG.grafana_loki_port_container,
             "grpc_listen_port": 9096,
-            "log_level": CONFIG.grafana_loki_loglevel,
+            "log_level": CONFIG.grafana_loki_loglevel.value,
             "grpc_server_max_concurrent_streams": 1000,
         },
         "common": {
