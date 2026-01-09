@@ -72,6 +72,17 @@ class Config(FeatureBaseModel):
         frozen=False,
     )
 
+    grafana_mimir_port_container: PositiveInt = Field(
+        default=9009,
+        description="The Grafana Mimir container port.",
+        frozen=True,
+    )
+    grafana_mimir_port_host: PositiveInt = Field(
+        default=9009,
+        description="The Grafana Mimir host port.",
+        frozen=False,
+    )
+
     grafana_image: GrafanaDockerImage = Field(
         default=GrafanaDockerImage.oss,
         examples=[i.name for i in GrafanaDockerImage],
@@ -84,6 +95,11 @@ class Config(FeatureBaseModel):
 
     grafana_loki_image: str = Field(
         default="docker.io/grafana/loki:latest",
+        # examples=[i.name for i in GrafanaDockerImage],
+    )
+
+    grafana_mimir_image: str = Field(
+        default="docker.io/grafana/mimir:latest",
         # examples=[i.name for i in GrafanaDockerImage],
     )
 
