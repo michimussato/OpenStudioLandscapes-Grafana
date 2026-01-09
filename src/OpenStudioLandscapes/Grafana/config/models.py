@@ -1,4 +1,5 @@
 import enum
+import textwrap
 from typing import List
 
 from dagster import get_dagster_logger
@@ -118,6 +119,17 @@ class Config(FeatureBaseModel):
     #     default="docker.io/grafana/mimir:latest",
     #     # examples=[i.name for i in GrafanaDockerImage],
     # )
+
+    alloy_config: str = Field(
+        default=textwrap.dedent(
+            """
+            logging {
+              level  = "info"
+              format = "logfmt"
+            }
+            """
+        )
+    )
 
 
 CONFIG_STR = get_config_str(

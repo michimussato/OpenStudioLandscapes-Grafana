@@ -167,6 +167,49 @@ def grafana_ini(
     },
     description=textwrap.dedent(
         """
+        """
+    )
+)
+def alloy_config(
+        context: AssetExecutionContext,
+        CONFIG: Config,  # pylint: disable=redefined-outer-name
+) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
+
+    env: Dict = CONFIG.env
+
+    alloy_config_path = pathlib.Path(
+        env["DOT_LANDSCAPES"],
+        env.get("LANDSCAPE", "default"),
+        f"{dist.name}",
+        "alloy",
+        "alloy.config",
+    ).expanduser()
+
+    alloy_config_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(alloy_config_path, "w") as fw:
+        fw.write(CONFIG.alloy_config)
+
+    yield Output(alloy_config_path)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.path(alloy_config_path),
+            "alloy_config": MetadataValue.md(f"```\n{CONFIG.alloy_config}\n```"),
+        },
+    )
+
+
+@asset(
+    **ASSET_HEADER,
+    ins={
+        "CONFIG": AssetIn(
+            AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
+        ),
+    },
+    description=textwrap.dedent(
+        """
         Verify that Loki is up and running.
 
         - To view readiness, navigate to http://localhost:3100/ready.
