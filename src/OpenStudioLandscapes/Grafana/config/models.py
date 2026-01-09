@@ -31,6 +31,15 @@ class GrafanaDockerImageVersion(enum.StrEnum):
     version_11_6_ubuntu = "11.6-ubuntu"
 
 
+class GrafanaLogLevel(enum.StrEnum):
+    DEBUG = "debug"
+    INFO = "info"
+    main = "main"
+    main_ubuntu = "main-ubuntu"
+    version_11_6 = "11.6"
+    version_11_6_ubuntu = "11.6-ubuntu"
+
+
 class Config(FeatureBaseModel):
 
     feature_name: str = dist.name
@@ -71,6 +80,11 @@ class Config(FeatureBaseModel):
         default=3100,
         description="The Grafana Loki host port.",
         frozen=False,
+    )
+    grafana_loki_loglevel: GrafanaLogLevel = Field(
+        default=GrafanaLogLevel.INFO,
+        description="The Grafana Loki loglevel.",
+        examples=[i.name for i in GrafanaLogLevel],
     )
 
     prometheus_port_container: PositiveInt = Field(
@@ -124,10 +138,10 @@ class Config(FeatureBaseModel):
         default=textwrap.dedent(
             """
             logging {
-              level  = "info"
+              level  = "%s"
               format = "logfmt"
             }
-            """
+            """ % GrafanaLogLevel.INFO
         )
     )
 
