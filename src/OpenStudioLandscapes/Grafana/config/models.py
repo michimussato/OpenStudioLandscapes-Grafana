@@ -72,16 +72,27 @@ class Config(FeatureBaseModel):
         frozen=False,
     )
 
-    grafana_mimir_port_container: PositiveInt = Field(
-        default=9009,
-        description="The Grafana Mimir container port.",
+    prometheus_port_container: PositiveInt = Field(
+        default=9090,
+        description="The Prometheus container port.",
         frozen=True,
     )
-    grafana_mimir_port_host: PositiveInt = Field(
-        default=9009,
-        description="The Grafana Mimir host port.",
+    prometheus_port_host: PositiveInt = Field(
+        default=9090,
+        description="The Prometheus host port.",
         frozen=False,
     )
+
+    # grafana_mimir_port_container: PositiveInt = Field(
+    #     default=9009,
+    #     description="The Grafana Mimir container port.",
+    #     frozen=True,
+    # )
+    # grafana_mimir_port_host: PositiveInt = Field(
+    #     default=9009,
+    #     description="The Grafana Mimir host port.",
+    #     frozen=False,
+    # )
 
     grafana_image: GrafanaDockerImage = Field(
         default=GrafanaDockerImage.oss,
@@ -98,10 +109,15 @@ class Config(FeatureBaseModel):
         # examples=[i.name for i in GrafanaDockerImage],
     )
 
-    grafana_mimir_image: str = Field(
-        default="docker.io/grafana/mimir:latest",
+    prometheus_image: str = Field(
+        default="docker.io/prom/prometheus:main",  # latest?
         # examples=[i.name for i in GrafanaDockerImage],
     )
+
+    # grafana_mimir_image: str = Field(
+    #     default="docker.io/grafana/mimir:latest",
+    #     # examples=[i.name for i in GrafanaDockerImage],
+    # )
 
 
 CONFIG_STR = get_config_str(

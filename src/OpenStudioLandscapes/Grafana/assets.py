@@ -353,105 +353,105 @@ def loki_yaml(
     )
 
 
-@asset(
-    **ASSET_HEADER,
-    ins={
-        "CONFIG": AssetIn(
-            AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
-        ),
-    },
-    description=textwrap.dedent(
-        """
-        """
-    )
-)
-def mimir_yaml(
-        context: AssetExecutionContext,
-        CONFIG: Config,  # pylint: disable=redefined-outer-name
-) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
-    env: Dict = CONFIG.env
-
-    # https://grafana.com/docs/mimir/latest/get-started/#start-grafana-mimir
-    mimir_dict = {
-        "multitenancy_enabled": False,
-        "blocks_storage": {
-            "backend": "filesystem",
-            "bucket_store": {
-                "sync_dir": "/tmp/mimir/tsdb-sync",
-            },
-            "filesystem": {
-                "dir": "/tmp/mimir/data/tsdb",
-            },
-            "tsdb": {
-                "dir": "/tmp/mimir/tsdb",
-            },
-        },
-        "compactor": {
-            "data_dir": "/tmp/mimir/compactor",
-            "sharding_ring": {
-                "kvstore": {
-                    "store": "memberlist",
-                },
-            },
-        },
-        "distributor": {
-            "ring": {
-                "instance_addr": "127.0.0.1",
-                "kvstore": {
-                    "store": "memberlist",
-                },
-            },
-        },
-        "ingester": {
-            "ring": {
-                "instance_addr": "127.0.0.1",
-                "kvstore": {
-                    "store": "memberlist",
-                },
-                "replication_factor": 1,
-            },
-        },
-        "ruler_storage": {
-            "backend": "filesystem",
-            "filesystem": {
-                "dir": "/tmp/mimir/rules",
-            },
-        },
-        "server": {
-            "http_listen_port": CONFIG.grafana_mimir_port_container,
-            "log_level": "debug",
-        },
-        "store_gateway": {
-            "sharding_ring": {
-                "replication_factor": 1,
-            },
-        },
-    }
-
-    mimir_dict_yaml = yaml.dump(mimir_dict)
-
-    mimir_yaml_path = pathlib.Path(
-        env["DOT_LANDSCAPES"],
-        env.get("LANDSCAPE", "default"),
-        f"{dist.name}",
-        "mimir",
-        "config.yaml",
-    ).expanduser()
-
-    mimir_yaml_path.parent.mkdir(parents=True, exist_ok=True)
-
-    with open(mimir_yaml_path, "w") as fw:
-        fw.write(mimir_dict_yaml)
-
-    yield Output(mimir_yaml_path)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.path(mimir_yaml_path),
-            "mimir_dict_yaml": MetadataValue.md(f"```yaml\n{mimir_dict_yaml}\n```"),
-        },
-    )
+# @asset(
+#     **ASSET_HEADER,
+#     ins={
+#         "CONFIG": AssetIn(
+#             AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
+#         ),
+#     },
+#     description=textwrap.dedent(
+#         """
+#         """
+#     )
+# )
+# def mimir_yaml(
+#         context: AssetExecutionContext,
+#         CONFIG: Config,  # pylint: disable=redefined-outer-name
+# ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
+#     env: Dict = CONFIG.env
+#
+#     # https://grafana.com/docs/mimir/latest/get-started/#start-grafana-mimir
+#     mimir_dict = {
+#         "multitenancy_enabled": False,
+#         "blocks_storage": {
+#             "backend": "filesystem",
+#             "bucket_store": {
+#                 "sync_dir": "/tmp/mimir/tsdb-sync",
+#             },
+#             "filesystem": {
+#                 "dir": "/tmp/mimir/data/tsdb",
+#             },
+#             "tsdb": {
+#                 "dir": "/tmp/mimir/tsdb",
+#             },
+#         },
+#         "compactor": {
+#             "data_dir": "/tmp/mimir/compactor",
+#             "sharding_ring": {
+#                 "kvstore": {
+#                     "store": "memberlist",
+#                 },
+#             },
+#         },
+#         "distributor": {
+#             "ring": {
+#                 "instance_addr": "127.0.0.1",
+#                 "kvstore": {
+#                     "store": "memberlist",
+#                 },
+#             },
+#         },
+#         "ingester": {
+#             "ring": {
+#                 "instance_addr": "127.0.0.1",
+#                 "kvstore": {
+#                     "store": "memberlist",
+#                 },
+#                 "replication_factor": 1,
+#             },
+#         },
+#         "ruler_storage": {
+#             "backend": "filesystem",
+#             "filesystem": {
+#                 "dir": "/tmp/mimir/rules",
+#             },
+#         },
+#         "server": {
+#             "http_listen_port": CONFIG.grafana_mimir_port_container,
+#             "log_level": "debug",
+#         },
+#         "store_gateway": {
+#             "sharding_ring": {
+#                 "replication_factor": 1,
+#             },
+#         },
+#     }
+#
+#     mimir_dict_yaml = yaml.dump(mimir_dict)
+#
+#     mimir_yaml_path = pathlib.Path(
+#         env["DOT_LANDSCAPES"],
+#         env.get("LANDSCAPE", "default"),
+#         f"{dist.name}",
+#         "mimir",
+#         "config.yaml",
+#     ).expanduser()
+#
+#     mimir_yaml_path.parent.mkdir(parents=True, exist_ok=True)
+#
+#     with open(mimir_yaml_path, "w") as fw:
+#         fw.write(mimir_dict_yaml)
+#
+#     yield Output(mimir_yaml_path)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             "__".join(context.asset_key.path): MetadataValue.path(mimir_yaml_path),
+#             "mimir_dict_yaml": MetadataValue.md(f"```yaml\n{mimir_dict_yaml}\n```"),
+#         },
+#     )
 
 
 @asset(
@@ -477,6 +477,7 @@ def data_sources_grafana(
     # config_engine: ConfigEngine = CONFIG.config_engine
 
     service_name_loki = "loki"
+    service_name_prometheus = "prometheus"
     # container_name_loki, host_name_loki = get_docker_compose_names(
     #     context=context,
     #     service_name=service_name_loki,
@@ -496,6 +497,22 @@ def data_sources_grafana(
                 "url": f"http://{service_name_loki}:{CONFIG.grafana_loki_port_container}",
                 "basicAuth": False,
                 "isDefault": True,
+                "version": 1,
+                "editable": False,
+                "jsonData": {
+                    "timeout": 60,
+                    "maxLines": 1000,
+                },
+            },
+            # Prometheus
+            {
+                "name": "Prometheus",
+                "type": "prometheus",
+                "access": "proxy",
+                "orgId": 1,
+                "url": f"http://{service_name_prometheus}:{CONFIG.prometheus_port_container}",
+                "basicAuth": False,
+                "isDefault": False,
                 "version": 1,
                 "editable": False,
                 "jsonData": {
@@ -822,6 +839,17 @@ def compose_grafana(
                 "domainname": config_engine.openstudiolandscapes__domain_lan,
                 "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS.value,
                 "image": f"{CONFIG.grafana_image}:{CONFIG.grafana_image_version}",
+
+                "depends_on": {
+                    "prometheus": {
+                        "condition": "service_started",
+                    },
+                    "loki": {
+                        "condition": "service_started",
+                    },
+                },
+                # Todo:
+                #  - [ ] depends_on
                 **copy.deepcopy(network_dict),
                 **copy.deepcopy(ports_dict),
                 **copy.deepcopy(volumes_dict),
@@ -863,16 +891,16 @@ def compose_grafana(
         "compose_networks": AssetIn(
             AssetKey([*ASSET_HEADER["key_prefix"], "compose_networks"]),
         ),
-        "mimir_yaml": AssetIn(
-            AssetKey([*ASSET_HEADER["key_prefix"], "mimir_yaml"]),
-        ),
+        # "mimir_yaml": AssetIn(
+        #     AssetKey([*ASSET_HEADER["key_prefix"], "mimir_yaml"]),
+        # ),
     },
 )
-def compose_mimir(
+def compose_prometheus(
         context: AssetExecutionContext,
         CONFIG: Config,  # pylint: disable=redefined-outer-name
         compose_networks: Dict,  # pylint: disable=redefined-outer-name
-        mimir_yaml: pathlib.Path,  # pylint: disable=redefined-outer-name
+        # mimir_yaml: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[Dict] | AssetMaterialization, None, None]:
     """ """
 
@@ -887,34 +915,15 @@ def compose_mimir(
         network_dict = {"networks": list(compose_networks.get("networks", {}).keys())}
         ports_dict = {
             "ports": [
-                f"{CONFIG.grafana_mimir_port_host}:{CONFIG.grafana_mimir_port_container}",
+                f"{CONFIG.prometheus_port_host}:{CONFIG.prometheus_port_container}",
             ]
         }
     elif "network_mode" in compose_networks:
         network_dict = {"network_mode": compose_networks["network_mode"]}
 
-    # var_lib = pathlib.Path(
-    #     env["DOT_LANDSCAPES"],
-    #     env.get("LANDSCAPE", "default"),
-    #     f"{dist.name}",
-    #     "var",
-    #     "lib",
-    #     "grafana",
-    # ).expanduser()
-
-    # old_umask = os.umask(0o000)
-
-    # var_lib.mkdir(
-    #     parents=True,
-    #     exist_ok=True,
-    #     mode=0o777,
-    # )
-
-    # os.umask(old_umask)
-
     volumes_dict = {
         "volumes": [
-            f"{mimir_yaml.as_posix()}:/etc/mimir/config.yaml:rw",
+            # f"{mimir_yaml.as_posix()}:/etc/mimir/config.yaml:rw",
             # f"{grafana_ini.as_posix()}:/etc/grafana/grafana.ini:ro",
             # f"{data_sources_loki.as_posix()}:/etc/grafana/provisioning/datasources/loki.yaml:ro",
         ]
@@ -944,7 +953,7 @@ def compose_mimir(
         ]
     }
 
-    service_name = "mimir"
+    service_name = "prometheus"
     container_name, host_name = get_docker_compose_names(
         context=context,
         service_name=service_name,
@@ -959,10 +968,10 @@ def compose_mimir(
                 # "hostname": host_name,
                 "domainname": config_engine.openstudiolandscapes__domain_lan,
                 "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS.value,
-                "image": CONFIG.grafana_mimir_image,
-                "command": [
-                    "--config.file=/etc/mimir/config.yaml",
-                ],
+                "image": CONFIG.prometheus_image,
+                # "command": [
+                #     "--config.file=/etc/mimir/config.yaml",
+                # ],
                 **copy.deepcopy(network_dict),
                 **copy.deepcopy(ports_dict),
                 **copy.deepcopy(volumes_dict),
@@ -980,6 +989,134 @@ def compose_mimir(
             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
         },
     )
+
+
+# @asset(
+#     **ASSET_HEADER,
+#     ins={
+#         "CONFIG": AssetIn(
+#             AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
+#         ),
+#         "compose_networks": AssetIn(
+#             AssetKey([*ASSET_HEADER["key_prefix"], "compose_networks"]),
+#         ),
+#         "mimir_yaml": AssetIn(
+#             AssetKey([*ASSET_HEADER["key_prefix"], "mimir_yaml"]),
+#         ),
+#     },
+# )
+# def compose_mimir(
+#         context: AssetExecutionContext,
+#         CONFIG: Config,  # pylint: disable=redefined-outer-name
+#         compose_networks: Dict,  # pylint: disable=redefined-outer-name
+#         mimir_yaml: pathlib.Path,  # pylint: disable=redefined-outer-name
+# ) -> Generator[Output[Dict] | AssetMaterialization, None, None]:
+#     """ """
+#
+#     env: Dict = CONFIG.env
+#
+#     config_engine: ConfigEngine = CONFIG.config_engine
+#
+#     network_dict = {}
+#     ports_dict = {}
+#
+#     if "networks" in compose_networks:
+#         network_dict = {"networks": list(compose_networks.get("networks", {}).keys())}
+#         ports_dict = {
+#             "ports": [
+#                 f"{CONFIG.grafana_mimir_port_host}:{CONFIG.grafana_mimir_port_container}",
+#             ]
+#         }
+#     elif "network_mode" in compose_networks:
+#         network_dict = {"network_mode": compose_networks["network_mode"]}
+#
+#     # var_lib = pathlib.Path(
+#     #     env["DOT_LANDSCAPES"],
+#     #     env.get("LANDSCAPE", "default"),
+#     #     f"{dist.name}",
+#     #     "var",
+#     #     "lib",
+#     #     "grafana",
+#     # ).expanduser()
+#
+#     # old_umask = os.umask(0o000)
+#
+#     # var_lib.mkdir(
+#     #     parents=True,
+#     #     exist_ok=True,
+#     #     mode=0o777,
+#     # )
+#
+#     # os.umask(old_umask)
+#
+#     volumes_dict = {
+#         "volumes": [
+#             f"{mimir_yaml.as_posix()}:/etc/mimir/config.yaml:rw",
+#             # f"{grafana_ini.as_posix()}:/etc/grafana/grafana.ini:ro",
+#             # f"{data_sources_loki.as_posix()}:/etc/grafana/provisioning/datasources/loki.yaml:ro",
+#         ]
+#     }
+#
+#     # For portability, convert absolute volume paths to relative paths
+#
+#     _volume_relative = []
+#
+#     for v in volumes_dict["volumes"]:
+#         host, container = v.split(":", maxsplit=1)
+#
+#         volume_dir_host_rel_path = get_relative_path_via_common_root(
+#             context=context,
+#             path_src=CONFIG.docker_compose_expanded,
+#             path_dst=pathlib.Path(host),
+#             path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+#         )
+#
+#         _volume_relative.append(
+#             f"{volume_dir_host_rel_path.as_posix()}:{container}",
+#         )
+#
+#     volumes_dict = {
+#         "volumes": [
+#             *_volume_relative,
+#         ]
+#     }
+#
+#     service_name = "mimir"
+#     container_name, host_name = get_docker_compose_names(
+#         context=context,
+#         service_name=service_name,
+#         landscape_id=env.get("LANDSCAPE", "default"),
+#         domain_lan=config_engine.openstudiolandscapes__domain_lan,
+#     )
+#
+#     docker_dict = {
+#         "services": {
+#             service_name: {
+#                 "container_name": container_name,
+#                 # "hostname": host_name,
+#                 "domainname": config_engine.openstudiolandscapes__domain_lan,
+#                 "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS.value,
+#                 "image": CONFIG.grafana_mimir_image,
+#                 "command": [
+#                     "--config.file=/etc/mimir/config.yaml",
+#                 ],
+#                 **copy.deepcopy(network_dict),
+#                 **copy.deepcopy(ports_dict),
+#                 **copy.deepcopy(volumes_dict),
+#             },
+#         },
+#     }
+#
+#     docker_yaml = yaml.dump(docker_dict)
+#
+#     yield Output(docker_dict)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
+#         },
+#     )
 
 
 @asset(
@@ -1156,9 +1293,12 @@ def compose_loki(
         "compose_grafana": AssetIn(
             AssetKey([*ASSET_HEADER["key_prefix"], "compose_grafana"]),
         ),
-        "compose_mimir": AssetIn(
-            AssetKey([*ASSET_HEADER["key_prefix"], "compose_mimir"]),
+        "compose_prometheus": AssetIn(
+            AssetKey([*ASSET_HEADER["key_prefix"], "compose_prometheus"]),
         ),
+        # "compose_mimir": AssetIn(
+        #     AssetKey([*ASSET_HEADER["key_prefix"], "compose_mimir"]),
+        # ),
         "compose_loki": AssetIn(
             AssetKey([*ASSET_HEADER["key_prefix"], "compose_loki"]),
         ),
