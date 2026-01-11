@@ -167,6 +167,11 @@ def grafana_ini(
     },
     description=textwrap.dedent(
         """
+        A good start to understand how Alloy works:
+        - [Christian Lempa](https://www.youtube.com/watch?v=E654LPrkCjo)
+        
+        - [Configuration Blocks](https://grafana.com/docs/alloy/latest/reference/config-blocks/)
+        - [Alloy Components](https://grafana.com/docs/alloy/latest/reference/components/)
         """
     )
 )
@@ -230,12 +235,12 @@ def loki_yaml(
         "auth_enabled": False,
         "server": {
             "http_listen_port": CONFIG.grafana_loki_port_container,
-            "grpc_listen_port": 9096,
-            "log_level": CONFIG.grafana_loki_loglevel.value,
-            "grpc_server_max_concurrent_streams": 1000,
+            # "grpc_listen_port": 9096,
+            # "log_level": CONFIG.grafana_loki_loglevel.value,
+            # "grpc_server_max_concurrent_streams": 1000,
         },
         "common": {
-            "instance_addr": "127.0.0.1",
+            "instance_addr": "0.0.0.0",
             "path_prefix": "/tmp/loki",
             "storage": {
                 "filesystem": {
@@ -262,6 +267,7 @@ def loki_yaml(
         },
         "limits_config": {
             "metric_aggregation_enabled": True,
+            "volume_enabled": True,
         },
         "schema_config": {
             "configs": [
@@ -277,18 +283,27 @@ def loki_yaml(
                 }
             ],
         },
-        "pattern_ingester": {
-            "enabled": True,
-            "metric_aggregation": {
-                "loki_address": "localhost:3100",
+        "storage_config": {
+            "tsdb_shipper": {
+                "active_index_directory": "/tmp/loki/index",
+                "cache_location": "/tmp/loki/index_cache",
+            },
+            "filesystem": {
+                "directory": "/tmp/loki/chunks",
             },
         },
-        "ruler": {
-            "alertmanager_url": "http://localhost:9093",
+        "pattern_ingester": {
+            "enabled": True,
+            # "metric_aggregation": {
+            #     "loki_address": "localhost:3100",
+            # },
         },
-        "frontend": {
-            "encoding": "protobuf",
-        },
+        # "ruler": {
+        #     "alertmanager_url": "http://localhost:9093",
+        # },
+        # "frontend": {
+        #     "encoding": "protobuf",
+        # },
         "analytics": {
             "reporting_enabled": False,
         },
@@ -316,6 +331,103 @@ def loki_yaml(
         metadata={
             "__".join(context.asset_key.path): MetadataValue.path(loki_yaml_path),
             "loki_yaml": MetadataValue.md(f"```yaml\n{loki_dict_yaml}\n```"),
+        },
+    )
+
+
+@asset(
+    **ASSET_HEADER,
+    ins={
+        "CONFIG": AssetIn(
+            AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
+        ),
+    },
+    description=textwrap.dedent(
+        """
+        Verify that Loki is up and running.
+
+        Official Resources:
+        - https://prometheus.io/docs/prometheus/latest/configuration/configuration/
+        
+        File Based Service-Discovery:
+        - https://www.compilenrun.com/docs/observability/prometheus/prometheus-fundamentals/prometheus-configuration/#using-file-based-service-discovery
+        """
+    )
+)
+def prometheus_yaml(
+        context: AssetExecutionContext,
+        CONFIG: Config,  # pylint: disable=redefined-outer-name
+) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
+    env: Dict = CONFIG.env
+
+    prometheus_dict = {
+        "global": {
+            # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+            "scrape_interval": "15s",
+            # Evaluate rules every 15 seconds. The default is every 1 minute.
+            "evaluation_interval": "15s",
+        },
+        # Alertmanager configuration
+        # "alerting": {
+        #     "alertmanagers": [],
+        # },
+        "scrape_configs": [
+            # {
+            #     "job_name": "prometheus",
+            #     "static_configs": [
+            #         {
+            #             "targets": [
+            #                 # f"prometheus:{CONFIG.prometheus_port_container}",
+            #                 f"localhost:{CONFIG.prometheus_port_host}",
+            #             ],
+            #         }
+            #     ],
+            # },
+            {
+                # ready made for
+                # https://prometheus.io/docs/guides/node-exporter/
+                # https://github.com/prometheus/node_exporter?tab=readme-ov-file
+                # https://grafana.com/grafana/dashboards/1860-node-exporter-full/
+                # - requires job_name = "node"
+                # ‘–collector.systemd –collector.processes’
+                "job_name": "node",
+                "static_configs": [
+                    {
+                        # Todo
+                        #  - [ ] File-based service discovery for dynamic targets.
+                        "targets": [
+                            # prometheus because
+                            # 9100 is node exporter default port
+                            "localhost:9100",
+                        ]
+                    },
+                ],
+            },
+        ],
+    }
+
+    prometheus_dict_yaml = yaml.dump(prometheus_dict)
+
+    prometheus_yaml_path = pathlib.Path(
+        env["DOT_LANDSCAPES"],
+        env.get("LANDSCAPE", "default"),
+        f"{dist.name}",
+        "prometheus",
+        "prometheus.yaml",
+    ).expanduser()
+
+    prometheus_yaml_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(prometheus_yaml_path, "w") as fw:
+        fw.write(prometheus_dict_yaml)
+
+    yield Output(prometheus_yaml_path)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.path(prometheus_yaml_path),
+            "prometheus_yaml": MetadataValue.md(f"```yaml\n{prometheus_dict_yaml}\n```"),
         },
     )
 
@@ -466,10 +578,10 @@ def data_sources_grafana(
                 "isDefault": True,
                 "version": 1,
                 "editable": False,
-                "jsonData": {
-                    "timeout": 60,
-                    "maxLines": 1000,
-                },
+                # "jsonData": {
+                #     "timeout": 60,
+                #     "maxLines": 1000,
+                # },
             },
             # Prometheus
             {
@@ -482,10 +594,10 @@ def data_sources_grafana(
                 "isDefault": False,
                 "version": 1,
                 "editable": False,
-                "jsonData": {
-                    "timeout": 60,
-                    "maxLines": 1000,
-                },
+                # "jsonData": {
+                #     "timeout": 60,
+                #     "maxLines": 1000,
+                # },
             },
             # Mimir
             # {
@@ -861,6 +973,9 @@ def compose_grafana(
         # "mimir_yaml": AssetIn(
         #     AssetKey([*ASSET_HEADER["key_prefix"], "mimir_yaml"]),
         # ),
+        "prometheus_yaml": AssetIn(
+            AssetKey([*ASSET_HEADER["key_prefix"], "prometheus_yaml"]),
+        ),
     },
 )
 def compose_prometheus(
@@ -868,6 +983,7 @@ def compose_prometheus(
         CONFIG: Config,  # pylint: disable=redefined-outer-name
         compose_networks: Dict,  # pylint: disable=redefined-outer-name
         # mimir_yaml: pathlib.Path,  # pylint: disable=redefined-outer-name
+        prometheus_yaml: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[Dict] | AssetMaterialization, None, None]:
     """ """
 
@@ -891,6 +1007,7 @@ def compose_prometheus(
     volumes_dict = {
         "volumes": [
             # f"{mimir_yaml.as_posix()}:/etc/mimir/config.yaml:rw",
+            f"{prometheus_yaml.as_posix()}:/etc/prometheus/prometheus.yaml:ro",
             # f"{grafana_ini.as_posix()}:/etc/grafana/grafana.ini:ro",
             # f"{data_sources_loki.as_posix()}:/etc/grafana/provisioning/datasources/loki.yaml:ro",
         ]
@@ -936,9 +1053,11 @@ def compose_prometheus(
                 "domainname": config_engine.openstudiolandscapes__domain_lan,
                 "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS.value,
                 "image": CONFIG.prometheus_image,
-                # "command": [
-                #     "--config.file=/etc/mimir/config.yaml",
-                # ],
+                "command": [
+                    # "--config.file=/etc/mimir/config.yaml",
+                    "--web.enable-remote-write-receiver",
+                    "--config.file=/etc/prometheus/prometheus.yaml",
+                ],
                 **copy.deepcopy(network_dict),
                 **copy.deepcopy(ports_dict),
                 **copy.deepcopy(volumes_dict),
