@@ -644,6 +644,117 @@ def data_sources_grafana(
     )
 
 
+# Todo
+# @asset(
+#     **ASSET_HEADER,
+#     ins={
+#         "CONFIG": AssetIn(
+#             AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
+#         ),
+#     },
+#     description=textwrap.dedent(
+#         """
+#         - [](https://grafana.com/tutorials/provision-dashboards-and-data-sources/)
+#         """
+#     )
+# )
+# def dashboards_grafana(
+#         context: AssetExecutionContext,
+#         CONFIG: Config,  # pylint: disable=redefined-outer-name
+# ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
+#     env: Dict = CONFIG.env
+#
+#     # config_engine: ConfigEngine = CONFIG.config_engine
+#
+#     dash = "loki"
+#     service_name_prometheus = "prometheus"
+#     # container_name_loki, host_name_loki = get_docker_compose_names(
+#     #     context=context,
+#     #     service_name=service_name_loki,
+#     #     landscape_id=env.get("LANDSCAPE", "default"),
+#     #     domain_lan=config_engine.openstudiolandscapes__domain_lan,
+#     # )
+#
+#     datasources_loki_dict = {
+#         "apiVersion": 1,
+#         "datasources": [
+#             # Loki
+#             {
+#                 "name": "Loki",
+#                 "type": "loki",
+#                 "access": "proxy",
+#                 "orgId": 1,
+#                 "url": f"http://{service_name_loki}:{CONFIG.grafana_loki_port_container}",
+#                 "basicAuth": False,
+#                 "isDefault": True,
+#                 "version": 1,
+#                 "editable": False,
+#                 # "jsonData": {
+#                 #     "timeout": 60,
+#                 #     "maxLines": 1000,
+#                 # },
+#             },
+#             # Prometheus
+#             {
+#                 "name": "Prometheus",
+#                 "type": "prometheus",
+#                 "access": "proxy",
+#                 "orgId": 1,
+#                 "url": f"http://{service_name_prometheus}:{CONFIG.prometheus_port_container}",
+#                 "basicAuth": False,
+#                 "isDefault": False,
+#                 "version": 1,
+#                 "editable": False,
+#                 # "jsonData": {
+#                 #     "timeout": 60,
+#                 #     "maxLines": 1000,
+#                 # },
+#             },
+#             # Mimir
+#             # {
+#             #     "name": "Loki",
+#             #     "type": "loki",
+#             #     "access": "proxy",
+#             #     "orgId": 1,
+#             #     "url": f"http://{service_name_loki}:{CONFIG.grafana_loki_port_container}",
+#             #     "basicAuth": False,
+#             #     "isDefault": True,
+#             #     "version": 1,
+#             #     "editable": False,
+#             #     "jsonData": {
+#             #         "timeout": 60,
+#             #         "maxLines": 1000,
+#             #     },
+#             # },
+#         ],
+#     }
+#
+#     datasources_grafana_dict_yaml = yaml.dump(datasources_loki_dict)
+#
+#     loki_yaml_path = pathlib.Path(
+#         env["DOT_LANDSCAPES"],
+#         env.get("LANDSCAPE", "default"),
+#         f"{dist.name}",
+#         "datasources",
+#         "datasources.yaml",
+#     ).expanduser()
+#
+#     loki_yaml_path.parent.mkdir(parents=True, exist_ok=True)
+#
+#     with open(loki_yaml_path, "w") as fw:
+#         fw.write(datasources_grafana_dict_yaml)
+#
+#     yield Output(loki_yaml_path)
+#
+#     yield AssetMaterialization(
+#         asset_key=context.asset_key,
+#         metadata={
+#             "__".join(context.asset_key.path): MetadataValue.path(loki_yaml_path),
+#             "datasources_grafana_dict_yaml": MetadataValue.md(f"```yaml\n{datasources_grafana_dict_yaml}\n```"),
+#         },
+#     )
+
+
 # @asset(
 #     **ASSET_HEADER,
 #     ins={
