@@ -977,6 +977,16 @@ def compose_grafana(
             AssetKey([*ASSET_HEADER["key_prefix"], "prometheus_yaml"]),
         ),
     },
+    description=textwrap.dedent(
+        """
+        Prometheus with Alloy (which replaces deprectated Promtail),
+        needs to be launched with `--web.enable-remote-write-receiver`.
+        
+        The reason for this is with Promtail, Prometheus scraped (pull)
+        the metrics. In contrast, with Alloy, Prometheus receives (push)
+        the metrics from Alloy.
+        """
+    )
 )
 def compose_prometheus(
         context: AssetExecutionContext,

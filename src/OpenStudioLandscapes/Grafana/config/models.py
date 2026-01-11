@@ -45,42 +45,10 @@ class GrafanaAlloyConfigs(enum.StrEnum):
     # These are pretty much testing configs.
     # I'm still trying to figure out how Alloy works.
 
-    ALLOY_TEST_CONFIG = textwrap.dedent(
-        """
-        logging {
-          level  = "%s"
-          format = "logfmt"
-        }
-        
-        # Components:
-        # - https://grafana.com/docs/alloy/latest/reference/components/
-        local.file_match "system" {
-          path_targets = [
-            {
-              __address__ = "localhost",
-              __path__ = "/var/log/*.log",
-              job = "varlogs",
-            }
-          ]
-        }
-        
-        loki.source.file "system" {
-          targets = local.file_match.system.targets
-          forward_to = [
-            loki.write.default.receiver
-          ]
-          legacy_positions_file = "/tmp/positions.yaml"
-        }
-        
-        loki.write "default" = {
-          endpoint {
-            url = "http://loki:3100/loki/api/v1/push"
-          }
-          external_labels = {}
-        }
-        
-        """ % GrafanaLogLevel.INFO.value
-    )
+    # Setting up Alloy can be pretty complicated. However,
+    # Alloy offers a visualization tool for these configs.
+    # With a working config in place, visit:
+    # http://<alloy_host>:12345/graph
 
     # https://github.com/grafana/alloy-scenarios/blob/main/docker-monitoring/config.alloy
     ALLOY_DEMO_CONFIG = textwrap.dedent(
@@ -154,6 +122,143 @@ class GrafanaAlloyConfigs(enum.StrEnum):
           targets    = discovery.docker.linux.targets
           relabel_rules = discovery.relabel.logs_integrations_docker.rules
           forward_to = [loki.write.local.receiver]
+        }
+        
+        loki.write "local" {
+          endpoint {
+            url = "http://loki:3100/loki/api/v1/push"
+          }
+        }
+        """
+    )
+
+    ALLOY_TEST_CONFIG_1 = textwrap.dedent(
+        """
+        logging {
+          level  = "%s"
+          format = "logfmt"
+        }
+        
+        # Components:
+        # - https://grafana.com/docs/alloy/latest/reference/components/
+        local.file_match "system" {
+          path_targets = [
+            {
+              __address__ = "localhost",
+              __path__ = "/var/log/*.log",
+              job = "varlogs",
+            }
+          ]
+        }
+        
+        loki.source.file "system" {
+          targets = local.file_match.system.targets
+          forward_to = [
+            loki.write.default.receiver,
+          ]
+          legacy_positions_file = "/tmp/positions.yaml"
+        }
+        
+        loki.write "default" = {
+          endpoint {
+            url = "http://loki:3100/loki/api/v1/push"
+          }
+          external_labels = {}
+        }
+        
+        """ % GrafanaLogLevel.INFO.value
+    )
+
+    # https://github.com/grafana/alloy-scenarios/blob/main/docker-monitoring/config.alloy
+    ALLOY_TEST_CONFIG_2 = textwrap.dedent(
+        """
+        // ###############################
+        // #### Metrics Configuration ####
+        // ###############################
+        
+        // Host Cadvisor on the Docker socket to expose container metrics.
+        prometheus.exporter.cadvisor "example" {
+          docker_only = true
+        }
+        
+        discovery.relabel "example" {
+          targets = prometheus.exporter.cadvisor.example.targets
+        
+          rule {
+            target_label = "job"
+            replacement  = "integrations/docker"
+          }
+        
+          rule {
+            target_label = "instance"
+            replacement  = constants.hostname
+          }
+        }
+        
+        // Configure a prometheus.scrape component to collect cadvisor metrics.
+        prometheus.scrape "scraper" {
+          targets    = discovery.relabel.example.output
+          forward_to = [ prometheus.remote_write.demo.receiver ]
+        
+          scrape_interval = "10s"
+        }
+        
+        // Configure a prometheus.remote_write component to send metrics to a Prometheus server.
+        prometheus.remote_write "demo" {
+          endpoint {
+            url = "http://prometheus:9090/api/v1/write"
+          }
+        }
+        
+        // ###############################
+        // #### Logging Configuration ####
+        // ###############################
+        
+        // Discover Docker containers and extract metadata.
+        discovery.docker "linux" {
+          host = "unix:///var/run/docker.sock"
+        }
+        
+        // Define a relabeling rule to create a service name from the container name.
+        discovery.relabel "logs_integrations_docker" {
+          targets = []
+        
+          rule {
+            source_labels = ["__meta_docker_container_name"]
+            regex = "/(.*)"
+            target_label = "container_name"
+          }
+      
+          rule {
+            target_label = "instance"
+            replacement  = constants.hostname
+          }
+        }
+        
+        // Configure a loki.source.docker component to collect logs from Docker containers.
+        loki.source.docker "default" {
+          host       = "unix:///var/run/docker.sock"
+          targets    = discovery.docker.linux.targets
+          relabel_rules = discovery.relabel.logs_integrations_docker.rules
+          forward_to = [loki.write.local.receiver]
+        }
+        
+        local.file_match "system" {
+          path_targets = [
+            {
+              __address__ = "localhost",
+              __path__ = "/var/log/*.log",
+              job = "varlogs",
+            },
+          ]
+        }
+        
+        loki.source.file "system" {
+          targets = local.file_match.system.targets
+          forward_to = [
+            loki.write.local.receiver,
+          ]
+          legacy_positions_file = "/tmp/positions.yaml"
         }
         
         loki.write "local" {
@@ -260,7 +365,7 @@ class Config(FeatureBaseModel):
     # )
 
     alloy_config: GrafanaAlloyConfigs = Field(
-        default=GrafanaAlloyConfigs.ALLOY_DEMO_CONFIG,
+        default=GrafanaAlloyConfigs.ALLOY_TEST_CONFIG_2,
     )
 
 
