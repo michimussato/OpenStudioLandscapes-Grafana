@@ -308,7 +308,7 @@ class GrafanaAlloyConfigs(enum.StrEnum):
     # - https://grafana.com/grafana/dashboards/1860-node-exporter-full/
     #   ID: 1860
     # - https://grafana.com/grafana/dashboards/19908-docker-container-monitoring-with-prometheus-and-cadvisor/
-    #   ID: v
+    #   ID: 19908
     ALLOY_TEST_CONFIG_3 = textwrap.dedent(
         """
         // ###############################
