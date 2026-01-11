@@ -512,7 +512,11 @@ class GrafanaAlloyConfigs(enum.StrEnum):
         }
         
         // Enable live debugging features (empty config means use defaults)
-        livedebugging{}
+        // - https://grafana.com/docs/alloy/latest/reference/config-blocks/livedebugging/
+        // - https://grafana.com/docs/alloy/latest/troubleshoot/debug/
+        livedebugging {
+          enabled = false
+        }
         """
     )
 
