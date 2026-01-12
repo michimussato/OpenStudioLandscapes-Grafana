@@ -961,46 +961,6 @@ def compose_grafana(
         ]
     }
 
-    # if "networks" in compose_networks:
-    #     network_dict_loki = {"networks": list(compose_networks.get("networks", {}).keys())}
-    #     ports_dict_loki = {
-    #         "ports": [
-    #             f"{CONFIG.grafana_loki_port_host}:{CONFIG.grafana_loki_port_container}",
-    #         ]
-    #     }
-    # elif "network_mode" in compose_networks:
-    #     network_dict_loki = {"network_mode": compose_networks["network_mode"]}
-
-    # volumes_dict_loki = {
-    #     "volumes": [
-    #         f"{loki_yaml.as_posix()}:/etc/loki/local-config.yaml:ro",
-    #     ]
-    # }
-
-    # For portability, convert absolute volume paths to relative paths
-
-    # _volume_relative_loki = []
-
-    # for v in volumes_dict_loki["volumes"]:
-    #     host, container = v.split(":", maxsplit=1)
-    #
-    #     volume_dir_host_rel_path = get_relative_path_via_common_root(
-    #         context=context,
-    #         path_src=CONFIG.docker_compose_expanded,
-    #         path_dst=pathlib.Path(host),
-    #         path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
-    #     )
-    #
-    #     _volume_relative_loki.append(
-    #         f"{volume_dir_host_rel_path.as_posix()}:{container}",
-    #     )
-    #
-    # volumes_dict_loki = {
-    #     "volumes": [
-    #         *_volume_relative_loki,
-    #     ]
-    # }
-
     service_name = "grafana"
     container_name, host_name = get_docker_compose_names(
         context=context,
@@ -1009,17 +969,27 @@ def compose_grafana(
         domain_lan=config_engine.openstudiolandscapes__domain_lan,
     )
 
-    # service_name_loki = "loki"
-    # container_name_loki, host_name_loki = get_docker_compose_names(
-    #     context=context,
-    #     service_name=service_name_loki,
-    #     landscape_id=env.get("LANDSCAPE", "default"),
-    #     domain_lan=config_engine.openstudiolandscapes__domain_lan,
-    # )
-    # container_name = "--".join([service_name, env.get("LANDSCAPE", "default")])
-    # host_name = ".".join(
-    #     [service_name, env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"]]
-    # )
+    # Todo
+    #  - [ ] https://github.com/michimussato/OpenStudioLandscapes/issues/63
+    # service: DockerComposeServiceDefinition = {
+    #     "container_name": container_name,
+    #     # "hostname": host_name,
+    #     "domainname": config_engine.openstudiolandscapes__domain_lan,
+    #     "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS,
+    #     "image": f"{CONFIG.grafana_image}:{CONFIG.grafana_image_version}",
+    #
+    #     "depends_on": {
+    #         "prometheus": {
+    #             "condition": DockerComposePolicies.DEPENDENCY_ON_POLICY.SERVICE_STARTED,
+    #         },
+    #         "loki": {
+    #             "condition": DockerComposePolicies.DEPENDENCY_ON_POLICY.SERVICE_STARTED,
+    #         },
+    #     },
+    #     **copy.deepcopy(network_dict),
+    #     **copy.deepcopy(ports_dict),
+    #     **copy.deepcopy(volumes_dict),
+    # }
 
     docker_dict = {
         "services": {
@@ -1038,25 +1008,10 @@ def compose_grafana(
                         "condition": "service_started",
                     },
                 },
-                # Todo:
-                #  - [ ] depends_on
                 **copy.deepcopy(network_dict),
                 **copy.deepcopy(ports_dict),
                 **copy.deepcopy(volumes_dict),
             },
-            # service_name_loki: {
-            #     "container_name": container_name_loki,
-            #     # "hostname": host_name_loki,
-            #     "domainname": config_engine.openstudiolandscapes__domain_lan,
-            #     "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS.value,
-            #     "image": CONFIG.grafana_loki_image,
-            #     "command": [
-            #         "-config.file=/etc/loki/local-config.yaml"
-            #     ],
-            #     **copy.deepcopy(network_dict_loki),
-            #     **copy.deepcopy(ports_dict_loki),
-            #     **copy.deepcopy(volumes_dict_loki),
-            # },
         },
     }
 
