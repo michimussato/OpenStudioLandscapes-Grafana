@@ -1,6 +1,6 @@
 import enum
 import textwrap
-from typing import List
+from typing import List, Dict, Union
 
 from dagster import get_dagster_logger
 from pydantic import (
@@ -528,6 +528,20 @@ class Config(FeatureBaseModel):
     group_name: str = constants.ASSET_HEADER["group_name"]
 
     key_prefixes: List[str] = constants.ASSET_HEADER["key_prefix"]
+
+    grafana_dashboards: Dict[str, Dict[str, Union[str, int, None]]] = Field(
+        default={
+            "Node Exporter Full": {
+                "url": "https://grafana.com/api/dashboards/1860/revisions/42/download",
+                "id": 1860,
+            },
+            "cAdvisor Docker Insights": {
+                "url": "https://grafana.com/api/dashboards/19908/revisions/1/download",
+                "id": 19908,
+            },
+        },
+        frozen=False,  # outfile will be set dynamically
+    )
 
     grafana_admin_user: str = Field(
         default="openstudiolandscapes",

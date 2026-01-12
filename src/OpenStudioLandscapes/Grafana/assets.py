@@ -1,10 +1,12 @@
 import copy
 import enum
+import json
 import os
 import pathlib
 import textwrap
 import urllib.parse
-from typing import Dict, Generator, List, Union
+from pathlib import Path
+from typing import Dict, Generator, List, Union, Any
 
 import yaml
 from dagster import (
@@ -599,6 +601,7 @@ def data_sources_grafana(
                 #     "maxLines": 1000,
                 # },
             },
+            # Todo: maybe someday
             # Mimir
             # {
             #     "name": "Loki",
@@ -645,114 +648,110 @@ def data_sources_grafana(
 
 
 # Todo
-# @asset(
-#     **ASSET_HEADER,
-#     ins={
-#         "CONFIG": AssetIn(
-#             AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
-#         ),
-#     },
-#     description=textwrap.dedent(
-#         """
-#         - [](https://grafana.com/tutorials/provision-dashboards-and-data-sources/)
-#         """
-#     )
-# )
-# def dashboards_grafana(
-#         context: AssetExecutionContext,
-#         CONFIG: Config,  # pylint: disable=redefined-outer-name
-# ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
-#     env: Dict = CONFIG.env
-#
-#     # config_engine: ConfigEngine = CONFIG.config_engine
-#
-#     dash = "loki"
-#     service_name_prometheus = "prometheus"
-#     # container_name_loki, host_name_loki = get_docker_compose_names(
-#     #     context=context,
-#     #     service_name=service_name_loki,
-#     #     landscape_id=env.get("LANDSCAPE", "default"),
-#     #     domain_lan=config_engine.openstudiolandscapes__domain_lan,
-#     # )
-#
-#     datasources_loki_dict = {
-#         "apiVersion": 1,
-#         "datasources": [
-#             # Loki
-#             {
-#                 "name": "Loki",
-#                 "type": "loki",
-#                 "access": "proxy",
-#                 "orgId": 1,
-#                 "url": f"http://{service_name_loki}:{CONFIG.grafana_loki_port_container}",
-#                 "basicAuth": False,
-#                 "isDefault": True,
-#                 "version": 1,
-#                 "editable": False,
-#                 # "jsonData": {
-#                 #     "timeout": 60,
-#                 #     "maxLines": 1000,
-#                 # },
-#             },
-#             # Prometheus
-#             {
-#                 "name": "Prometheus",
-#                 "type": "prometheus",
-#                 "access": "proxy",
-#                 "orgId": 1,
-#                 "url": f"http://{service_name_prometheus}:{CONFIG.prometheus_port_container}",
-#                 "basicAuth": False,
-#                 "isDefault": False,
-#                 "version": 1,
-#                 "editable": False,
-#                 # "jsonData": {
-#                 #     "timeout": 60,
-#                 #     "maxLines": 1000,
-#                 # },
-#             },
-#             # Mimir
-#             # {
-#             #     "name": "Loki",
-#             #     "type": "loki",
-#             #     "access": "proxy",
-#             #     "orgId": 1,
-#             #     "url": f"http://{service_name_loki}:{CONFIG.grafana_loki_port_container}",
-#             #     "basicAuth": False,
-#             #     "isDefault": True,
-#             #     "version": 1,
-#             #     "editable": False,
-#             #     "jsonData": {
-#             #         "timeout": 60,
-#             #         "maxLines": 1000,
-#             #     },
-#             # },
-#         ],
-#     }
-#
-#     datasources_grafana_dict_yaml = yaml.dump(datasources_loki_dict)
-#
-#     loki_yaml_path = pathlib.Path(
-#         env["DOT_LANDSCAPES"],
-#         env.get("LANDSCAPE", "default"),
-#         f"{dist.name}",
-#         "datasources",
-#         "datasources.yaml",
-#     ).expanduser()
-#
-#     loki_yaml_path.parent.mkdir(parents=True, exist_ok=True)
-#
-#     with open(loki_yaml_path, "w") as fw:
-#         fw.write(datasources_grafana_dict_yaml)
-#
-#     yield Output(loki_yaml_path)
-#
-#     yield AssetMaterialization(
-#         asset_key=context.asset_key,
-#         metadata={
-#             "__".join(context.asset_key.path): MetadataValue.path(loki_yaml_path),
-#             "datasources_grafana_dict_yaml": MetadataValue.md(f"```yaml\n{datasources_grafana_dict_yaml}\n```"),
-#         },
-#     )
+@asset(
+    **ASSET_HEADER,
+    ins={
+        "CONFIG": AssetIn(
+            AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
+        ),
+    },
+    description=textwrap.dedent(
+        """
+        - [](https://grafana.com/tutorials/provision-dashboards-and-data-sources/)
+        """
+    )
+)
+def dashboards_grafana(
+        context: AssetExecutionContext,
+        CONFIG: Config,  # pylint: disable=redefined-outer-name
+) -> Generator[Output[dict[str, Path | dict[
+    str, int | list[dict[str, str | bool | int | dict[str, str | bool]]]]]] | AssetMaterialization | Any, None, None]:
+    env: Dict = CONFIG.env
+
+    # config_engine: ConfigEngine = CONFIG.config_engine
+
+    # dashboards = {
+    #     "Node Exporter Full": {
+    #         "url": "https://grafana.com/api/dashboards/1860/revisions/42/download",
+    #         "id": 1860,
+    #         "outfile": None,
+    #     },
+    #     "cAdvisor Docker Insights": {
+    #         "url": "https://grafana.com/api/dashboards/19908/revisions/1/download",
+    #         "id": 19908,
+    #         "outfile": None,
+    #     },
+    # }
+
+    dashboards_repo = pathlib.Path(
+        env["DOT_LANDSCAPES"],
+        env.get("LANDSCAPE", "default"),
+        f"{dist.name}",
+        "dashboards_repo"
+    ).expanduser()
+
+    dashboards_repo.mkdir(parents=True, exist_ok=True)
+
+    dashboards = copy.deepcopy(CONFIG.grafana_dashboards)
+
+    for dashboard, value in dashboards.items():
+        # results in "download", hence: rename file after download
+        file_path = download_file(
+            url=value["url"],
+            dest_folder=dashboards_repo,
+        )
+        file_path.rename(file_path.parent / f"{value['id']}.json")
+        value["outfile"] = file_path
+
+    dashboards_dict = {
+        "apiVersion": 1,
+        "providers": [
+            {
+                "name": "Dashboard Provider",
+                "type": "file",
+                "disableDeletion": True,
+                "orgId": 1,
+                "allowUiUpdates": False,
+                "options": {
+                    "path": "/etc/grafana/provisioning/dashboards_repo",
+                    "foldersFromFilesStructure": True,
+                },
+            },
+        ],
+    }
+
+    dashboards_dict_yaml = yaml.dump(dashboards_dict)
+
+    dashboards_yaml_path = pathlib.Path(
+        env["DOT_LANDSCAPES"],
+        env.get("LANDSCAPE", "default"),
+        f"{dist.name}",
+        "dashboards",
+        "dashboards.yaml",
+    ).expanduser()
+
+    dashboards_yaml_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(dashboards_yaml_path, "w") as fw:
+        fw.write(dashboards_dict_yaml)
+
+    ret = {
+        "dashboards_repo": dashboards_repo,
+        "dashboards_yaml_path": dashboards_yaml_path,
+    }
+
+    yield Output(ret)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.md(f"```json\n{json.dumps(ret, indent=2, default=str)}\n```"),
+            "dashboards_repo": MetadataValue.path(dashboards_repo),
+            "dashboards_yaml_path": MetadataValue.path(dashboards_yaml_path),
+            "dashboards_dict_yaml": MetadataValue.md(f"```yaml\n{dashboards_dict_yaml}\n```"),
+            "dashboards": MetadataValue.md(f"```json\n{json.dumps(dashboards, indent=2, default=str)}\n```"),
+        },
+    )
 
 
 # @asset(
@@ -882,6 +881,9 @@ def compose_networks(
         "data_sources_grafana": AssetIn(
             AssetKey([*ASSET_HEADER["key_prefix"], "data_sources_grafana"]),
         ),
+        "dashboards_grafana": AssetIn(
+            AssetKey([*ASSET_HEADER["key_prefix"], "dashboards_grafana"]),
+        ),
     },
 )
 def compose_grafana(
@@ -890,6 +892,7 @@ def compose_grafana(
         compose_networks: Dict,  # pylint: disable=redefined-outer-name
         grafana_ini: pathlib.Path,  # pylint: disable=redefined-outer-name
         data_sources_grafana: pathlib.Path,  # pylint: disable=redefined-outer-name
+        dashboards_grafana: Dict[str, pathlib.Path],  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[Dict] | AssetMaterialization, None, None]:
     """ """
 
@@ -933,7 +936,9 @@ def compose_grafana(
         "volumes": [
             f"{var_lib.as_posix()}:/var/lib/grafana:rw",
             f"{grafana_ini.as_posix()}:/etc/grafana/grafana.ini:ro",
-            f"{data_sources_grafana.as_posix()}:/etc/grafana/provisioning/datasources/loki.yaml:ro",
+            f"{data_sources_grafana.as_posix()}:/etc/grafana/provisioning/datasources/{data_sources_grafana.name}:ro",
+            f"{dashboards_grafana['dashboards_yaml_path'].as_posix()}:/etc/grafana/provisioning/dashboards/{dashboards_grafana['dashboards_yaml_path'].name}:ro",
+            f"{dashboards_grafana['dashboards_repo'].as_posix()}:/etc/grafana/provisioning/{dashboards_grafana['dashboards_repo'].name}:ro",
         ]
     }
 
