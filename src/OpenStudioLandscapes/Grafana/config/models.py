@@ -534,10 +534,21 @@ class Config(FeatureBaseModel):
             "Node Exporter Full": {
                 "url": "https://grafana.com/api/dashboards/1860/revisions/42/download",
                 "id": 1860,
+                # "requires_extra_variables": [],
             },
             "cAdvisor Docker Insights": {
                 "url": "https://grafana.com/api/dashboards/19908/revisions/1/download",
                 "id": 19908,
+                # "requires_variables": [
+                #     {
+                #         "requires_extra_variables": "Data source",
+                #         "name": "DS_PROMETHEUS",
+                #         "label": "Datasource",
+                #         "variable_options": {
+                #             "type": "prometheus",
+                #         },
+                #     },
+                # ],
             },
         },
         frozen=False,  # outfile will be set dynamically

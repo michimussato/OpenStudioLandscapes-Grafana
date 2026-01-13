@@ -702,6 +702,36 @@ def dashboards_grafana(
         )
         file_path.rename(file_path.parent / f"{value['id']}.json")
         value["outfile"] = file_path
+        # with open(file_path, "r") as fr:
+        #     dashboard_dict = json.load(fr)
+        #
+        # if "__inputs" in dashboard_dict:
+        #     if not bool(dashboard_dict["__inputs"]):
+        #         dashboard_dict["__inputs"] = {}
+
+    """
+    After add Variable DS_PROMETHEUS to 19908,
+    the diff looks like this:
+      "templating": {
+        - "list": []
+        + "list": [
+        +   {
+        +     "current": {
+        +       "text": "Prometheus",
+        +       "value": "PBFA97CFB590B2093"
+        +     },
+        +     "description": "",
+        +     "label": "Datasource",
+        +     "name": "DS_PROMETHEUS",
+        +     "options": [],
+        +     "query": "prometheus",
+        +     "refresh": 1,
+        +     "regex": "",
+        +     "type": "datasource"
+        +   }
+        + ]
+      },
+    """
 
     dashboards_dict = {
         "apiVersion": 1,
@@ -711,7 +741,7 @@ def dashboards_grafana(
                 "type": "file",
                 "disableDeletion": True,
                 "orgId": 1,
-                "allowUiUpdates": False,
+                "allowUiUpdates": True,
                 "options": {
                     "path": "/etc/grafana/provisioning/dashboards_repo",
                     "foldersFromFilesStructure": True,
