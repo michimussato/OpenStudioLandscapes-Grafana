@@ -74,7 +74,7 @@ A local config store location will be created if it doesn't exist, together with
 > [!TIP]
 > 
 > To specify a config store location different than
-> the default, you can do so be setting the environment variable
+> the default, you can do so by setting the environment variable
 > `OPENSTUDIOLANDSCAPES__CONFIGSTORE_ROOT`:
 > 
 > ```shell
@@ -296,6 +296,26 @@ feature_name: OpenStudioLandscapes-Grafana
 
 
 # ==================
+# grafana_dashboards
+# ------------------
+#
+# Type: typing.Dict[str, typing.Dict[str, typing.Union[str, int, NoneType]]]
+# Description:
+#     None
+# Required:
+#     False
+# Examples:
+#     None
+grafana_dashboards:
+  Node Exporter Full:
+    id: 1860
+    url: https://grafana.com/api/dashboards/1860/revisions/42/download
+  cAdvisor Docker Insights:
+    id: 19908
+    url: https://grafana.com/api/dashboards/19908/revisions/1/download
+
+
+# ==================
 # grafana_admin_user
 # ------------------
 #
@@ -351,6 +371,76 @@ grafana_port_container: 3000
 grafana_port_host: 3030
 
 
+# ===========================
+# grafana_loki_port_container
+# ---------------------------
+#
+# Type: <class 'int'>
+# Description:
+#     The Grafana Loki container port.
+# Required:
+#     False
+# Examples:
+#     None
+grafana_loki_port_container: 3100
+
+
+# ======================
+# grafana_loki_port_host
+# ----------------------
+#
+# Type: <class 'int'>
+# Description:
+#     The Grafana Loki host port.
+# Required:
+#     False
+# Examples:
+#     None
+grafana_loki_port_host: 3100
+
+
+# =====================
+# grafana_loki_loglevel
+# ---------------------
+#
+# Type: <enum 'GrafanaLogLevel'>
+# Description:
+#     The Grafana Loki loglevel.
+# Required:
+#     False
+# Examples:
+#     ['DEBUG', 'INFO', 'main', 'main_ubuntu', 'version_11_6', 'version_11_6_ubuntu']
+grafana_loki_loglevel: info
+
+
+# =========================
+# prometheus_port_container
+# -------------------------
+#
+# Type: <class 'int'>
+# Description:
+#     The Prometheus container port.
+# Required:
+#     False
+# Examples:
+#     None
+prometheus_port_container: 9090
+
+
+# ====================
+# prometheus_port_host
+# --------------------
+#
+# Type: <class 'int'>
+# Description:
+#     The Prometheus host port.
+# Required:
+#     False
+# Examples:
+#     None
+prometheus_port_host: 9090
+
+
 # =============
 # grafana_image
 # -------------
@@ -377,6 +467,114 @@ grafana_image: docker.io/grafana/grafana
 # Examples:
 #     ['latest', 'latest_ubuntu', 'main', 'main_ubuntu', 'version_11_6', 'version_11_6_ubuntu']
 grafana_image_version: latest-ubuntu
+
+
+# ==================
+# grafana_loki_image
+# ------------------
+#
+# Type: <class 'str'>
+# Description:
+#     None
+# Required:
+#     False
+# Examples:
+#     None
+grafana_loki_image: docker.io/grafana/loki:latest
+
+
+# ================
+# prometheus_image
+# ----------------
+#
+# Type: <class 'str'>
+# Description:
+#     None
+# Required:
+#     False
+# Examples:
+#     None
+prometheus_image: docker.io/prom/prometheus:main
+
+
+# ============
+# alloy_config
+# ------------
+#
+# Type: <enum 'GrafanaAlloyConfigs'>
+# Description:
+#     None
+# Required:
+#     False
+# Examples:
+#     None
+alloy_config: "\n// ###############################\n// #### Metrics Configuration\
+  \ ####\n// ###############################\n\n// Host Cadvisor on the Docker socket\
+  \ to expose container metrics.\nprometheus.exporter.cadvisor \"example\" {\n  docker_only\
+  \ = true\n}\n\ndiscovery.relabel \"example\" {\n  targets = prometheus.exporter.cadvisor.example.targets\n\
+  \n  rule {\n    target_label = \"job\"\n    replacement  = \"integrations/docker\"\
+  \n  }\n\n  rule {\n    target_label = \"instance\"\n    replacement  = constants.hostname\n\
+  \  }\n}\n\n// Configure a prometheus.scrape component to collect cadvisor metrics.\n\
+  prometheus.scrape \"scraper\" {\n  targets    = discovery.relabel.example.output\n\
+  \  forward_to = [ prometheus.remote_write.demo.receiver ]\n\n  scrape_interval =\
+  \ \"10s\"\n}\n\n// Configure a prometheus.remote_write component to send metrics\
+  \ to a Prometheus server.\nprometheus.remote_write \"demo\" {\n  endpoint {\n  \
+  \  url = \"http://prometheus:9090/api/v1/write\"\n  }\n}\n\ndiscovery.relabel \"\
+  metrics\" {\n  targets = prometheus.exporter.unix.metrics.targets\n  rule {\n  \
+  \  target_label = \"instance\"\n    replacement = constants.hostname\n  }\n  rule\
+  \ {\n    target_label = \"job\"\n    replacement = string.format(\"%s-metrics\"\
+  , constants.hostname)\n  }\n}\n\nprometheus.exporter.unix \"metrics\" {\n  disable_collectors\
+  \ = [\"ipvs\", \"btrfs\", \"infiniband\", \"xfs\", \"zfs\"]\n  enable_collectors\
+  \ = [\"meminfo\"]\n  filesystem {\n    fs_types_exclude = \"^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|tmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$\"\
+  \n    mount_points_exclude = \"^/(dev|proc|run/credentials/.+|sys|var/lib/docker/.+)($|/)\"\
+  \n    mount_timeout = \"5s\"\n  }\n  netclass {\n    ignored_devices = \"^(veth.*|cali.*|[a-f0-9]{15})$\"\
+  \n  }\n  netdev {\n    device_exclude = \"^(veth.*|cali.*|[a-f0-9]{15})$\"\n  }\n\
+  }\n\nprometheus.scrape \"metrics\" {\n  scrape_interval = \"15s\"\n  targets = discovery.relabel.metrics.output\n\
+  \  forward_to = [prometheus.remote_write.demo.receiver]\n}\n\n// ###############################\n\
+  // #### Logging Configuration ####\n// ###############################\n\n// Discover\
+  \ Docker containers and extract metadata.\ndiscovery.docker \"linux\" {\n  host\
+  \ = \"unix:///var/run/docker.sock\"\n}\n\n// Define a relabeling rule to create\
+  \ a service name from the container name.\ndiscovery.relabel \"docker\" {\n  targets\
+  \ = []\n\n  rule {\n    source_labels = [\"__meta_docker_container_name\"]\n   \
+  \ regex = \"/(.*)\"\n    target_label = \"container_name\"\n  }\n\n  rule {\n  \
+  \  target_label = \"instance\"\n    replacement  = constants.hostname\n  }\n}\n\n\
+  // Configure a loki.source.docker component to collect logs from Docker containers.\n\
+  loki.source.docker \"docker\" {\n  host       = \"unix:///var/run/docker.sock\"\n\
+  \  targets    = discovery.docker.linux.targets\n  relabel_rules = discovery.relabel.docker.rules\n\
+  \  forward_to = [loki.write.local.receiver]\n}\n\n// // /var/logs\n// \n// local.file_match\
+  \ \"system\" {\n//   path_targets = [\n//     {\n//       __address__ = \"localhost\"\
+  ,\n//       __path__ = \"/var/log/*.log\",\n//       job = \"varlogs\",\n//    \
+  \ },\n//   ]\n// }\n// \n// loki.source.file \"system\" {\n//   targets = local.file_match.system.targets\n\
+  //   forward_to = [\n//     loki.write.local.receiver,\n//   ]\n//   legacy_positions_file\
+  \ = \"/tmp/positions.yaml\"\n// }\n\n// journal\n\n// Collect logs from systemd\
+  \ journal for node_exporter integration\nloki.source.journal \"journal\" {\n  //\
+  \ Only collect logs from the last 24 hours\n  max_age       = \"24h0m0s\"\n  //\
+  \ Apply relabeling rules to the logs\n  relabel_rules = discovery.relabel.journal.rules\n\
+  \  // Send logs to the local Loki instance\n  forward_to    = [loki.write.local.receiver]\n\
+  \  // if alloy is running in container, we \n  // need to add the following path\n\
+  \  path = \"/var/log/journal\"\n  labels = {\n    component = string.format(\"%s-journal\"\
+  , constants.hostname),\n  }\n}\n\n// Define which log files to collect for node_exporter\n\
+  local.file_match \"system\" {\n  path_targets = [{\n    // Target localhost for\
+  \ log collection\n    __address__ = \"localhost\",\n    // Collect standard system\
+  \ logs\n    __path__ = \"/var/log/{syslog,messages,*.log}\",\n    // Add instance\
+  \ label with hostname\n    instance = constants.hostname,\n    // Add job label\
+  \ for logs\n    job = string.format(\"%s-logs\", constants.hostname),\n  }]\n}\n\
+  \n// Define relabeling rules for systemd journal logs\ndiscovery.relabel \"journal\"\
+  \ {\n  targets = []\n\n  rule {\n    // Extract systemd unit information into a\
+  \ label\n    source_labels = [\"__journal__systemd_unit\"]\n    target_label  =\
+  \ \"unit\"\n  }\n\n  rule {\n    // Extract boot ID information into a label\n \
+  \   source_labels = [\"__journal__boot_id\"]\n    target_label  = \"boot_id\"\n\
+  \  }\n\n  rule {\n    // Extract transport information into a label\n    source_labels\
+  \ = [\"__journal__transport\"]\n    target_label  = \"transport\"\n  }\n\n  rule\
+  \ {\n    // Extract log priority into a level label\n    source_labels = [\"__journal_priority_keyword\"\
+  ]\n    target_label  = \"level\"\n  }\n}\n\n// Collect logs from files for node_exporter\n\
+  loki.source.file \"system\" {\n  // Use targets defined in local.file_match\n  targets\
+  \    = local.file_match.system.targets\n  // Send logs to the local Loki instance\n\
+  \  forward_to = [loki.write.local.receiver]\n}\n\nloki.write \"local\" {\n  endpoint\
+  \ {\n    url = \"http://loki:3100/loki/api/v1/push\"\n  }\n}\n\n// Enable live debugging\
+  \ features (empty config means use defaults)\n// - https://grafana.com/docs/alloy/latest/reference/config-blocks/livedebugging/\n\
+  // - https://grafana.com/docs/alloy/latest/troubleshoot/debug/\nlivedebugging {\n\
+  \  enabled = false\n}\n"
 ```
 
 
@@ -477,4 +675,4 @@ To follow up on the previous LinkedIn publications, visit:
 
 ***
 
-Last changed: **2025-12-31 12:41:50 UTC**
+Last changed: **2026-01-22 09:31:07 UTC**

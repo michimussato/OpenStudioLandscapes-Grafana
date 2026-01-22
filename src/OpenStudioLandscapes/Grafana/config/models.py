@@ -1,6 +1,6 @@
 import enum
 import textwrap
-from typing import List, Dict, Union
+from typing import Dict, List, Union
 
 from dagster import get_dagster_logger
 from pydantic import (
@@ -51,8 +51,7 @@ class GrafanaAlloyConfigs(enum.StrEnum):
     # http://<alloy_host>:12345/graph
 
     # https://github.com/grafana/alloy-scenarios/blob/main/docker-monitoring/config.alloy
-    ALLOY_DEMO_CONFIG = textwrap.dedent(
-        """
+    ALLOY_DEMO_CONFIG = textwrap.dedent("""
         // ###############################
         // #### Metrics Configuration ####
         // ###############################
@@ -129,11 +128,9 @@ class GrafanaAlloyConfigs(enum.StrEnum):
             url = "http://loki:3100/loki/api/v1/push"
           }
         }
-        """
-    )
+        """)
 
-    ALLOY_TEST_CONFIG_1 = textwrap.dedent(
-        """
+    ALLOY_TEST_CONFIG_1 = textwrap.dedent("""
         logging {
           level  = "%s"
           format = "logfmt"
@@ -166,12 +163,10 @@ class GrafanaAlloyConfigs(enum.StrEnum):
           external_labels = {}
         }
         
-        """ % GrafanaLogLevel.INFO.value
-    )
+        """ % GrafanaLogLevel.INFO.value)
 
     # https://github.com/grafana/alloy-scenarios/blob/main/docker-monitoring/config.alloy
-    ALLOY_TEST_CONFIG_2 = textwrap.dedent(
-        """
+    ALLOY_TEST_CONFIG_2 = textwrap.dedent("""
         // ###############################
         // #### Metrics Configuration ####
         // ###############################
@@ -300,8 +295,7 @@ class GrafanaAlloyConfigs(enum.StrEnum):
             url = "http://loki:3100/loki/api/v1/push"
           }
         }
-        """
-    )
+        """)
 
     # https://github.com/grafana/alloy-scenarios/blob/main/docker-monitoring/config.alloy
     # Dashboards:
@@ -309,8 +303,7 @@ class GrafanaAlloyConfigs(enum.StrEnum):
     #   ID: 1860
     # - https://grafana.com/grafana/dashboards/19908-docker-container-monitoring-with-prometheus-and-cadvisor/
     #   ID: 19908
-    ALLOY_TEST_CONFIG_3 = textwrap.dedent(
-        """
+    ALLOY_TEST_CONFIG_3 = textwrap.dedent("""
         // ###############################
         // #### Metrics Configuration ####
         // ###############################
@@ -517,8 +510,7 @@ class GrafanaAlloyConfigs(enum.StrEnum):
         livedebugging {
           enabled = false
         }
-        """
-    )
+        """)
 
 
 class Config(FeatureBaseModel):

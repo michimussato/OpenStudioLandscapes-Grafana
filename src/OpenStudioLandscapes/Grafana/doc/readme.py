@@ -15,9 +15,7 @@ def readme_feature(
         level=1,
     )
 
-    doc.add_quote(
-        text=textwrap.dedent(
-            """\
+    doc.add_quote(text=textwrap.dedent("""\
             [!CAUTION]
 
             Starting with Grafana release `12.4.0`,
@@ -29,31 +27,23 @@ def readme_feature(
             have the same Grafana OSS docker images.
 
             ([Source](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/))\
-            """
-        )
-    )
+            """))
 
     # Logo
 
     doc.add_paragraph(
         snakemd.Inline(
-            text=textwrap.dedent(
-                """\
+            text=textwrap.dedent("""\
                 Logo Grafana\
-                """
-            ),
+                """),
             image="https://grafana.com/media/products/cloud/grafana/grafana-product-logo.svg",
             link="https://grafana.com/grafana/",
         ).__str__()
     )
 
-    doc.add_paragraph(
-        text=textwrap.dedent(
-            """\
+    doc.add_paragraph(text=textwrap.dedent("""\
             Grafana is written and maintained by Grafana Labs.\
-            """
-        )
-    )
+            """))
 
     # Logo
 
@@ -71,13 +61,9 @@ def readme_feature(
     #     ).__str__()
     # )
 
-    doc.add_paragraph(
-        text=textwrap.dedent(
-            """\
+    doc.add_paragraph(text=textwrap.dedent("""\
             Grafana Labs offers different versions of Grafana:\
-            """
-        )
-    )
+            """))
 
     doc.add_unordered_list(
         [
@@ -86,14 +72,10 @@ def readme_feature(
         ]
     )
 
-    doc.add_paragraph(
-        text=textwrap.dedent(
-            """\
+    doc.add_paragraph(text=textwrap.dedent("""\
             `OpenStudioLandscapes-Grafana` is based on the [OSS](https://ynput.io/ayon/pricing/)
             version provided by their own Docker image:\
-            """
-        )
-    )
+            """))
 
     doc.add_unordered_list(
         [
@@ -120,16 +102,12 @@ def readme_feature(
         level=3,
     )
 
-    doc.add_paragraph(
-        text=textwrap.dedent(
-            """\
+    doc.add_paragraph(text=textwrap.dedent("""\
             Alloy can collect, process, 
             and export telemetry signals to 
             scale and future-proof your observability approach.
             More info:\
-            """
-        )
-    )
+            """))
 
     doc.add_unordered_list(
         [
@@ -142,9 +120,7 @@ def readme_feature(
         level=4,
     )
 
-    doc.add_paragraph(
-        text=textwrap.dedent(
-            """\
+    doc.add_paragraph(text=textwrap.dedent("""\
             This repository contains scenarios that 
             demonstrate how to use Grafana Alloy to 
             monitor various data sources. 
@@ -152,9 +128,7 @@ def readme_feature(
             which will include an LGMT stack 
             (Loki, Grafana, Metrics, Tempo) and an 
             Alloy configuration file.\
-            """
-        )
-    )
+            """))
 
     doc.add_unordered_list(
         [
@@ -183,9 +157,7 @@ def readme_feature(
         level=3,
     )
 
-    doc.add_paragraph(
-        text=textwrap.dedent(
-            """\
+    doc.add_paragraph(text=textwrap.dedent("""\
             As it turned out, the contents of the `defaults.ini` file are
             tied to the Grafana version. A mismatch can lead to a non-functional
             container (see [issue](https://github.com/michimussato/OpenStudioLandscapes-Grafana/issues/7)).
@@ -193,9 +165,7 @@ def readme_feature(
             without compromising cross-version compatibility.
             The main entry point for Grafana configuration is therefore the [`grafana.ini`](#grafanaini) file
             (exclusively).
-            """
-        )
-    )
+            """))
 
     doc.add_heading(
         text="`grafana.ini`",
