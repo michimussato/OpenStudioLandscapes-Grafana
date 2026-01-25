@@ -1003,6 +1003,7 @@ def compose_grafana(
             {
                 *_volume_relative,
                 *config_engine.global_bind_volumes,
+                *CONFIG.local_bind_volumes,
             }
         )
     }
@@ -1055,6 +1056,7 @@ def compose_grafana(
                 },
                 "environment": {
                     **config_engine.global_environment_variables,
+                    **CONFIG.local_environment_variables,
                 },
                 **copy.deepcopy(network_dict),
                 **copy.deepcopy(ports_dict),
@@ -1156,6 +1158,7 @@ def compose_prometheus(
     volumes_dict = {
         "volumes": [
             *_volume_relative,
+            *CONFIG.local_bind_volumes,
         ]
     }
 
@@ -1175,6 +1178,10 @@ def compose_prometheus(
                 "domainname": config_engine.openstudiolandscapes__domain_lan,
                 "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS.value,
                 "image": CONFIG.prometheus_image,
+                "environment": {
+                    **config_engine.global_environment_variables,
+                    **CONFIG.local_environment_variables,
+                },
                 "command": [
                     # "--config.file=/etc/mimir/config.yaml",
                     "--web.enable-remote-write-receiver",
@@ -1458,6 +1465,7 @@ def compose_loki(
             {
                 *_volume_relative_loki,
                 *config_engine.global_bind_volumes,
+                *CONFIG.local_bind_volumes,
             }
         )
     }
@@ -1481,6 +1489,7 @@ def compose_loki(
                 "command": ["-config.file=/etc/loki/local-config.yaml"],
                 "environment": {
                     **config_engine.global_environment_variables,
+                    **CONFIG.local_environment_variables,
                 },
                 **copy.deepcopy(network_dict_loki),
                 **copy.deepcopy(ports_dict_loki),
