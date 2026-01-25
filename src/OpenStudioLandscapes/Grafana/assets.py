@@ -999,9 +999,12 @@ def compose_grafana(
         )
 
     volumes_dict = {
-        "volumes": [
-            *_volume_relative,
-        ]
+        "volumes": list(
+            {
+                *_volume_relative,
+                *config_engine.global_bind_volumes,
+            }
+        )
     }
 
     service_name = "grafana"
@@ -1049,6 +1052,9 @@ def compose_grafana(
                     "loki": {
                         "condition": "service_started",
                     },
+                },
+                "environment": {
+                    **config_engine.global_environment_variables,
                 },
                 **copy.deepcopy(network_dict),
                 **copy.deepcopy(ports_dict),
@@ -1448,9 +1454,12 @@ def compose_loki(
         )
 
     volumes_dict_loki = {
-        "volumes": [
-            *_volume_relative_loki,
-        ]
+        "volumes": list(
+            {
+                *_volume_relative_loki,
+                *config_engine.global_bind_volumes,
+            }
+        )
     }
 
     service_name_loki = "loki"
@@ -1470,6 +1479,9 @@ def compose_loki(
                 "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS.value,
                 "image": CONFIG.grafana_loki_image,
                 "command": ["-config.file=/etc/loki/local-config.yaml"],
+                "environment": {
+                    **config_engine.global_environment_variables,
+                },
                 **copy.deepcopy(network_dict_loki),
                 **copy.deepcopy(ports_dict_loki),
                 **copy.deepcopy(volumes_dict_loki),
