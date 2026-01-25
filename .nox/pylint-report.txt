@@ -104,5 +104,5 @@ src/OpenStudioLandscapes/Grafana/doc/readme.py:6:0: C0116: Missing function or m
 src/OpenStudioLandscapes/Grafana/doc/readme.py:35:8: C2801: Unnecessarily calls dunder method __str__. Use str built-in function. (unnecessary-dunder-call)
 
 ------------------------------------------------------------------
-Your code has been rated at 6.42/10 (previous run: 7.22/10, -0.81)
+Your code has been rated at 6.42/10 (previous run: 7.37/10, -0.96)
 
