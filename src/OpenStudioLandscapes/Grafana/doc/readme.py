@@ -3,6 +3,10 @@ import textwrap
 import snakemd
 
 
+# Todo
+#  - [ ] [Pangolin tunnel + Newt with OpenTelemetry + Grafana](https://medium.com/@Andreasrahimic/pangolin-tunnel-newt-opentelemetry-grafana-b2d2759aea0e)
+
+
 def readme_feature(
     doc: snakemd.Document,
     main_header: str,
