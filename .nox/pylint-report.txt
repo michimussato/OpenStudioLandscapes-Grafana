@@ -94,14 +94,16 @@ src/OpenStudioLandscapes/Grafana/config/models.py:39:4: C0103: Class constant na
 src/OpenStudioLandscapes/Grafana/config/models.py:42:0: C0115: Missing class docstring (missing-class-docstring)
 src/OpenStudioLandscapes/Grafana/config/models.py:515:0: C0115: Missing class docstring (missing-class-docstring)
 ************* Module OpenStudioLandscapes.Grafana.doc.readme
-src/OpenStudioLandscapes/Grafana/doc/readme.py:95:0: C0301: Line too long (114/100) (line-too-long)
-src/OpenStudioLandscapes/Grafana/doc/readme.py:135:0: C0301: Line too long (105/100) (line-too-long)
-src/OpenStudioLandscapes/Grafana/doc/readme.py:151:0: C0301: Line too long (117/100) (line-too-long)
-src/OpenStudioLandscapes/Grafana/doc/readme.py:177:0: C0301: Line too long (108/100) (line-too-long)
+src/OpenStudioLandscapes/Grafana/doc/readme.py:6:0: C0301: Line too long (154/100) (line-too-long)
+src/OpenStudioLandscapes/Grafana/doc/readme.py:98:0: C0301: Line too long (114/100) (line-too-long)
+src/OpenStudioLandscapes/Grafana/doc/readme.py:138:0: C0301: Line too long (105/100) (line-too-long)
+src/OpenStudioLandscapes/Grafana/doc/readme.py:154:0: C0301: Line too long (117/100) (line-too-long)
+src/OpenStudioLandscapes/Grafana/doc/readme.py:180:0: C0301: Line too long (108/100) (line-too-long)
+src/OpenStudioLandscapes/Grafana/doc/readme.py:5:1: W0511: Todo (fixme)
 src/OpenStudioLandscapes/Grafana/doc/readme.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-src/OpenStudioLandscapes/Grafana/doc/readme.py:6:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/Grafana/doc/readme.py:35:8: C2801: Unnecessarily calls dunder method __str__. Use str built-in function. (unnecessary-dunder-call)
+src/OpenStudioLandscapes/Grafana/doc/readme.py:9:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/Grafana/doc/readme.py:38:8: C2801: Unnecessarily calls dunder method __str__. Use str built-in function. (unnecessary-dunder-call)
 
 ------------------------------------------------------------------
-Your code has been rated at 6.44/10 (previous run: 7.40/10, -0.96)
+Your code has been rated at 6.37/10 (previous run: 7.40/10, -1.03)
 
