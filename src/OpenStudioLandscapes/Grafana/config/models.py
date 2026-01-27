@@ -633,6 +633,8 @@ class Config(FeatureBaseModel):
 
     alloy_config: GrafanaAlloyConfigs = Field(
         default=GrafanaAlloyConfigs.ALLOY_TEST_CONFIG_3,
+        # Exclude Field from Model Serialization
+        exclude=True,
     )
 
 
