@@ -1055,6 +1055,7 @@ def compose_grafana(
                     },
                 },
                 "environment": {
+                    "TZ": CONFIG.tz,
                     **config_engine.global_environment_variables,
                     **CONFIG.local_environment_variables,
                 },
@@ -1179,6 +1180,7 @@ def compose_prometheus(
                 "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS.value,
                 "image": CONFIG.prometheus_image,
                 "environment": {
+                    "TZ": CONFIG.tz,
                     **config_engine.global_environment_variables,
                     **CONFIG.local_environment_variables,
                 },
@@ -1488,6 +1490,7 @@ def compose_loki(
                 "image": CONFIG.grafana_loki_image,
                 "command": ["-config.file=/etc/loki/local-config.yaml"],
                 "environment": {
+                    "TZ": CONFIG.tz,
                     **config_engine.global_environment_variables,
                     **CONFIG.local_environment_variables,
                 },
