@@ -105,6 +105,33 @@ def readme_feature(
         level=3,
     )
 
+    # Default Ports:
+    # # Grafana
+    #   [x] running
+    #   3000
+    #
+    # # Loki
+    #   [x] running
+    #   3100
+    #   Endpoints:
+    #   - https://grafana.com/docs/loki/latest/reference/loki-http-api/
+    #     - /metrics
+    #
+    # # Prometheus
+    #   [x] running
+    #   9090
+    #   Endpoints:
+    #   - https://prometheus.io/docs/prometheus/latest/querying/api/
+    #     - /api/v1/status/config
+    #
+    # # Alloy
+    #   [x] running
+    #   12345
+
+    # Todo:
+    #  - [ ] Can this be helpful?
+    #        - Alloy Configurator: https://github.com/grafana/alloy-configurator
+
     doc.add_paragraph(text=textwrap.dedent("""\
             Alloy can collect, process, 
             and export telemetry signals to 

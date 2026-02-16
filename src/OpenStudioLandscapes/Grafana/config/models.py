@@ -1,6 +1,7 @@
 import enum
 import textwrap
 from typing import Dict, List, Union
+from string import Template
 
 from dagster import get_dagster_logger
 from pydantic import (
@@ -13,6 +14,15 @@ LOGGER = get_dagster_logger(__name__)
 from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
 
 from OpenStudioLandscapes.Grafana import constants, dist
+
+
+class AlloyConfigTemplate(Template):
+    # https://stackoverflow.com/a/48045197
+    # https://stackoverflow.com/a/4840619
+    delimiter = "$$"
+    @classmethod
+    def set_delimiter(cls, delimiter):
+        cls.delimiter = delimiter
 
 
 class GrafanaDockerImage(enum.StrEnum):
@@ -337,6 +347,7 @@ class GrafanaAlloyConfigs(enum.StrEnum):
         // Configure a prometheus.remote_write component to send metrics to a Prometheus server.
         prometheus.remote_write "demo" {
           endpoint {
+            // CHANGE ME
             url = "http://prometheus:9090/api/v1/write"
           }
         }
@@ -499,6 +510,7 @@ class GrafanaAlloyConfigs(enum.StrEnum):
         
         loki.write "local" {
           endpoint {
+            // CHANGE ME
             url = "http://loki:3100/loki/api/v1/push"
           }
         }
@@ -510,6 +522,228 @@ class GrafanaAlloyConfigs(enum.StrEnum):
           enabled = false
         }
         """)
+
+    ALLOY_TEST_CONFIG_4 = textwrap.dedent("""
+        // ###############################
+        // #### Metrics Configuration ####
+        // ###############################
+        
+        // Host Cadvisor on the Docker socket to expose container metrics.
+        prometheus.exporter.cadvisor "example" {
+          docker_only = true
+        }
+        
+        discovery.relabel "example" {
+          targets = prometheus.exporter.cadvisor.example.targets
+        
+          rule {
+            target_label = "job"
+            replacement  = "integrations/docker"
+          }
+        
+          rule {
+            target_label = "instance"
+            replacement  = constants.hostname
+          }
+        }
+        
+        // Configure a prometheus.scrape component to collect cadvisor metrics.
+        prometheus.scrape "scraper" {
+          targets    = discovery.relabel.example.output
+          forward_to = [ prometheus.remote_write.demo.receiver ]
+        
+          scrape_interval = "10s"
+        }
+        
+        // Configure a prometheus.remote_write component to send metrics to a Prometheus server.
+        prometheus.remote_write "demo" {
+          endpoint {
+            // Endpoints"
+            // - https://prometheus.io/docs/prometheus/latest/querying/api/
+            //
+            // Verify operational:
+            // - $$endpoint_prometheus:$$port_prometheus/api/v1/status/config
+            url = "$$endpoint_prometheus:$$port_prometheus/api/v1/write"
+          }
+        }
+        
+        discovery.relabel "metrics" {
+          targets = prometheus.exporter.unix.metrics.targets
+          rule {
+            target_label = "instance"
+            replacement = constants.hostname
+          }
+          rule {
+            target_label = "job"
+            replacement = string.format("%s-metrics", constants.hostname)
+          }
+        }
+        
+        prometheus.exporter.unix "metrics" {
+          disable_collectors = ["ipvs", "btrfs", "infiniband", "xfs", "zfs"]
+          enable_collectors = ["meminfo"]
+          filesystem {
+            fs_types_exclude = "^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|tmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$"
+            mount_points_exclude = "^/(dev|proc|run/credentials/.+|sys|var/lib/docker/.+)($|/)"
+            mount_timeout = "5s"
+          }
+          netclass {
+            ignored_devices = "^(veth.*|cali.*|[a-f0-9]{15})$"
+          }
+          netdev {
+            device_exclude = "^(veth.*|cali.*|[a-f0-9]{15})$"
+          }
+        }
+        
+        prometheus.scrape "metrics" {
+          scrape_interval = "15s"
+          targets = discovery.relabel.metrics.output
+          forward_to = [prometheus.remote_write.demo.receiver]
+        }
+        
+        // ###############################
+        // #### Logging Configuration ####
+        // ###############################
+        
+        // Discover Docker containers and extract metadata.
+        discovery.docker "linux" {
+          host = "unix:///var/run/docker.sock"
+        }
+        
+        // Define a relabeling rule to create a service name from the container name.
+        discovery.relabel "docker" {
+          targets = []
+        
+          rule {
+            source_labels = ["__meta_docker_container_name"]
+            regex = "/(.*)"
+            target_label = "container_name"
+          }
+      
+          rule {
+            target_label = "instance"
+            replacement  = constants.hostname
+          }
+        }
+        
+        // Configure a loki.source.docker component to collect logs from Docker containers.
+        loki.source.docker "docker" {
+          host       = "unix:///var/run/docker.sock"
+          targets    = discovery.docker.linux.targets
+          relabel_rules = discovery.relabel.docker.rules
+          forward_to = [loki.write.local.receiver]
+        }
+        
+        // // /var/logs
+        // 
+        // local.file_match "system" {
+        //   path_targets = [
+        //     {
+        //       __address__ = "localhost",
+        //       __path__ = "/var/log/*.log",
+        //       job = "varlogs",
+        //     },
+        //   ]
+        // }
+        // 
+        // loki.source.file "system" {
+        //   targets = local.file_match.system.targets
+        //   forward_to = [
+        //     loki.write.local.receiver,
+        //   ]
+        //   legacy_positions_file = "/tmp/positions.yaml"
+        // }
+        
+        // journal
+        
+        // Collect logs from systemd journal for node_exporter integration
+        loki.source.journal "journal" {
+          // Only collect logs from the last 24 hours
+          max_age       = "24h0m0s"
+          // Apply relabeling rules to the logs
+          relabel_rules = discovery.relabel.journal.rules
+          // Send logs to the local Loki instance
+          forward_to    = [loki.write.local.receiver]
+          // if alloy is running in container, we 
+          // need to add the following path
+          path = "/var/log/journal"
+          labels = {
+            component = string.format("%s-journal", constants.hostname),
+          }
+        }
+        
+        // Define which log files to collect for node_exporter
+        local.file_match "system" {
+          path_targets = [{
+            // Target localhost for log collection
+            __address__ = "localhost",
+            // Collect standard system logs
+            __path__ = "/var/log/{syslog,messages,*.log}",
+            // Add instance label with hostname
+            instance = constants.hostname,
+            // Add job label for logs
+            job = string.format("%s-logs", constants.hostname),
+          }]
+        }
+        
+        // Define relabeling rules for systemd journal logs
+        discovery.relabel "journal" {
+          targets = []
+        
+          rule {
+            // Extract systemd unit information into a label
+            source_labels = ["__journal__systemd_unit"]
+            target_label  = "unit"
+          }
+        
+          rule {
+            // Extract boot ID information into a label
+            source_labels = ["__journal__boot_id"]
+            target_label  = "boot_id"
+          }
+        
+          rule {
+            // Extract transport information into a label
+            source_labels = ["__journal__transport"]
+            target_label  = "transport"
+          }
+        
+          rule {
+            // Extract log priority into a level label
+            source_labels = ["__journal_priority_keyword"]
+            target_label  = "level"
+          }
+        }
+        
+        // Collect logs from files for node_exporter
+        loki.source.file "system" {
+          // Use targets defined in local.file_match
+          targets    = local.file_match.system.targets
+          // Send logs to the local Loki instance
+          forward_to = [loki.write.local.receiver]
+        }
+        
+        loki.write "local" {
+          endpoint {
+            // Endpoints"
+            // - https://grafana.com/docs/loki/latest/reference/loki-http-api/
+            //
+            // Verify operational:
+            // $$endpoint_loki:$$port_loki/metrics
+            url = "$$endpoint_loki:$$port_loki/loki/api/v1/push"
+          }
+        }
+        
+        // Enable live debugging features (empty config means use defaults)
+        // - https://grafana.com/docs/alloy/latest/reference/config-blocks/livedebugging/
+        // - https://grafana.com/docs/alloy/latest/troubleshoot/debug/
+        livedebugging {
+          enabled = false
+        }
+        """)
+
+
+ALLOY_CONFIG_TEMPLATE = AlloyConfigTemplate(GrafanaAlloyConfigs.ALLOY_TEST_CONFIG_4)
 
 
 class Config(FeatureBaseModel):
@@ -626,16 +860,54 @@ class Config(FeatureBaseModel):
         # examples=[i.name for i in GrafanaDockerImage],
     )
 
+    # HttpUrl adds a trailing slash, which is undesirable
+    endpoint_prometheus: str = Field(
+        default="http://prometheus",
+    )
+
+    # HttpUrl adds a trailing slash, which is undesirable
+    endpoint_loki: str = Field(
+        default="http://loki",
+    )
+
     # grafana_mimir_image: str = Field(
     #     default="docker.io/grafana/mimir:latest",
     #     # examples=[i.name for i in GrafanaDockerImage],
     # )
 
-    alloy_config: GrafanaAlloyConfigs = Field(
-        default=GrafanaAlloyConfigs.ALLOY_TEST_CONFIG_3,
+    alloy_config_template: GrafanaAlloyConfigs = Field(
+        default=GrafanaAlloyConfigs.ALLOY_TEST_CONFIG_4,
         # Exclude Field from Model Serialization
         exclude=True,
     )
+
+    # @field_validator('alloy_config_4', mode='before')
+    # @classmethod
+    # def substitute(cls, value: str) -> str:
+    #     template = AlloyConfigTemplate(value)
+    #     ret = template.substitute(
+    #         endpoint_prometheus=cls.endpoint_prometheus,
+    #         port_prometheus=cls.prometheus_port_container,
+    #         endpoint_loki=cls.endpoint_loki,
+    #         port_loki=cls.grafana_loki_port_container,
+    #     )
+    #     return ret
+
+    # SUBSTITUTED TEMPLATE
+    @property
+    def alloy_config(self) -> str:
+        template = AlloyConfigTemplate(self.alloy_config_template)
+        ret = template.substitute(
+            endpoint_prometheus=self.endpoint_prometheus,
+            # Todo
+            #  - [ ] not sure yet whether _port_container or _port_host
+            port_prometheus=self.prometheus_port_container,
+            endpoint_loki=self.endpoint_loki,
+            # Todo
+            #  - [ ] not sure yet whether _port_container or _port_host
+            port_loki=self.grafana_loki_port_container,
+        )
+        return ret
 
 
 CONFIG_STR = Config.get_docs()
