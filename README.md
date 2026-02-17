@@ -4,7 +4,8 @@
 
 1. [Feature: OpenStudioLandscapes-Grafana](#feature-openstudiolandscapes-grafana)
    1. [Brief](#brief)
-   2. [Install](#install)
+   2. [Clone](#clone)
+      1. [Clone and Install](#clone-and-install)
    3. [Configure](#configure)
       1. [Default Configuration](#default-configuration)
 2. [External Resources](#external-resources)
@@ -33,15 +34,27 @@ This is an extension to the OpenStudioLandscapes ecosystem. The full documentati
 > You feel like writing your own Feature? Go and check out the 
 > [OpenStudioLandscapes-Template](https://github.com/michimussato/OpenStudioLandscapes-Template).
 
-## Install
+## Clone
 
 Clone this repository into `OpenStudioLandscapes/.features` (assuming the current working directory to be the Git repository root `./OpenStudioLandscapes`):
 
 ```shell
 # cd OpenStudioLandscapes
 source .venv/bin/activate
-openstudiolandscapes install-feature --repo=https://github.com/michimussato/OpenStudioLandscapes-Grafana.git
+openstudiolandscapes clone-feature --repo=https://github.com/michimussato/OpenStudioLandscapes-Grafana.git
+deactivate
 # Check the resulting console output for installation instructions
+
+```
+
+### Clone and Install
+
+```shell
+# cd OpenStudioLandscapes
+source .venv/bin/activate
+openstudiolandscapes clone-feature --repo=https://github.com/michimussato/OpenStudioLandscapes-Grafana.git \
+    && pip install --editable ./.features/OpenStudioLandscapes-Grafana
+deactivate
 
 ```
 
@@ -502,9 +515,37 @@ grafana_loki_image: docker.io/grafana/loki:latest
 prometheus_image: docker.io/prom/prometheus:main
 
 
-# ============
-# alloy_config
-# ------------
+# ===================
+# endpoint_prometheus
+# -------------------
+#
+# Type: <class 'str'>
+# Description:
+#     None
+# Required:
+#     False
+# Examples:
+#     None
+endpoint_prometheus: http://prometheus
+
+
+# =============
+# endpoint_loki
+# -------------
+#
+# Type: <class 'str'>
+# Description:
+#     None
+# Required:
+#     False
+# Examples:
+#     None
+endpoint_loki: http://loki
+
+
+# =====================
+# alloy_config_template
+# ---------------------
 #
 # Type: <enum 'GrafanaAlloyConfigs'>
 # Description:
@@ -513,7 +554,7 @@ prometheus_image: docker.io/prom/prometheus:main
 #     False
 # Examples:
 #     None
-alloy_config: "\n// ###############################\n// #### Metrics Configuration\
+alloy_config_template: "\n// ###############################\n// #### Metrics Configuration\
   \ ####\n// ###############################\n\n// Host Cadvisor on the Docker socket\
   \ to expose container metrics.\nprometheus.exporter.cadvisor \"example\" {\n  docker_only\
   \ = true\n}\n\ndiscovery.relabel \"example\" {\n  targets = prometheus.exporter.cadvisor.example.targets\n\
@@ -524,10 +565,12 @@ alloy_config: "\n// ###############################\n// #### Metrics Configurati
   \  forward_to = [ prometheus.remote_write.demo.receiver ]\n\n  scrape_interval =\
   \ \"10s\"\n}\n\n// Configure a prometheus.remote_write component to send metrics\
   \ to a Prometheus server.\nprometheus.remote_write \"demo\" {\n  endpoint {\n  \
-  \  url = \"http://prometheus:9090/api/v1/write\"\n  }\n}\n\ndiscovery.relabel \"\
-  metrics\" {\n  targets = prometheus.exporter.unix.metrics.targets\n  rule {\n  \
-  \  target_label = \"instance\"\n    replacement = constants.hostname\n  }\n  rule\
-  \ {\n    target_label = \"job\"\n    replacement = string.format(\"%s-metrics\"\
+  \  // Endpoints\"\n    // - https://prometheus.io/docs/prometheus/latest/querying/api/\n\
+  \    //\n    // Verify operational:\n    // - $$endpoint_prometheus:$$port_prometheus/api/v1/status/config\n\
+  \    url = \"$$endpoint_prometheus:$$port_prometheus/api/v1/write\"\n  }\n}\n\n\
+  discovery.relabel \"metrics\" {\n  targets = prometheus.exporter.unix.metrics.targets\n\
+  \  rule {\n    target_label = \"instance\"\n    replacement = constants.hostname\n\
+  \  }\n  rule {\n    target_label = \"job\"\n    replacement = string.format(\"%s-metrics\"\
   , constants.hostname)\n  }\n}\n\nprometheus.exporter.unix \"metrics\" {\n  disable_collectors\
   \ = [\"ipvs\", \"btrfs\", \"infiniband\", \"xfs\", \"zfs\"]\n  enable_collectors\
   \ = [\"meminfo\"]\n  filesystem {\n    fs_types_exclude = \"^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|tmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$\"\
@@ -576,8 +619,10 @@ alloy_config: "\n// ###############################\n// #### Metrics Configurati
   loki.source.file \"system\" {\n  // Use targets defined in local.file_match\n  targets\
   \    = local.file_match.system.targets\n  // Send logs to the local Loki instance\n\
   \  forward_to = [loki.write.local.receiver]\n}\n\nloki.write \"local\" {\n  endpoint\
-  \ {\n    url = \"http://loki:3100/loki/api/v1/push\"\n  }\n}\n\n// Enable live debugging\
-  \ features (empty config means use defaults)\n// - https://grafana.com/docs/alloy/latest/reference/config-blocks/livedebugging/\n\
+  \ {\n    // Endpoints\"\n    // - https://grafana.com/docs/loki/latest/reference/loki-http-api/\n\
+  \    //\n    // Verify operational:\n    // $$endpoint_loki:$$port_loki/metrics\n\
+  \    url = \"$$endpoint_loki:$$port_loki/loki/api/v1/push\"\n  }\n}\n\n// Enable\
+  \ live debugging features (empty config means use defaults)\n// - https://grafana.com/docs/alloy/latest/reference/config-blocks/livedebugging/\n\
   // - https://grafana.com/docs/alloy/latest/troubleshoot/debug/\nlivedebugging {\n\
   \  enabled = false\n}\n"
 ```
@@ -680,4 +725,4 @@ To follow up on the previous LinkedIn publications, visit:
 
 ***
 
-Last changed: **2026-01-27 20:34:53 UTC**
+Last changed: **2026-02-17 11:29:28 UTC**
