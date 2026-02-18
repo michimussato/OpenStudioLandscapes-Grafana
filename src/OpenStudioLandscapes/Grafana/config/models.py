@@ -1,7 +1,7 @@
 import enum
 import textwrap
-from typing import Dict, List, Union
 from string import Template
+from typing import Dict, List, Union
 
 from dagster import get_dagster_logger
 from pydantic import (
@@ -20,6 +20,7 @@ class AlloyConfigTemplate(Template):
     # https://stackoverflow.com/a/48045197
     # https://stackoverflow.com/a/4840619
     delimiter = "$$"
+
     @classmethod
     def set_delimiter(cls, delimiter):
         cls.delimiter = delimiter

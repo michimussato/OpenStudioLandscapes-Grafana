@@ -200,7 +200,9 @@ def alloy_config(
         metadata={
             "__".join(context.asset_key.path): MetadataValue.path(alloy_config_path),
             "alloy_config": MetadataValue.md(f"```\n{CONFIG.alloy_config}\n```"),
-            "alloy_config_template": MetadataValue.md(f"```\n{CONFIG.alloy_config_template}\n```"),
+            "alloy_config_template": MetadataValue.md(
+                f"```\n{CONFIG.alloy_config_template}\n```"
+            ),
         },
     )
 
