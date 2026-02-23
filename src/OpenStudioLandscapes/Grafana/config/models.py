@@ -747,6 +747,15 @@ class GrafanaAlloyConfigs(enum.StrEnum):
 ALLOY_CONFIG_TEMPLATE = AlloyConfigTemplate(GrafanaAlloyConfigs.ALLOY_TEST_CONFIG_4)
 
 
+# Todo
+#  - [ ] Fix
+#        loki.2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer                                   | level=warn ts=2026-02-20T07:44:36.66288442Z caller=push.go:309 component=pattern-ingester writer=metric-aggregation msg="failed to send entry, retrying" status=-1 error="failed to push payload: Post \"http:///loki/api/v1/push\": http: no Host in request URL"
+#  - [ ] Fix
+#        alloy_container.compose_scope-default.2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer  | ts=2026-02-20T07:44:41.381091726Z level=error msg="encountered error getting zfs filesystem: miniboss_pool: exec: \"zfs\": executable file not found in $PATH: \"zfs fs list -Hp -o name,origin,used,available,mountpoint,compression,type,volsize,quota,referenced,written,logicalused,usedbydataset miniboss_pool\" => " component_path=/ component_id=prometheus.exporter.cadvisor.example
+#  - [ ] Fix
+#        alloy_container.compose_scope-default.2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer  | ts=2026-02-20T07:44:41.381762451Z level=error msg="encountered error refreshing zfs watcher: exec: \"zfs\": executable file not found in $PATH: \"zfs fs list -Hp -o name,origin,used,available,mountpoint,compression,type,volsize,quota,referenced,written,logicalused,usedbydataset miniboss_pool\" => " component_path=/ component_id=prometheus.exporter.cadvisor.example
+
+
 class Config(FeatureBaseModel):
 
     feature_name: str = dist.name
