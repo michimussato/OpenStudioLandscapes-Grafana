@@ -75,8 +75,12 @@ src/OpenStudioLandscapes/Grafana/__init__.py:1:0: C0114: Missing module docstrin
 src/OpenStudioLandscapes/Grafana/__init__.py:1:0: C0103: Module name "Grafana" doesn't conform to snake_case naming style (invalid-name)
 ************* Module OpenStudioLandscapes.Grafana.config.models
 src/OpenStudioLandscapes/Grafana/config/models.py:314:0: C0301: Line too long (110/100) (line-too-long)
-src/OpenStudioLandscapes/Grafana/config/models.py:903:13: W0511: Todo (fixme)
-src/OpenStudioLandscapes/Grafana/config/models.py:907:13: W0511: Todo (fixme)
+src/OpenStudioLandscapes/Grafana/config/models.py:752:0: C0301: Line too long (360/100) (line-too-long)
+src/OpenStudioLandscapes/Grafana/config/models.py:754:0: C0301: Line too long (483/100) (line-too-long)
+src/OpenStudioLandscapes/Grafana/config/models.py:756:0: C0301: Line too long (468/100) (line-too-long)
+src/OpenStudioLandscapes/Grafana/config/models.py:750:1: W0511: Todo (fixme)
+src/OpenStudioLandscapes/Grafana/config/models.py:912:13: W0511: Todo (fixme)
+src/OpenStudioLandscapes/Grafana/config/models.py:916:13: W0511: Todo (fixme)
 src/OpenStudioLandscapes/Grafana/config/models.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/Grafana/config/models.py:14:0: C0413: Import "from OpenStudioLandscapes.engine.config.models import FeatureBaseModel" should be placed at the top of the module (wrong-import-position)
 src/OpenStudioLandscapes/Grafana/config/models.py:16:0: C0413: Import "from OpenStudioLandscapes.Grafana import constants, dist" should be placed at the top of the module (wrong-import-position)
@@ -99,8 +103,8 @@ src/OpenStudioLandscapes/Grafana/config/models.py:48:4: C0103: Class constant na
 src/OpenStudioLandscapes/Grafana/config/models.py:49:4: C0103: Class constant name "version_11_6" doesn't conform to UPPER_CASE naming style (invalid-name)
 src/OpenStudioLandscapes/Grafana/config/models.py:50:4: C0103: Class constant name "version_11_6_ubuntu" doesn't conform to UPPER_CASE naming style (invalid-name)
 src/OpenStudioLandscapes/Grafana/config/models.py:53:0: C0115: Missing class docstring (missing-class-docstring)
-src/OpenStudioLandscapes/Grafana/config/models.py:750:0: C0115: Missing class docstring (missing-class-docstring)
-src/OpenStudioLandscapes/Grafana/config/models.py:899:4: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/Grafana/config/models.py:759:0: C0115: Missing class docstring (missing-class-docstring)
+src/OpenStudioLandscapes/Grafana/config/models.py:908:4: C0116: Missing function or method docstring (missing-function-docstring)
 ************* Module OpenStudioLandscapes.Grafana.doc.readme
 src/OpenStudioLandscapes/Grafana/doc/readme.py:6:0: C0301: Line too long (154/100) (line-too-long)
 src/OpenStudioLandscapes/Grafana/doc/readme.py:98:0: C0301: Line too long (114/100) (line-too-long)
@@ -114,5 +118,5 @@ src/OpenStudioLandscapes/Grafana/doc/readme.py:9:0: C0116: Missing function or m
 src/OpenStudioLandscapes/Grafana/doc/readme.py:38:8: C2801: Unnecessarily calls dunder method __str__. Use str built-in function. (unnecessary-dunder-call)
 
 ------------------------------------------------------------------
-Your code has been rated at 6.23/10 (previous run: 7.40/10, -1.17)
+Your code has been rated at 6.10/10 (previous run: 7.40/10, -1.30)
 
