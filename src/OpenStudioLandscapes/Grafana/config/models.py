@@ -557,6 +557,7 @@ class GrafanaAlloyConfigs(enum.StrEnum):
         }
         
         // Configure a prometheus.remote_write component to send metrics to a Prometheus server.
+        // - https://grafana.com/docs/alloy/latest/reference/components/prometheus/prometheus.remote_write/
         prometheus.remote_write "demo" {
           endpoint {
             // Endpoints"
@@ -565,6 +566,10 @@ class GrafanaAlloyConfigs(enum.StrEnum):
             // Verify operational:
             // - $$endpoint_prometheus:$$port_prometheus/api/v1/status/config
             url = "$$endpoint_prometheus:$$port_prometheus/api/v1/write"
+            // basic_auth {
+            //   username = "admin"
+            //   password = "admin"
+            // }
           }
         }
         
@@ -752,8 +757,27 @@ ALLOY_CONFIG_TEMPLATE = AlloyConfigTemplate(GrafanaAlloyConfigs.ALLOY_TEST_CONFI
 #        loki.2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer                                   | level=warn ts=2026-02-20T07:44:36.66288442Z caller=push.go:309 component=pattern-ingester writer=metric-aggregation msg="failed to send entry, retrying" status=-1 error="failed to push payload: Post \"http:///loki/api/v1/push\": http: no Host in request URL"
 #  - [ ] Fix
 #        alloy_container.compose_scope-default.2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer  | ts=2026-02-20T07:44:41.381091726Z level=error msg="encountered error getting zfs filesystem: miniboss_pool: exec: \"zfs\": executable file not found in $PATH: \"zfs fs list -Hp -o name,origin,used,available,mountpoint,compression,type,volsize,quota,referenced,written,logicalused,usedbydataset miniboss_pool\" => " component_path=/ component_id=prometheus.exporter.cadvisor.example
-#  - [ ] Fix
+#  - [x] Fix
 #        alloy_container.compose_scope-default.2026-01-21_17-22-54__seasoned-jelly-wholesale-mixer  | ts=2026-02-20T07:44:41.381762451Z level=error msg="encountered error refreshing zfs watcher: exec: \"zfs\": executable file not found in $PATH: \"zfs fs list -Hp -o name,origin,used,available,mountpoint,compression,type,volsize,quota,referenced,written,logicalused,usedbydataset miniboss_pool\" => " component_path=/ component_id=prometheus.exporter.cadvisor.example
+#  - [ ] Fix (ComposeScope_worker)
+#        Error: /etc/alloy/config.alloy:34:1: Failed to build component: building component: get segment range: segments are not sequential
+#        33 |   // Configure a prometheus.remote_write component to send metrics to a Prometheus server.
+#        34 |   prometheus.remote_write "demo" {
+#           |  _^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#        35 | |   endpoint {
+#        36 | |     // Endpoints"
+#        37 | |     // - https://prometheus.io/docs/prometheus/latest/querying/api/
+#        38 | |     //
+#        39 | |     // Verify operational:
+#        40 | |     // - http://10.1.2.15:9090/api/v1/status/config
+#        41 | |     url = "http://10.1.2.15:9090/api/v1/write"
+#        42 | |   }
+#        43 | | }
+#           | |_^
+#        44 |
+#        interrupt received
+#        Error: could not perform the initial load successfully
+#        2026/02/25 19:35:39 collector server run finished with error: could not perform the initial load successfully
 
 
 class Config(FeatureBaseModel):

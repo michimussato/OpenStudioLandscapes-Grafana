@@ -496,6 +496,11 @@ def prometheus_yaml(
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
     env: Dict = CONFIG.env
 
+    # Prometheus
+    # enable remote write
+    # - https://grafana.com/docs/alloy/latest/tutorials/send-metrics-to-prometheus/#third-component-write-metrics-to-prometheus
+
+
     prometheus_dict = {
         "global": {
             # Set the scrape interval to every 15 seconds. Default is every 1 minute.
@@ -1256,6 +1261,9 @@ def compose_prometheus(
     prometheus_yaml: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[Dict] | AssetMaterialization, None, None]:
     """ """
+
+    # Todo:
+    #  - [ ] https://prometheus.io/docs/guides/basic-auth/
 
     env: Dict = CONFIG.env
 
