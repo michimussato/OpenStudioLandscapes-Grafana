@@ -870,6 +870,10 @@ class Config(FeatureBaseModel):
         # examples=[i.name for i in GrafanaDockerImage],
     )
 
+    alloy_image: str = Field(
+        default="docker.io/grafana/alloy:latest",
+    )
+
     # HttpUrl adds a trailing slash, which is undesirable
     endpoint_prometheus: str = Field(
         default="http://prometheus",
@@ -889,6 +893,14 @@ class Config(FeatureBaseModel):
         default=GrafanaAlloyConfigs.ALLOY_TEST_CONFIG_4,
         # Exclude Field from Model Serialization
         exclude=True,
+    )
+
+    alloy_apt_packages: List[str] = Field(
+        default=[
+            "zfsutils-linux",
+        ],
+        # description="`boto3` is required if `kitsu_enable_job_queue` is `true`. [Reference](https://zou.cg-wire.com/jobs/)",
+        frozen=True,
     )
 
     # @field_validator('alloy_config_4', mode='before')
