@@ -515,6 +515,20 @@ grafana_loki_image: docker.io/grafana/loki:latest
 prometheus_image: docker.io/prom/prometheus:main
 
 
+# ===========
+# alloy_image
+# -----------
+#
+# Type: <class 'str'>
+# Description:
+#     None
+# Required:
+#     False
+# Examples:
+#     None
+alloy_image: docker.io/grafana/alloy:latest
+
+
 # ===================
 # endpoint_prometheus
 # -------------------
@@ -564,11 +578,12 @@ alloy_config_template: "\n// ###############################\n// #### Metrics Co
   prometheus.scrape \"scraper\" {\n  targets    = discovery.relabel.example.output\n\
   \  forward_to = [ prometheus.remote_write.demo.receiver ]\n\n  scrape_interval =\
   \ \"10s\"\n}\n\n// Configure a prometheus.remote_write component to send metrics\
-  \ to a Prometheus server.\nprometheus.remote_write \"demo\" {\n  endpoint {\n  \
-  \  // Endpoints\"\n    // - https://prometheus.io/docs/prometheus/latest/querying/api/\n\
+  \ to a Prometheus server.\n// - https://grafana.com/docs/alloy/latest/reference/components/prometheus/prometheus.remote_write/\n\
+  prometheus.remote_write \"demo\" {\n  endpoint {\n    // Endpoints\"\n    // - https://prometheus.io/docs/prometheus/latest/querying/api/\n\
   \    //\n    // Verify operational:\n    // - $$endpoint_prometheus:$$port_prometheus/api/v1/status/config\n\
-  \    url = \"$$endpoint_prometheus:$$port_prometheus/api/v1/write\"\n  }\n}\n\n\
-  discovery.relabel \"metrics\" {\n  targets = prometheus.exporter.unix.metrics.targets\n\
+  \    url = \"$$endpoint_prometheus:$$port_prometheus/api/v1/write\"\n    // basic_auth\
+  \ {\n    //   username = \"admin\"\n    //   password = \"admin\"\n    // }\n  }\n\
+  }\n\ndiscovery.relabel \"metrics\" {\n  targets = prometheus.exporter.unix.metrics.targets\n\
   \  rule {\n    target_label = \"instance\"\n    replacement = constants.hostname\n\
   \  }\n  rule {\n    target_label = \"job\"\n    replacement = string.format(\"%s-metrics\"\
   , constants.hostname)\n  }\n}\n\nprometheus.exporter.unix \"metrics\" {\n  disable_collectors\
@@ -625,6 +640,21 @@ alloy_config_template: "\n// ###############################\n// #### Metrics Co
   \ live debugging features (empty config means use defaults)\n// - https://grafana.com/docs/alloy/latest/reference/config-blocks/livedebugging/\n\
   // - https://grafana.com/docs/alloy/latest/troubleshoot/debug/\nlivedebugging {\n\
   \  enabled = false\n}\n"
+
+
+# ==================
+# alloy_apt_packages
+# ------------------
+#
+# Type: typing.List[str]
+# Description:
+#     None
+# Required:
+#     False
+# Examples:
+#     None
+alloy_apt_packages:
+- zfsutils-linux
 ```
 
 
@@ -725,4 +755,4 @@ To follow up on the previous LinkedIn publications, visit:
 
 ***
 
-Last changed: **2026-02-24 11:28:24 UTC**
+Last changed: **2026-03-11 15:33:18 UTC**

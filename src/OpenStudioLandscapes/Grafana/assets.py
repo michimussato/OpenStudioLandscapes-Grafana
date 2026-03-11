@@ -511,7 +511,9 @@ def build_docker_image_alloy(
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(image_data),
             "env": MetadataValue.json(env),
-            "docker_image": MetadataValue.path(f"{image_data['image_prefixes']}{image_data['image_name']}:{image_data['image_tags'][0]}"),
+            "docker_image": MetadataValue.path(
+                f"{image_data['image_prefixes']}{image_data['image_name']}:{image_data['image_tags'][0]}"
+            ),
             "docker_cmd": MetadataValue.path(
                 get_docker_run_cmd(
                     context=context,
@@ -549,7 +551,6 @@ def prometheus_yaml(
     # Prometheus
     # enable remote write
     # - https://grafana.com/docs/alloy/latest/tutorials/send-metrics-to-prometheus/#third-component-write-metrics-to-prometheus
-
 
     prometheus_dict = {
         "global": {
