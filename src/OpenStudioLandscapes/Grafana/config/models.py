@@ -1,4 +1,5 @@
 import enum
+import pathlib
 import textwrap
 from string import Template
 from typing import Dict, List, Union
@@ -782,6 +783,18 @@ ALLOY_CONFIG_TEMPLATE = AlloyConfigTemplate(GrafanaAlloyConfigs.ALLOY_TEST_CONFI
 
 class Config(FeatureBaseModel):
 
+    # Todo
+    #  - [ ] Use Postgres instead of mysql
+    #        - https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#database
+
+    # Configure Grafana:
+    # - [Default Paths](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/#default-paths)
+    # - [Configure a Grafana Docker image](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/)
+
+    GF_PATHS_DATA: pathlib.Path = Field(
+        default=pathlib.Path("{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/var/lib/grafana"),
+    )
+
     feature_name: str = dist.name
 
     group_name: str = constants.ASSET_HEADER["group_name"]
@@ -952,6 +965,25 @@ class Config(FeatureBaseModel):
             # Todo
             #  - [ ] not sure yet whether _port_container or _port_host
             port_loki=self.grafana_loki_port_container,
+        )
+        return ret
+
+    # EXPANDABLE PATHS
+    @property
+    def GF_PATHS_DATA_expanded(self) -> pathlib.Path:
+        LOGGER.debug(f"{self.env = }")
+        if self.env is None:
+            raise KeyError("`env` is `None`.")
+        LOGGER.debug(f"Expanding {self.GF_PATHS_DATA}...")
+        ret = pathlib.Path(
+            self.GF_PATHS_DATA.expanduser()  # pylint: disable=E1101
+            .as_posix()
+            .format(
+                **{
+                    "FEATURE": self.feature_name,
+                    **self.env,
+                }
+            )
         )
         return ret
 

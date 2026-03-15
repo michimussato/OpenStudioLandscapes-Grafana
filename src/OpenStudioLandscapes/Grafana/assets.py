@@ -1152,14 +1152,7 @@ def compose_grafana(
     elif "network_mode" in compose_networks:
         network_dict = {"network_mode": compose_networks["network_mode"]}
 
-    var_lib = pathlib.Path(
-        env["DOT_LANDSCAPES"],
-        env.get("LANDSCAPE", "default"),
-        f"{dist.name}",
-        "var",
-        "lib",
-        "grafana",
-    ).expanduser()
+    var_lib = CONFIG.GF_PATHS_DATA_expanded
 
     old_umask = os.umask(0o000)
 
