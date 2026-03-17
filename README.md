@@ -313,6 +313,20 @@ feature_name: OpenStudioLandscapes-Grafana
 #     None
 
 
+# =============
+# GF_PATHS_DATA
+# -------------
+#
+# Type: <class 'pathlib.Path'>
+# Description:
+#     None
+# Required:
+#     False
+# Examples:
+#     None
+GF_PATHS_DATA: '{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/var/lib/grafana'
+
+
 # ==================
 # grafana_dashboards
 # ------------------
@@ -755,4 +769,4 @@ To follow up on the previous LinkedIn publications, visit:
 
 ***
 
-Last changed: **2026-03-11 15:33:18 UTC**
+Last changed: **2026-03-17 14:41:27 UTC**
