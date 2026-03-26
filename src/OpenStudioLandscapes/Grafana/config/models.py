@@ -791,13 +791,10 @@ class Config(FeatureBaseModel):
     # - [Default Paths](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/#default-paths)
     # - [Configure a Grafana Docker image](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/)
     # - Grafana itself does not store metrics. Hence, data remains on the Alloy servers.
-    #   However, it seems that Prometheus stores records in /prometheus/data
 
-    # Todo:
-    #  - [ ] This is probably not needed anymore
-    # GF_PATHS_DATA: pathlib.Path = Field(
-    #     default=pathlib.Path("{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/var/lib/grafana"),
-    # )
+    GF_PATHS_DATA: pathlib.Path = Field(
+        default=pathlib.Path("{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/var/lib/grafana"),
+    )
 
     feature_name: str = dist.name
 
@@ -977,41 +974,23 @@ class Config(FeatureBaseModel):
         return ret
 
     # EXPANDABLE PATHS
-    # @property
-    # def GF_PATHS_DATA_expanded(self) -> pathlib.Path:
-    #     LOGGER.debug(f"{self.env = }")
-    #     if self.env is None:
-    #         raise KeyError("`env` is `None`.")
-    #     LOGGER.debug(f"Expanding {self.GF_PATHS_DATA}...")
-    #     ret = pathlib.Path(
-    #         self.GF_PATHS_DATA.expanduser()  # pylint: disable=E1101
-    #         .as_posix()
-    #         .format(
-    #             **{
-    #                 "FEATURE": self.feature_name,
-    #                 **self.env,
-    #             }
-    #         )
-    #     )
-    #     return ret
-
-    # @property
-    # def prometheus_data_expanded(self) -> pathlib.Path:
-    #     LOGGER.debug(f"{self.env = }")
-    #     if self.env is None:
-    #         raise KeyError("`env` is `None`.")
-    #     LOGGER.debug(f"Expanding {self.prometheus_data}...")
-    #     ret = pathlib.Path(
-    #         self.prometheus_data.expanduser()  # pylint: disable=E1101
-    #         .as_posix()
-    #         .format(
-    #             **{
-    #                 "FEATURE": self.feature_name,
-    #                 **self.env,
-    #             }
-    #         )
-    #     )
-    #     return ret
+    @property
+    def GF_PATHS_DATA_expanded(self) -> pathlib.Path:
+        LOGGER.debug(f"{self.env = }")
+        if self.env is None:
+            raise KeyError("`env` is `None`.")
+        LOGGER.debug(f"Expanding {self.GF_PATHS_DATA}...")
+        ret = pathlib.Path(
+            self.GF_PATHS_DATA.expanduser()  # pylint: disable=E1101
+            .as_posix()
+            .format(
+                **{
+                    "FEATURE": self.feature_name,
+                    **self.env,
+                }
+            )
+        )
+        return ret
 
 
 CONFIG_STR = Config.get_docs()
