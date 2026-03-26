@@ -790,6 +790,8 @@ class Config(FeatureBaseModel):
     # Configure Grafana:
     # - [Default Paths](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/#default-paths)
     # - [Configure a Grafana Docker image](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/)
+    # - Grafana itself does not store metrics. Hence, data remains on the Alloy servers.
+    #   However, it seems that Prometheus stores records in /prometheus/data
 
     GF_PATHS_DATA: pathlib.Path = Field(
         default=pathlib.Path("{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/var/lib/grafana"),
@@ -874,6 +876,10 @@ class Config(FeatureBaseModel):
         default=9090,
         description="The Prometheus host port.",
         frozen=False,
+    )
+
+    prometheus_data: pathlib.Path = Field(
+        default=pathlib.Path("{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/prometheus/data"),
     )
 
     # grafana_mimir_port_container: PositiveInt = Field(
@@ -977,6 +983,24 @@ class Config(FeatureBaseModel):
         LOGGER.debug(f"Expanding {self.GF_PATHS_DATA}...")
         ret = pathlib.Path(
             self.GF_PATHS_DATA.expanduser()  # pylint: disable=E1101
+            .as_posix()
+            .format(
+                **{
+                    "FEATURE": self.feature_name,
+                    **self.env,
+                }
+            )
+        )
+        return ret
+
+    @property
+    def prometheus_data_expanded(self) -> pathlib.Path:
+        LOGGER.debug(f"{self.env = }")
+        if self.env is None:
+            raise KeyError("`env` is `None`.")
+        LOGGER.debug(f"Expanding {self.prometheus_data}...")
+        ret = pathlib.Path(
+            self.prometheus_data.expanduser()  # pylint: disable=E1101
             .as_posix()
             .format(
                 **{

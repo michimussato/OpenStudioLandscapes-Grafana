@@ -1329,6 +1329,7 @@ def compose_prometheus(
     volumes_dict = {
         "volumes": [
             # f"{mimir_yaml.as_posix()}:/etc/mimir/config.yaml:rw",
+            f"{CONFIG.prometheus_data_expanded.as_posix()}:/prometheus/data:rw",
             f"{prometheus_yaml.as_posix()}:/etc/prometheus/prometheus.yaml:ro",
             # f"{grafana_ini.as_posix()}:/etc/grafana/grafana.ini:ro",
             # f"{data_sources_loki.as_posix()}:/etc/grafana/provisioning/datasources/loki.yaml:ro",
@@ -1384,6 +1385,10 @@ def compose_prometheus(
                 "command": [
                     # "--config.file=/etc/mimir/config.yaml",
                     "--web.enable-remote-write-receiver",
+                    # https://prometheus.io/docs/prometheus/latest/storage/#operational-aspects
+                    "--storage.tsdb.path=/prometheus/data",
+                    "--storage.tsdb.retention.time=1w",
+                    "--storage.tsdb.retention.size=5GB",
                     "--config.file=/etc/prometheus/prometheus.yaml",
                 ],
                 **copy.deepcopy(network_dict),
