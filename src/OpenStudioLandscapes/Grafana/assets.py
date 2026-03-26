@@ -463,6 +463,12 @@ def build_docker_image_alloy(
 ) -> Generator[Output[Dict] | AssetMaterialization, None, None]:
     """ """
 
+    # Todo:
+    #  - [ ] OpenStudioLandsc…er_image_alloy
+    #        INFO
+    #        stderr: #5 39.43 /var/lib/dpkg/info/zfsutils-linux.postinst: 25: modprobe: not found
+    #  - [ ] ZFS support is not needed anymore (storage is back to ext4)
+
     env: Dict = CONFIG.env
 
     docker_config_json: pathlib.Path = (
@@ -552,12 +558,22 @@ def prometheus_yaml(
     # enable remote write
     # - https://grafana.com/docs/alloy/latest/tutorials/send-metrics-to-prometheus/#third-component-write-metrics-to-prometheus
 
+    # https://prometheus.io/docs/prometheus/latest/command-line/prometheus/#flags
     prometheus_dict = {
         "global": {
             # Set the scrape interval to every 15 seconds. Default is every 1 minute.
             "scrape_interval": "15s",
             # Evaluate rules every 15 seconds. The default is every 1 minute.
             "evaluation_interval": "15s",
+        },
+        "storage": {
+            "tsdb": {
+                "path": "data/",
+                "retention": {
+                    "time": "1w",
+                    "size": "1GB"
+                },
+            },
         },
         # Alertmanager configuration
         # "alerting": {
@@ -1386,9 +1402,9 @@ def compose_prometheus(
                     # "--config.file=/etc/mimir/config.yaml",
                     "--web.enable-remote-write-receiver",
                     # https://prometheus.io/docs/prometheus/latest/storage/#operational-aspects
-                    "--storage.tsdb.path=/prometheus/data",
-                    "--storage.tsdb.retention.time=1w",
-                    "--storage.tsdb.retention.size=5GB",
+                    # "--storage.tsdb.path=/prometheus/data",
+                    # "--storage.tsdb.retention.time=1w",
+                    # "--storage.tsdb.retention.size=5GB",
                     "--config.file=/etc/prometheus/prometheus.yaml",
                 ],
                 **copy.deepcopy(network_dict),
