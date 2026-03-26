@@ -1346,7 +1346,7 @@ def compose_prometheus(
     volumes_dict = {
         "volumes": [
             # f"{mimir_yaml.as_posix()}:/etc/mimir/config.yaml:rw",
-            f"{CONFIG.prometheus_data_expanded.as_posix()}:/prometheus/data:rw",
+            # f"{CONFIG.prometheus_data_expanded.as_posix()}:/prometheus/data:rw",
             f"{prometheus_yaml.as_posix()}:/etc/prometheus/prometheus.yaml:ro",
             # f"{grafana_ini.as_posix()}:/etc/grafana/grafana.ini:ro",
             # f"{data_sources_loki.as_posix()}:/etc/grafana/provisioning/datasources/loki.yaml:ro",
