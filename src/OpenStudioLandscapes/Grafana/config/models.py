@@ -793,9 +793,11 @@ class Config(FeatureBaseModel):
     # - Grafana itself does not store metrics. Hence, data remains on the Alloy servers.
     #   However, it seems that Prometheus stores records in /prometheus/data
 
-    GF_PATHS_DATA: pathlib.Path = Field(
-        default=pathlib.Path("{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/var/lib/grafana"),
-    )
+    # Todo:
+    #  - [ ] This is probably not needed anymore
+    # GF_PATHS_DATA: pathlib.Path = Field(
+    #     default=pathlib.Path("{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/var/lib/grafana"),
+    # )
 
     feature_name: str = dist.name
 
@@ -878,9 +880,9 @@ class Config(FeatureBaseModel):
         frozen=False,
     )
 
-    prometheus_data: pathlib.Path = Field(
-        default=pathlib.Path("{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/prometheus/data"),
-    )
+    # prometheus_data: pathlib.Path = Field(
+    #     default=pathlib.Path("{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/prometheus/data"),
+    # )
 
     # grafana_mimir_port_container: PositiveInt = Field(
     #     default=9009,
@@ -975,41 +977,41 @@ class Config(FeatureBaseModel):
         return ret
 
     # EXPANDABLE PATHS
-    @property
-    def GF_PATHS_DATA_expanded(self) -> pathlib.Path:
-        LOGGER.debug(f"{self.env = }")
-        if self.env is None:
-            raise KeyError("`env` is `None`.")
-        LOGGER.debug(f"Expanding {self.GF_PATHS_DATA}...")
-        ret = pathlib.Path(
-            self.GF_PATHS_DATA.expanduser()  # pylint: disable=E1101
-            .as_posix()
-            .format(
-                **{
-                    "FEATURE": self.feature_name,
-                    **self.env,
-                }
-            )
-        )
-        return ret
+    # @property
+    # def GF_PATHS_DATA_expanded(self) -> pathlib.Path:
+    #     LOGGER.debug(f"{self.env = }")
+    #     if self.env is None:
+    #         raise KeyError("`env` is `None`.")
+    #     LOGGER.debug(f"Expanding {self.GF_PATHS_DATA}...")
+    #     ret = pathlib.Path(
+    #         self.GF_PATHS_DATA.expanduser()  # pylint: disable=E1101
+    #         .as_posix()
+    #         .format(
+    #             **{
+    #                 "FEATURE": self.feature_name,
+    #                 **self.env,
+    #             }
+    #         )
+    #     )
+    #     return ret
 
-    @property
-    def prometheus_data_expanded(self) -> pathlib.Path:
-        LOGGER.debug(f"{self.env = }")
-        if self.env is None:
-            raise KeyError("`env` is `None`.")
-        LOGGER.debug(f"Expanding {self.prometheus_data}...")
-        ret = pathlib.Path(
-            self.prometheus_data.expanduser()  # pylint: disable=E1101
-            .as_posix()
-            .format(
-                **{
-                    "FEATURE": self.feature_name,
-                    **self.env,
-                }
-            )
-        )
-        return ret
+    # @property
+    # def prometheus_data_expanded(self) -> pathlib.Path:
+    #     LOGGER.debug(f"{self.env = }")
+    #     if self.env is None:
+    #         raise KeyError("`env` is `None`.")
+    #     LOGGER.debug(f"Expanding {self.prometheus_data}...")
+    #     ret = pathlib.Path(
+    #         self.prometheus_data.expanduser()  # pylint: disable=E1101
+    #         .as_posix()
+    #         .format(
+    #             **{
+    #                 "FEATURE": self.feature_name,
+    #                 **self.env,
+    #             }
+    #         )
+    #     )
+    #     return ret
 
 
 CONFIG_STR = Config.get_docs()

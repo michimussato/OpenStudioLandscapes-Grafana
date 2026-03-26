@@ -566,15 +566,16 @@ def prometheus_yaml(
             # Evaluate rules every 15 seconds. The default is every 1 minute.
             "evaluation_interval": "15s",
         },
-        "storage": {
-            "tsdb": {
-                "path": "data/",
-                "retention": {
-                    "time": "1w",
-                    "size": "1GB"
-                },
-            },
-        },
+        # Grafana raises Errors with these settings
+        # "storage": {
+        #     "tsdb": {
+        #         "path": "data/",
+        #         "retention": {
+        #             "time": "1w",
+        #             "size": "1GB"
+        #         },
+        #     },
+        # },
         # Alertmanager configuration
         # "alerting": {
         #     "alertmanagers": [],
