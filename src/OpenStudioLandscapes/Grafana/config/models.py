@@ -829,13 +829,19 @@ class Config(FeatureBaseModel):
 
     grafana_admin_user: str = Field(
         default="openstudiolandscapes",
-        description="The Grafana Admin username.",
+        description="https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#admin_user",
         frozen=True,
     )
 
     grafana_admin_password: str = Field(
         default="openstudiolandscapes",
-        description="The Grafana Admin password.",
+        description="https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#admin_password",
+        frozen=True,
+    )
+
+    grafana_root_url: str = Field(
+        default="http://localhost:3000",
+        description="https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#root_url",
         frozen=True,
     )
 
