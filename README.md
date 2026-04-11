@@ -8,6 +8,7 @@
       1. [Clone and Install](#clone-and-install)
    3. [Configure](#configure)
       1. [Default Configuration](#default-configuration)
+   4. [Local Development](#local-development)
 2. [External Resources](#external-resources)
    1. [Official Documentation](#official-documentation)
       1. [Grafana Alloy](#grafana-alloy)
@@ -44,7 +45,6 @@ source .venv/bin/activate
 openstudiolandscapes clone-feature --repo=https://github.com/michimussato/OpenStudioLandscapes-Grafana.git
 deactivate
 # Check the resulting console output for installation instructions
-
 ```
 
 ### Clone and Install
@@ -55,7 +55,6 @@ source .venv/bin/activate
 openstudiolandscapes clone-feature --repo=https://github.com/michimussato/OpenStudioLandscapes-Grafana.git \
     && pip install --editable ./.features/OpenStudioLandscapes-Grafana
 deactivate
-
 ```
 
 For more info on `pip` see [VCS Support of `pip`](https://pip.pypa.io/en/stable/topics/vcs-support/).
@@ -82,7 +81,6 @@ A local config store location will be created if it doesn't exist, together with
 The following settings are available in `OpenStudioLandscapes-Grafana` and are based on [`OpenStudioLandscapes-Grafana/tree/main/OpenStudioLandscapes/Grafana/config/models.py`](https://github.com/michimussato/OpenStudioLandscapes-Grafana/tree/main/OpenStudioLandscapes/Grafana/config/models.py).
 
 ### Default Configuration
-
 
 <details open>
 <summary><code>config.yml</code></summary>
@@ -353,7 +351,7 @@ grafana_dashboards:
 #
 # Type: <class 'str'>
 # Description:
-#     The Grafana Admin username.
+#     https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#admin_user
 # Required:
 #     False
 # Examples:
@@ -367,12 +365,26 @@ grafana_admin_user: openstudiolandscapes
 #
 # Type: <class 'str'>
 # Description:
-#     The Grafana Admin password.
+#     https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#admin_password
 # Required:
 #     False
 # Examples:
 #     None
 grafana_admin_password: openstudiolandscapes
+
+
+# ================
+# grafana_root_url
+# ----------------
+#
+# Type: <class 'str'>
+# Description:
+#     https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#root_url
+# Required:
+#     False
+# Examples:
+#     None
+grafana_root_url: http://localhost:3000
 
 
 # ======================
@@ -671,9 +683,19 @@ alloy_apt_packages:
 - zfsutils-linux
 ```
 
-
 </details>
 
+
+## Local Development
+
+```shell
+cd ./.features/OpenStudioLandscapes-Grafana
+python3.11 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip setuptools setuptools_scm wheel
+pip install --editable .[dev]
+dagster dev --workspace workspace.yaml
+```
 
 ***
 
@@ -769,4 +791,4 @@ To follow up on the previous LinkedIn publications, visit:
 
 ***
 
-Last changed: **2026-04-03 02:46:42 UTC**
+Last changed: **2026-04-11 01:55:55 UTC**
