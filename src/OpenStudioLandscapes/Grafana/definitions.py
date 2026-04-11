@@ -5,7 +5,6 @@ from dagster import (
 
 import OpenStudioLandscapes.Grafana.assets
 import OpenStudioLandscapes.Grafana.constants
-# from OpenStudioLandscapes.engine.features.upstream_asset_specs import assets_external
 
 assets_base = load_assets_from_modules(
     modules=[OpenStudioLandscapes.Grafana.assets],
@@ -20,6 +19,5 @@ defs = Definitions(
     assets=[
         *assets_base,
         *constants_base,
-        # *assets_external,
     ],
 )
