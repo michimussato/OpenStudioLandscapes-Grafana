@@ -1003,7 +1003,6 @@ Panel Data
 """
 
 
-
 """
 Panel JSON:
 {
@@ -1239,8 +1238,6 @@ Panel JSON:
   }
 }
 """
-
-
 
 
 # Todo
