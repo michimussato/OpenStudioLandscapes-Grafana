@@ -1,7 +1,7 @@
 {
   "id": 340,
   "type": "timeseries",
-  "title": "Farm Load Overall",
+  "title": "Farm Load Overall (CPU)",
   "gridPos": {
     "x": 0,
     "y": 0,
