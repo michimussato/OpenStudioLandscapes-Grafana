@@ -210,7 +210,8 @@
       "editorMode": "code",
       "expr": "100 * (1 - avg(rate(node_cpu_seconds_total{mode=\"idle\"}[$__rate_interval])))",
       "range": true,
-      "refId": "Farm Load Overall Avg CPU"
+      "refId": "Farm Load Overall Avg CPU",
+      "hide": true
     },
     {
       "datasource": {
@@ -246,7 +247,8 @@
       "instant": false,
       "legendFormat": "__auto",
       "range": true,
-      "refId": "Minions Avg CPU"
+      "refId": "Minions Avg CPU",
+      "hide": true
     },
     {
       "datasource": {
