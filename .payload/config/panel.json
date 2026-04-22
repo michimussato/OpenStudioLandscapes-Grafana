@@ -1,132 +1,193 @@
 {
-  "id": 340,
-  "type": "timeseries",
-  "title": "Farm Load Overall (CPU)",
-  "gridPos": {
-    "x": 0,
-    "y": 0,
-    "h": 6,
-    "w": 24
-  },
-  "fieldConfig": {
-    "defaults": {
-      "custom": {
-        "drawStyle": "line",
-        "lineInterpolation": "smooth",
-        "barAlignment": 0,
-        "barWidthFactor": 0.6,
-        "lineWidth": 1,
-        "fillOpacity": 0,
-        "gradientMode": "none",
-        "spanNulls": false,
-        "insertNulls": false,
-        "showPoints": "auto",
-        "showValues": false,
-        "pointSize": 5,
-        "stacking": {
-          "mode": "none",
-          "group": "A"
-        },
-        "axisPlacement": "auto",
-        "axisLabel": "",
-        "axisColorMode": "text",
-        "axisBorderShow": false,
-        "scaleDistribution": {
-          "type": "linear"
-        },
-        "axisCenteredZero": false,
-        "hideFrom": {
-          "tooltip": false,
-          "viz": false,
-          "legend": false
-        },
-        "thresholdsStyle": {
-          "mode": "off"
-        },
-        "lineStyle": {
-          "fill": "solid"
-        }
-      },
-      "color": {
-        "mode": "thresholds",
-        "seriesBy": "last"
-      },
-      "mappings": [],
-      "thresholds": {
-        "mode": "percentage",
-        "steps": [
+  "kind": "Panel",
+  "spec": {
+    "id": 340,
+    "title": "Farm Load Overall (CPU)",
+    "description": "",
+    "links": [],
+    "data": {
+      "kind": "QueryGroup",
+      "spec": {
+        "queries": [
           {
-            "color": "green",
-            "value": null
+            "kind": "PanelQuery",
+            "spec": {
+              "query": {
+                "kind": "DataQuery",
+                "version": "v0",
+                "group": "prometheus",
+                "datasource": {
+                  "name": "PBFA97CFB590B2093"
+                },
+                "spec": {
+                  "editorMode": "code",
+                  "expr": "100 * (1 - avg(rate(node_cpu_seconds_total{mode=\"idle\"}[$__rate_interval])))",
+                  "range": true
+                }
+              },
+              "refId": "Farm Load Overall Avg CPU",
+              "hidden": true
+            }
           },
           {
-            "color": "red",
-            "value": 80
+            "kind": "PanelQuery",
+            "spec": {
+              "query": {
+                "kind": "DataQuery",
+                "version": "v0",
+                "group": "prometheus",
+                "datasource": {
+                  "name": "PBFA97CFB590B2093"
+                },
+                "spec": {
+                  "editorMode": "code",
+                  "expr": "100 * (1 - avg(rate(node_cpu_seconds_total{instance=~\"^miniboss-alloy-default$\", mode=\"idle\"}[$__rate_interval])))",
+                  "instant": false,
+                  "legendFormat": "__auto",
+                  "range": true
+                }
+              },
+              "refId": "Miniboss Avg CPU",
+              "hidden": false
+            }
+          },
+          {
+            "kind": "PanelQuery",
+            "spec": {
+              "query": {
+                "kind": "DataQuery",
+                "version": "v0",
+                "group": "prometheus",
+                "datasource": {
+                  "name": "PBFA97CFB590B2093"
+                },
+                "spec": {
+                  "editorMode": "code",
+                  "expr": "100 * (1 - max(rate(node_cpu_seconds_total{instance=~\"^minion[0-9]{2}-alloy-worker$\",  mode=\"idle\"}[$__rate_interval])))",
+                  "instant": false,
+                  "legendFormat": "__auto",
+                  "range": true
+                }
+              },
+              "refId": "Minions Min CPU",
+              "hidden": false
+            }
+          },
+          {
+            "kind": "PanelQuery",
+            "spec": {
+              "query": {
+                "kind": "DataQuery",
+                "version": "v0",
+                "group": "prometheus",
+                "datasource": {
+                  "name": "PBFA97CFB590B2093"
+                },
+                "spec": {
+                  "editorMode": "code",
+                  "expr": "100 * (1 - avg(rate(node_cpu_seconds_total{instance=~\"^minion[0-9]{2}-alloy-worker$\",  mode=\"idle\"}[$__rate_interval])))",
+                  "instant": false,
+                  "legendFormat": "__auto",
+                  "range": true
+                }
+              },
+              "refId": "Minions Avg CPU",
+              "hidden": false
+            }
+          },
+          {
+            "kind": "PanelQuery",
+            "spec": {
+              "query": {
+                "kind": "DataQuery",
+                "version": "v0",
+                "group": "prometheus",
+                "datasource": {
+                  "name": "PBFA97CFB590B2093"
+                },
+                "spec": {
+                  "editorMode": "code",
+                  "expr": "100 * (1 - min(rate(node_cpu_seconds_total{instance=~\"^minion[0-9]{2}-alloy-worker$\",  mode=\"idle\"}[$__rate_interval])))",
+                  "instant": false,
+                  "legendFormat": "__auto",
+                  "range": true
+                }
+              },
+              "refId": "Minions Max CPU",
+              "hidden": false
+            }
           }
-        ]
-      },
-      "max": 100,
-      "min": 0,
-      "unit": "percent"
+        ],
+        "transformations": [],
+        "queryOptions": {}
+      }
     },
-    "overrides": [
-      {
-        "matcher": {
-          "id": "byName",
-          "options": "100 * (1 - min(rate(node_cpu_seconds_total{instance=~\"^minion[0-9]{2}-alloy-worker$\",  mode=\"idle\"}[1m0s])))"
-        },
-        "properties": [
-          {
-            "id": "custom.fillOpacity",
-            "value": 0
+    "vizConfig": {
+      "kind": "VizConfig",
+      "group": "timeseries",
+      "version": "13.0.1",
+      "spec": {
+        "options": {
+          "tooltip": {
+            "mode": "single",
+            "sort": "none",
+            "hideZeros": false
           },
-          {
-            "id": "custom.fillBelowTo",
-            "value": "100 * (1 - max(rate(node_cpu_seconds_total{instance=~\"^minion[0-9]{2}-alloy-worker$\",  mode=\"idle\"}[1m0s])))"
+          "legend": {
+            "showLegend": false,
+            "displayMode": "list",
+            "placement": "bottom",
+            "calcs": []
           },
-          {
-            "id": "custom.drawStyle",
-            "value": "bars"
-          },
-          {
-            "id": "displayName",
-            "value": "Minions Max"
-          },
-          {
-            "id": "custom.showPoints",
-            "value": "never"
-          },
-          {
-            "id": "custom.gradientMode",
-            "value": "scheme"
+          "annotations": {
+            "multiLane": false,
+            "clustering": -1
           }
-        ]
-      },
-      {
-        "matcher": {
-          "id": "byName",
-          "options": "100 * (1 - avg(rate(node_cpu_seconds_total{instance=~\"^minion[0-9]{2}-alloy-worker$\",  mode=\"idle\"}[1m0s])))"
         },
-        "properties": [
-          {
-            "id": "displayName",
-            "value": "Minions Avg"
-          },
-          {
-            "id": "custom.pointSize",
-            "value": 11
-          },
-          {
-            "id": "custom.drawStyle",
-            "value": "points"
-          },
-          {
-            "id": "custom.gradientMode",
-            "value": "scheme"
-          },
-          {
-            "id": "thresholds",
-            "value": {
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "smooth",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "lineWidth": 1,
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "spanNulls": false,
+              "insertNulls": false,
+              "showPoints": "auto",
+              "showValues": false,
+              "pointSize": 5,
+              "stacking": {
+                "mode": "none",
+                "group": "A"
+              },
+              "axisPlacement": "auto",
+              "axisLabel": "",
+              "axisColorMode": "text",
+              "axisBorderShow": false,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "axisCenteredZero": false,
+              "hideFrom": {
+                "tooltip": false,
+                "viz": false,
+                "legend": false
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              },
+              "lineStyle": {
+                "fill": "solid"
+              }
+            },
+            "color": {
+              "mode": "thresholds",
+              "seriesBy": "last"
+            },
+            "thresholds": {
               "mode": "percentage",
               "steps": [
                 {
@@ -134,150 +195,171 @@
                   "value": null
                 },
                 {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "matcher": {
-          "id": "byName",
-          "options": "100 * (1 - max(rate(node_cpu_seconds_total{instance=~\"^minion[0-9]{2}-alloy-worker$\",  mode=\"idle\"}[1m0s])))"
-        },
-        "properties": [
-          {
-            "id": "displayName",
-            "value": "Minions Min"
-          },
-          {
-            "id": "custom.showPoints",
-            "value": "never"
-          },
-          {
-            "id": "custom.lineWidth",
-            "value": 0
-          }
-        ]
-      },
-      {
-        "matcher": {
-          "id": "byName",
-          "options": "100 * (1 - avg(rate(node_cpu_seconds_total{instance=~\"^miniboss-alloy-default$\", mode=\"idle\"}[1m0s])))"
-        },
-        "properties": [
-          {
-            "id": "displayName",
-            "value": "Miniboss"
-          },
-          {
-            "id": "custom.showPoints",
-            "value": "never"
-          },
-          {
-            "id": "custom.gradientMode",
-            "value": "scheme"
-          },
-          {
-            "id": "thresholds",
-            "value": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "super-light-purple",
-                  "value": null
+                  "value": 70,
+                  "color": "#EAB839"
                 },
                 {
-                  "color": "dark-purple",
+                  "color": "red",
                   "value": 80
+                },
+                {
+                  "value": 90,
+                  "color": "dark-red"
+                }
+              ]
+            },
+            "unit": "percent",
+            "min": 0,
+            "max": 100
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "100 * (1 - min(rate(node_cpu_seconds_total{instance=~\"^minion[0-9]{2}-alloy-worker$\",  mode=\"idle\"}[1m0s])))"
+              },
+              "properties": [
+                {
+                  "id": "custom.fillOpacity",
+                  "value": 0
+                },
+                {
+                  "id": "custom.fillBelowTo",
+                  "value": "100 * (1 - max(rate(node_cpu_seconds_total{instance=~\"^minion[0-9]{2}-alloy-worker$\",  mode=\"idle\"}[1m0s])))"
+                },
+                {
+                  "id": "custom.drawStyle",
+                  "value": "bars"
+                },
+                {
+                  "id": "displayName",
+                  "value": "Minions Max"
+                },
+                {
+                  "id": "custom.showPoints",
+                  "value": "never"
+                },
+                {
+                  "id": "custom.gradientMode",
+                  "value": "scheme"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "100 * (1 - avg(rate(node_cpu_seconds_total{instance=~\"^minion[0-9]{2}-alloy-worker$\",  mode=\"idle\"}[1m0s])))"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Minions Avg"
+                },
+                {
+                  "id": "custom.pointSize",
+                  "value": 11
+                },
+                {
+                  "id": "custom.drawStyle",
+                  "value": "points"
+                },
+                {
+                  "id": "custom.gradientMode",
+                  "value": "scheme"
+                },
+                {
+                  "id": "thresholds",
+                  "value": {
+                    "mode": "percentage",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "value": 70,
+                        "color": "#EAB839"
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      },
+                      {
+                        "value": 90,
+                        "color": "dark-red"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "100 * (1 - max(rate(node_cpu_seconds_total{instance=~\"^minion[0-9]{2}-alloy-worker$\",  mode=\"idle\"}[1m0s])))"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Minions Min"
+                },
+                {
+                  "id": "custom.showPoints",
+                  "value": "never"
+                },
+                {
+                  "id": "custom.lineWidth",
+                  "value": 0
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "100 * (1 - avg(rate(node_cpu_seconds_total{instance=~\"^miniboss-alloy-default$\", mode=\"idle\"}[1m0s])))"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Miniboss"
+                },
+                {
+                  "id": "custom.showPoints",
+                  "value": "never"
+                },
+                {
+                  "id": "custom.gradientMode",
+                  "value": "scheme"
+                },
+                {
+                  "id": "thresholds",
+                  "value": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "super-light-purple",
+                        "value": null
+                      },
+                      {
+                        "color": "purple",
+                        "value": 80
+                      },
+                      {
+                        "value": 90,
+                        "color": "dark-purple"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "custom.fillOpacity",
+                  "value": 15
                 }
               ]
             }
-          }
-        ]
+          ]
+        }
       }
-    ]
-  },
-  "pluginVersion": "12.4.2",
-  "targets": [
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "editorMode": "code",
-      "expr": "100 * (1 - avg(rate(node_cpu_seconds_total{mode=\"idle\"}[$__rate_interval])))",
-      "range": true,
-      "refId": "Farm Load Overall Avg CPU",
-      "hide": true
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "editorMode": "code",
-      "expr": "100 * (1 - avg(rate(node_cpu_seconds_total{instance=~\"^miniboss-alloy-default$\", mode=\"idle\"}[$__rate_interval])))",
-      "instant": false,
-      "legendFormat": "__auto",
-      "range": true,
-      "refId": "Miniboss Avg CPU"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "editorMode": "code",
-      "expr": "100 * (1 - max(rate(node_cpu_seconds_total{instance=~\"^minion[0-9]{2}-alloy-worker$\",  mode=\"idle\"}[$__rate_interval])))",
-      "instant": false,
-      "legendFormat": "__auto",
-      "range": true,
-      "refId": "Minions Min CPU"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "editorMode": "code",
-      "expr": "100 * (1 - avg(rate(node_cpu_seconds_total{instance=~\"^minion[0-9]{2}-alloy-worker$\",  mode=\"idle\"}[$__rate_interval])))",
-      "instant": false,
-      "legendFormat": "__auto",
-      "range": true,
-      "refId": "Minions Avg CPU",
-      "hide": true
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "editorMode": "code",
-      "expr": "100 * (1 - min(rate(node_cpu_seconds_total{instance=~\"^minion[0-9]{2}-alloy-worker$\",  mode=\"idle\"}[$__rate_interval])))",
-      "instant": false,
-      "legendFormat": "__auto",
-      "range": true,
-      "refId": "Minions Max CPU"
-    }
-  ],
-  "datasource": {
-    "type": "prometheus",
-    "uid": "PBFA97CFB590B2093"
-  },
-  "options": {
-    "tooltip": {
-      "mode": "single",
-      "sort": "none",
-      "hideZeros": false
-    },
-    "legend": {
-      "showLegend": false,
-      "displayMode": "list",
-      "placement": "bottom",
-      "calcs": []
     }
   }
 }
