@@ -8,7 +8,6 @@ from dagster import get_dagster_logger
 from pydantic import (
     Field,
     PositiveInt,
-    # computed_field,
 )
 
 LOGGER = get_dagster_logger(__name__)
@@ -965,7 +964,6 @@ class Config(FeatureBaseModel):
     #     return ret
 
     # SUBSTITUTED TEMPLATE
-    # @computed_field
     @property
     def alloy_config(self) -> str:
         template = AlloyConfigTemplate(self.alloy_config_template)
@@ -982,7 +980,6 @@ class Config(FeatureBaseModel):
         return ret
 
     # EXPANDABLE PATHS
-    # @computed_field
     @property
     def GF_PATHS_DATA_expanded(self) -> pathlib.Path:
         LOGGER.debug(f"{self.env = }")
