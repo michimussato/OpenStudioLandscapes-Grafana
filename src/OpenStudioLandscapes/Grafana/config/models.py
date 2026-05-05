@@ -5,13 +5,12 @@ from string import Template
 from typing import Dict, List, Union
 
 from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
-from OpenStudioLandscapes.engine.logging.loggers import FEATURE_LOGGER as LOGGER
 from pydantic import (
     Field,
     PositiveInt,
 )
 
-from OpenStudioLandscapes.Grafana import constants, dist
+from OpenStudioLandscapes.Grafana import constants, dist, LOGGER
 
 
 class AlloyConfigTemplate(Template):
