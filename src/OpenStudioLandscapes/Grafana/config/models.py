@@ -10,7 +10,7 @@ from pydantic import (
     PositiveInt,
 )
 
-from OpenStudioLandscapes.Grafana import constants, dist, LOGGER
+from OpenStudioLandscapes.Grafana import LOGGER, constants, dist
 
 
 class AlloyConfigTemplate(Template):
