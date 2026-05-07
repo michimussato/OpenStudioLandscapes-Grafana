@@ -11,9 +11,9 @@ from pydantic import (
 )
 
 from OpenStudioLandscapes.Grafana import (
-    dist,
     LOGGER,
     constants,
+    dist,
 )
 
 

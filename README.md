@@ -87,600 +87,217 @@ The following settings are available in `OpenStudioLandscapes-Grafana` and are b
 
 
 ```yaml
-# ===
-# env
-# ---
-#
-# Type: typing.Dict
-# Base Class Info:
-#     Required:
-#         False
-#     Description:
-#         None
-#     Default value:
-#         PydanticUndefined
-# Description:
-#     None
-# Required:
-#     False
-# Examples:
-#     None
+$defs:
+  GrafanaDockerImage:
+    enum:
+    - docker.io/grafana/grafana-enterprise
+    - docker.io/grafana/grafana-oss
+    - docker.io/grafana/grafana
+    title: GrafanaDockerImage
+    type: string
+  GrafanaDockerImageVersion:
+    enum:
+    - latest
+    - latest-ubuntu
+    - main
+    - main-ubuntu
+    - '11.6'
+    - 11.6-ubuntu
+    title: GrafanaDockerImageVersion
+    type: string
+  GrafanaLogLevel:
+    enum:
+    - debug
+    - info
+    - main
+    - main-ubuntu
+    - '11.6'
+    - 11.6-ubuntu
+    title: GrafanaLogLevel
+    type: string
+properties:
+  GF_PATHS_DATA:
+    default: '{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/var/lib/grafana'
+    format: path
+    title: Gf Paths Data
+    type: string
+  alloy_apt_packages:
+    default:
+    - zfsutils-linux
+    items:
+      type: string
+    title: Alloy Apt Packages
+    type: array
+  alloy_image:
+    default: docker.io/grafana/alloy:latest
+    title: Alloy Image
+    type: string
+  compose_scope:
+    default: default
+    examples:
+    - default
+    - license_server
+    - worker
+    title: Compose Scope
+    type: string
+  docker_compose:
+    default: '{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml'
+    description: The path to the `docker-compose.yml` file.
+    format: path
+    title: Docker Compose
+    type: string
+  enabled:
+    default: true
+    description: Whether the Feature is enabled or not.
+    title: Enabled
+    type: boolean
+  endpoint_loki:
+    default: http://loki
+    title: Endpoint Loki
+    type: string
+  endpoint_prometheus:
+    default: http://prometheus
+    title: Endpoint Prometheus
+    type: string
+  env:
+    additionalProperties: true
+    title: Env
+    type: object
+  feature_name:
+    default: OpenStudioLandscapes-Grafana
+    title: Feature Name
+    type: string
+  grafana_admin_password:
+    default: openstudiolandscapes
+    description: https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#admin_password
+    title: Grafana Admin Password
+    type: string
+  grafana_admin_user:
+    default: openstudiolandscapes
+    description: https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#admin_user
+    title: Grafana Admin User
+    type: string
+  grafana_dashboards:
+    additionalProperties:
+      additionalProperties:
+        anyOf:
+        - type: string
+        - type: integer
+        - type: 'null'
+      type: object
+    default:
+      Node Exporter Full:
+        id: 1860
+        url: https://grafana.com/api/dashboards/1860/revisions/42/download
+      cAdvisor Docker Insights:
+        id: 19908
+        url: https://grafana.com/api/dashboards/19908/revisions/1/download
+    title: Grafana Dashboards
+    type: object
+  grafana_image:
+    $ref: '#/$defs/GrafanaDockerImage'
+    default: docker.io/grafana/grafana
+    examples:
+    - enterprise
+    - oss_legacy
+    - oss
+  grafana_image_version:
+    $ref: '#/$defs/GrafanaDockerImageVersion'
+    default: latest-ubuntu
+    examples:
+    - latest
+    - latest_ubuntu
+    - main
+    - main_ubuntu
+    - version_11_6
+    - version_11_6_ubuntu
+  grafana_loki_image:
+    default: docker.io/grafana/loki:latest
+    title: Grafana Loki Image
+    type: string
+  grafana_loki_loglevel:
+    $ref: '#/$defs/GrafanaLogLevel'
+    default: info
+    description: The Grafana Loki loglevel.
+    examples:
+    - DEBUG
+    - INFO
+    - main
+    - main_ubuntu
+    - version_11_6
+    - version_11_6_ubuntu
+  grafana_loki_port_container:
+    default: 3100
+    description: The Grafana Loki container port.
+    exclusiveMinimum: 0
+    title: Grafana Loki Port Container
+    type: integer
+  grafana_loki_port_host:
+    default: 3100
+    description: The Grafana Loki host port.
+    exclusiveMinimum: 0
+    title: Grafana Loki Port Host
+    type: integer
+  grafana_port_container:
+    default: 3000
+    description: The Grafana container port.
+    exclusiveMinimum: 0
+    title: Grafana Port Container
+    type: integer
+  grafana_port_host:
+    default: 3030
+    description: The Grafana host port.
+    exclusiveMinimum: 0
+    title: Grafana Port Host
+    type: integer
+  grafana_root_url:
+    default: http://localhost:3000
+    description: https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#root_url
+    title: Grafana Root Url
+    type: string
+  group_name:
+    default: OpenStudioLandscapes_Grafana
+    title: Group Name
+    type: string
+  key_prefixes:
+    default:
+    - OpenStudioLandscapes_Grafana
+    items:
+      type: string
+    title: Key Prefixes
+    type: array
+  local_bind_volumes:
+    description: Here you can define Feature specific, arbitrary, absolute bind volume
+      mappings.
+    items:
+      type: string
+    title: Local Bind Volumes
+    type: array
+  local_environment_variables:
+    additionalProperties:
+      type: string
+    description: Here you can define Feature specific, arbitrary environment variables.
+    title: Local Environment Variables
+    type: object
+  prometheus_image:
+    default: docker.io/prom/prometheus:main
+    title: Prometheus Image
+    type: string
+  prometheus_port_container:
+    default: 9090
+    description: The Prometheus container port.
+    exclusiveMinimum: 0
+    title: Prometheus Port Container
+    type: integer
+  prometheus_port_host:
+    default: 9090
+    description: The Prometheus host port.
+    exclusiveMinimum: 0
+    title: Prometheus Port Host
+    type: integer
+title: Config
+type: object
 
-
-# ==================
-# local_bind_volumes
-# ------------------
-#
-# Type: typing.List[str]
-# Base Class Info:
-#     Required:
-#         False
-#     Description:
-#         Here you can define Feature specific, arbitrary, absolute bind volume mappings.
-#     Default value:
-#         PydanticUndefined
-# Description:
-#     Here you can define Feature specific, arbitrary, absolute bind volume mappings.
-# Required:
-#     False
-# Examples:
-#     None
-
-
-# ===========================
-# local_environment_variables
-# ---------------------------
-#
-# Type: typing.Dict[str, str]
-# Base Class Info:
-#     Required:
-#         False
-#     Description:
-#         Here you can define Feature specific, arbitrary environment variables.
-#     Default value:
-#         PydanticUndefined
-# Description:
-#     Here you can define Feature specific, arbitrary environment variables.
-# Required:
-#     False
-# Examples:
-#     None
-
-
-# =============
-# config_engine
-# -------------
-#
-# Type: <class 'OpenStudioLandscapes.engine.config.models.ConfigEngine'>
-# Base Class Info:
-#     Required:
-#         False
-#     Description:
-#         None
-#     Default value:
-#         None
-# Description:
-#     None
-# Required:
-#     False
-# Examples:
-#     None
-
-
-# ============
-# distribution
-# ------------
-#
-# Type: <class 'importlib.metadata.Distribution'>
-# Base Class Info:
-#     Required:
-#         False
-#     Description:
-#         None
-#     Default value:
-#         None
-# Description:
-#     None
-# Required:
-#     False
-# Examples:
-#     None
-
-
-# ==========
-# group_name
-# ----------
-#
-# Type: <class 'str'>
-# Base Class Info:
-#     Required:
-#         True
-#     Description:
-#         Dagster Group name. This will represent the group node name. See https://docs.dagster.io/api/dagster/assets for more information
-#     Default value:
-#         PydanticUndefined
-# Description:
-#     None
-# Required:
-#     False
-# Examples:
-#     None
-group_name: OpenStudioLandscapes_Grafana
-
-
-# ============
-# key_prefixes
-# ------------
-#
-# Type: typing.List[str]
-# Base Class Info:
-#     Required:
-#         True
-#     Description:
-#         Dagster Asset key prefixes. This will be reflected in the nesting (directory structure) of the Asset. See https://docs.dagster.io/api/dagster/assets for more information
-#     Default value:
-#         PydanticUndefined
-# Description:
-#     None
-# Required:
-#     False
-# Examples:
-#     None
-key_prefixes:
-- OpenStudioLandscapes_Grafana
-
-
-# =======
-# enabled
-# -------
-#
-# Type: <class 'bool'>
-# Base Class Info:
-#     Required:
-#         False
-#     Description:
-#         Whether the Feature is enabled or not.
-#     Default value:
-#         True
-# Description:
-#     Whether the Feature is enabled or not.
-# Required:
-#     False
-# Examples:
-#     None
-
-
-# =============
-# compose_scope
-# -------------
-#
-# Type: <class 'str'>
-# Base Class Info:
-#     Required:
-#         False
-#     Description:
-#         None
-#     Default value:
-#         default
-# Description:
-#     None
-# Required:
-#     False
-# Examples:
-#     ['default', 'license_server', 'worker']
-
-
-# ============
-# feature_name
-# ------------
-#
-# Type: <class 'str'>
-# Base Class Info:
-#     Required:
-#         True
-#     Description:
-#         The name of the feature. It is derived from the `OpenStudioLandscapes.<Feature>.dist` attribute.
-#     Default value:
-#         PydanticUndefined
-# Description:
-#     None
-# Required:
-#     False
-# Examples:
-#     None
-feature_name: OpenStudioLandscapes-Grafana
-
-
-# ==============
-# docker_compose
-# --------------
-#
-# Type: <class 'pathlib.Path'>
-# Base Class Info:
-#     Required:
-#         False
-#     Description:
-#         The path to the `docker-compose.yml` file.
-#     Default value:
-#         {DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml
-# Description:
-#     The path to the `docker-compose.yml` file.
-# Required:
-#     False
-# Examples:
-#     None
-
-
-# =============
-# GF_PATHS_DATA
-# -------------
-#
-# Type: <class 'pathlib.Path'>
-# Description:
-#     None
-# Required:
-#     False
-# Examples:
-#     None
-GF_PATHS_DATA: '{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/var/lib/grafana'
-
-
-# ==================
-# grafana_dashboards
-# ------------------
-#
-# Type: typing.Dict[str, typing.Dict[str, typing.Union[str, int, NoneType]]]
-# Description:
-#     None
-# Required:
-#     False
-# Examples:
-#     None
-grafana_dashboards:
-  Node Exporter Full:
-    id: 1860
-    url: https://grafana.com/api/dashboards/1860/revisions/42/download
-  cAdvisor Docker Insights:
-    id: 19908
-    url: https://grafana.com/api/dashboards/19908/revisions/1/download
-
-
-# ==================
-# grafana_admin_user
-# ------------------
-#
-# Type: <class 'str'>
-# Description:
-#     https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#admin_user
-# Required:
-#     False
-# Examples:
-#     None
-grafana_admin_user: openstudiolandscapes
-
-
-# ======================
-# grafana_admin_password
-# ----------------------
-#
-# Type: <class 'str'>
-# Description:
-#     https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#admin_password
-# Required:
-#     False
-# Examples:
-#     None
-grafana_admin_password: openstudiolandscapes
-
-
-# ================
-# grafana_root_url
-# ----------------
-#
-# Type: <class 'str'>
-# Description:
-#     https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#root_url
-# Required:
-#     False
-# Examples:
-#     None
-grafana_root_url: http://localhost:3000
-
-
-# ======================
-# grafana_port_container
-# ----------------------
-#
-# Type: <class 'int'>
-# Description:
-#     The Grafana container port.
-# Required:
-#     False
-# Examples:
-#     None
-grafana_port_container: 3000
-
-
-# =================
-# grafana_port_host
-# -----------------
-#
-# Type: <class 'int'>
-# Description:
-#     The Grafana host port.
-# Required:
-#     False
-# Examples:
-#     None
-grafana_port_host: 3030
-
-
-# ===========================
-# grafana_loki_port_container
-# ---------------------------
-#
-# Type: <class 'int'>
-# Description:
-#     The Grafana Loki container port.
-# Required:
-#     False
-# Examples:
-#     None
-grafana_loki_port_container: 3100
-
-
-# ======================
-# grafana_loki_port_host
-# ----------------------
-#
-# Type: <class 'int'>
-# Description:
-#     The Grafana Loki host port.
-# Required:
-#     False
-# Examples:
-#     None
-grafana_loki_port_host: 3100
-
-
-# =====================
-# grafana_loki_loglevel
-# ---------------------
-#
-# Type: <enum 'GrafanaLogLevel'>
-# Description:
-#     The Grafana Loki loglevel.
-# Required:
-#     False
-# Examples:
-#     ['DEBUG', 'INFO', 'main', 'main_ubuntu', 'version_11_6', 'version_11_6_ubuntu']
-grafana_loki_loglevel: info
-
-
-# =========================
-# prometheus_port_container
-# -------------------------
-#
-# Type: <class 'int'>
-# Description:
-#     The Prometheus container port.
-# Required:
-#     False
-# Examples:
-#     None
-prometheus_port_container: 9090
-
-
-# ====================
-# prometheus_port_host
-# --------------------
-#
-# Type: <class 'int'>
-# Description:
-#     The Prometheus host port.
-# Required:
-#     False
-# Examples:
-#     None
-prometheus_port_host: 9090
-
-
-# =============
-# grafana_image
-# -------------
-#
-# Type: <enum 'GrafanaDockerImage'>
-# Description:
-#     None
-# Required:
-#     False
-# Examples:
-#     ['enterprise', 'oss_legacy', 'oss']
-grafana_image: docker.io/grafana/grafana
-
-
-# =====================
-# grafana_image_version
-# ---------------------
-#
-# Type: <enum 'GrafanaDockerImageVersion'>
-# Description:
-#     None
-# Required:
-#     False
-# Examples:
-#     ['latest', 'latest_ubuntu', 'main', 'main_ubuntu', 'version_11_6', 'version_11_6_ubuntu']
-grafana_image_version: latest-ubuntu
-
-
-# ==================
-# grafana_loki_image
-# ------------------
-#
-# Type: <class 'str'>
-# Description:
-#     None
-# Required:
-#     False
-# Examples:
-#     None
-grafana_loki_image: docker.io/grafana/loki:latest
-
-
-# ================
-# prometheus_image
-# ----------------
-#
-# Type: <class 'str'>
-# Description:
-#     None
-# Required:
-#     False
-# Examples:
-#     None
-prometheus_image: docker.io/prom/prometheus:main
-
-
-# ===========
-# alloy_image
-# -----------
-#
-# Type: <class 'str'>
-# Description:
-#     None
-# Required:
-#     False
-# Examples:
-#     None
-alloy_image: docker.io/grafana/alloy:latest
-
-
-# ===================
-# endpoint_prometheus
-# -------------------
-#
-# Type: <class 'str'>
-# Description:
-#     None
-# Required:
-#     False
-# Examples:
-#     None
-endpoint_prometheus: http://prometheus
-
-
-# =============
-# endpoint_loki
-# -------------
-#
-# Type: <class 'str'>
-# Description:
-#     None
-# Required:
-#     False
-# Examples:
-#     None
-endpoint_loki: http://loki
-
-
-# =====================
-# alloy_config_template
-# ---------------------
-#
-# Type: <enum 'GrafanaAlloyConfigs'>
-# Description:
-#     None
-# Required:
-#     False
-# Examples:
-#     None
-alloy_config_template: "\n// ###############################\n// #### Metrics Configuration\
-  \ ####\n// ###############################\n\n// Host Cadvisor on the Docker socket\
-  \ to expose container metrics.\nprometheus.exporter.cadvisor \"example\" {\n  docker_only\
-  \ = true\n}\n\ndiscovery.relabel \"example\" {\n  targets = prometheus.exporter.cadvisor.example.targets\n\
-  \n  rule {\n    target_label = \"job\"\n    replacement  = \"integrations/docker\"\
-  \n  }\n\n  rule {\n    target_label = \"instance\"\n    replacement  = constants.hostname\n\
-  \  }\n}\n\n// Configure a prometheus.scrape component to collect cadvisor metrics.\n\
-  prometheus.scrape \"scraper\" {\n  targets    = discovery.relabel.example.output\n\
-  \  forward_to = [ prometheus.remote_write.demo.receiver ]\n\n  scrape_interval =\
-  \ \"10s\"\n}\n\n// Configure a prometheus.remote_write component to send metrics\
-  \ to a Prometheus server.\n// - https://grafana.com/docs/alloy/latest/reference/components/prometheus/prometheus.remote_write/\n\
-  prometheus.remote_write \"demo\" {\n  endpoint {\n    // Endpoints\"\n    // - https://prometheus.io/docs/prometheus/latest/querying/api/\n\
-  \    //\n    // Verify operational:\n    // - $$endpoint_prometheus:$$port_prometheus/api/v1/status/config\n\
-  \    url = \"$$endpoint_prometheus:$$port_prometheus/api/v1/write\"\n    // basic_auth\
-  \ {\n    //   username = \"admin\"\n    //   password = \"admin\"\n    // }\n  }\n\
-  }\n\ndiscovery.relabel \"metrics\" {\n  targets = prometheus.exporter.unix.metrics.targets\n\
-  \  rule {\n    target_label = \"instance\"\n    replacement = constants.hostname\n\
-  \  }\n  rule {\n    target_label = \"job\"\n    replacement = string.format(\"%s-metrics\"\
-  , constants.hostname)\n  }\n}\n\nprometheus.exporter.unix \"metrics\" {\n  disable_collectors\
-  \ = [\"ipvs\", \"btrfs\", \"infiniband\", \"xfs\", \"zfs\"]\n  enable_collectors\
-  \ = [\"meminfo\"]\n  filesystem {\n    fs_types_exclude = \"^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|tmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$\"\
-  \n    mount_points_exclude = \"^/(dev|proc|run/credentials/.+|sys|var/lib/docker/.+)($|/)\"\
-  \n    mount_timeout = \"5s\"\n  }\n  netclass {\n    ignored_devices = \"^(veth.*|cali.*|[a-f0-9]{15})$\"\
-  \n  }\n  netdev {\n    device_exclude = \"^(veth.*|cali.*|[a-f0-9]{15})$\"\n  }\n\
-  }\n\nprometheus.scrape \"metrics\" {\n  scrape_interval = \"15s\"\n  targets = discovery.relabel.metrics.output\n\
-  \  forward_to = [prometheus.remote_write.demo.receiver]\n}\n\n// ###############################\n\
-  // #### Logging Configuration ####\n// ###############################\n\n// Discover\
-  \ Docker containers and extract metadata.\ndiscovery.docker \"linux\" {\n  host\
-  \ = \"unix:///var/run/docker.sock\"\n}\n\n// Define a relabeling rule to create\
-  \ a service name from the container name.\ndiscovery.relabel \"docker\" {\n  targets\
-  \ = []\n\n  rule {\n    source_labels = [\"__meta_docker_container_name\"]\n   \
-  \ regex = \"/(.*)\"\n    target_label = \"container_name\"\n  }\n\n  rule {\n  \
-  \  target_label = \"instance\"\n    replacement  = constants.hostname\n  }\n}\n\n\
-  // Configure a loki.source.docker component to collect logs from Docker containers.\n\
-  loki.source.docker \"docker\" {\n  host       = \"unix:///var/run/docker.sock\"\n\
-  \  targets    = discovery.docker.linux.targets\n  relabel_rules = discovery.relabel.docker.rules\n\
-  \  forward_to = [loki.write.local.receiver]\n}\n\n// // /var/logs\n// \n// local.file_match\
-  \ \"system\" {\n//   path_targets = [\n//     {\n//       __address__ = \"localhost\"\
-  ,\n//       __path__ = \"/var/log/*.log\",\n//       job = \"varlogs\",\n//    \
-  \ },\n//   ]\n// }\n// \n// loki.source.file \"system\" {\n//   targets = local.file_match.system.targets\n\
-  //   forward_to = [\n//     loki.write.local.receiver,\n//   ]\n//   legacy_positions_file\
-  \ = \"/tmp/positions.yaml\"\n// }\n\n// journal\n\n// Collect logs from systemd\
-  \ journal for node_exporter integration\nloki.source.journal \"journal\" {\n  //\
-  \ Only collect logs from the last 24 hours\n  max_age       = \"24h0m0s\"\n  //\
-  \ Apply relabeling rules to the logs\n  relabel_rules = discovery.relabel.journal.rules\n\
-  \  // Send logs to the local Loki instance\n  forward_to    = [loki.write.local.receiver]\n\
-  \  // if alloy is running in container, we \n  // need to add the following path\n\
-  \  path = \"/var/log/journal\"\n  labels = {\n    component = string.format(\"%s-journal\"\
-  , constants.hostname),\n  }\n}\n\n// Define which log files to collect for node_exporter\n\
-  local.file_match \"system\" {\n  path_targets = [{\n    // Target localhost for\
-  \ log collection\n    __address__ = \"localhost\",\n    // Collect standard system\
-  \ logs\n    __path__ = \"/var/log/{syslog,messages,*.log}\",\n    // Add instance\
-  \ label with hostname\n    instance = constants.hostname,\n    // Add job label\
-  \ for logs\n    job = string.format(\"%s-logs\", constants.hostname),\n  }]\n}\n\
-  \n// Define relabeling rules for systemd journal logs\ndiscovery.relabel \"journal\"\
-  \ {\n  targets = []\n\n  rule {\n    // Extract systemd unit information into a\
-  \ label\n    source_labels = [\"__journal__systemd_unit\"]\n    target_label  =\
-  \ \"unit\"\n  }\n\n  rule {\n    // Extract boot ID information into a label\n \
-  \   source_labels = [\"__journal__boot_id\"]\n    target_label  = \"boot_id\"\n\
-  \  }\n\n  rule {\n    // Extract transport information into a label\n    source_labels\
-  \ = [\"__journal__transport\"]\n    target_label  = \"transport\"\n  }\n\n  rule\
-  \ {\n    // Extract log priority into a level label\n    source_labels = [\"__journal_priority_keyword\"\
-  ]\n    target_label  = \"level\"\n  }\n}\n\n// Collect logs from files for node_exporter\n\
-  loki.source.file \"system\" {\n  // Use targets defined in local.file_match\n  targets\
-  \    = local.file_match.system.targets\n  // Send logs to the local Loki instance\n\
-  \  forward_to = [loki.write.local.receiver]\n}\n\nloki.write \"local\" {\n  endpoint\
-  \ {\n    // Endpoints\"\n    // - https://grafana.com/docs/loki/latest/reference/loki-http-api/\n\
-  \    //\n    // Verify operational:\n    // $$endpoint_loki:$$port_loki/metrics\n\
-  \    url = \"$$endpoint_loki:$$port_loki/loki/api/v1/push\"\n  }\n}\n\n// Enable\
-  \ live debugging features (empty config means use defaults)\n// - https://grafana.com/docs/alloy/latest/reference/config-blocks/livedebugging/\n\
-  // - https://grafana.com/docs/alloy/latest/troubleshoot/debug/\nlivedebugging {\n\
-  \  enabled = false\n}\n"
-
-
-# ==================
-# alloy_apt_packages
-# ------------------
-#
-# Type: typing.List[str]
-# Description:
-#     None
-# Required:
-#     False
-# Examples:
-#     None
-alloy_apt_packages:
-- zfsutils-linux
 ```
 
 </details>
@@ -793,4 +410,4 @@ To follow up on the previous LinkedIn publications, visit:
 
 ***
 
-Last changed: **2026-04-28 14:36:49 UTC**
+Last changed: **2026-05-07 19:21:24 UTC**
