@@ -4,7 +4,10 @@ from dagster import (
 )
 
 import OpenStudioLandscapes.Grafana.assets
-from OpenStudioLandscapes.Grafana import *
+from OpenStudioLandscapes.Grafana import (
+    dist,
+    LOGGER,
+)
 
 LOGGER.info(f"Loading {dist.name} assets...")
 
