@@ -4,7 +4,9 @@ from dagster import (
 )
 
 import OpenStudioLandscapes.Grafana.assets
-import OpenStudioLandscapes.Grafana.constants
+from OpenStudioLandscapes.Grafana import *
+
+LOGGER.info(f"Loading {dist.name} assets...")
 
 assets_base = load_assets_from_modules(
     modules=[OpenStudioLandscapes.Grafana.assets],
