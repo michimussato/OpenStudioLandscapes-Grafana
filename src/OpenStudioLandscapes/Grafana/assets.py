@@ -52,9 +52,9 @@ from OpenStudioLandscapes.engine.utils.docker.compose_dicts import (
 )
 
 from OpenStudioLandscapes.Grafana import (
+    ASSET_HEADER,
     config,
     dist,
-    ASSET_HEADER,
 )
 
 # https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
