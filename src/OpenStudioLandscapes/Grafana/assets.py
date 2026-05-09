@@ -53,8 +53,8 @@ from OpenStudioLandscapes.engine.utils.docker.compose_dicts import (
 
 from OpenStudioLandscapes.Grafana import (
     config,
-    constants,
     dist,
+    ASSET_HEADER,
 )
 
 # https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
@@ -64,35 +64,35 @@ yaml.SafeDumper.add_multi_representer(
 )
 
 cmd: AssetsDefinition = cmd.get_feature__cmd(
-    ASSET_HEADER=constants.ASSET_HEADER,
+    ASSET_HEADER=ASSET_HEADER,
 )
 
 CONFIG: AssetsDefinition = feature.get_feature__CONFIG(
-    ASSET_HEADER=constants.ASSET_HEADER,
+    ASSET_HEADER=ASSET_HEADER,
     CONFIG_STR=config.models.CONFIG_STR,
     search_model_of_type=config.models.Config,
 )
 
 feature_in: AssetsDefinition = group_in.get_feature_in(
-    ASSET_HEADER=constants.ASSET_HEADER,
+    ASSET_HEADER=ASSET_HEADER,
     ASSET_HEADER_BASE=ASSET_HEADER_BASE,
     ASSET_HEADER_FEATURE_IN={},
 )
 
 group_out: AssetsDefinition = group_out.get_group_out(
-    ASSET_HEADER=constants.ASSET_HEADER,
+    ASSET_HEADER=ASSET_HEADER,
 )
 
 docker_compose_graph: AssetsDefinition = docker_compose_graph.get_docker_compose_graph(
-    ASSET_HEADER=constants.ASSET_HEADER,
+    ASSET_HEADER=ASSET_HEADER,
 )
 
 compose: AssetsDefinition = compose.get_compose(
-    ASSET_HEADER=constants.ASSET_HEADER,
+    ASSET_HEADER=ASSET_HEADER,
 )
 
 feature_out_v2: AssetsDefinition = feature_out.get_feature_out_v2(
-    ASSET_HEADER=constants.ASSET_HEADER,
+    ASSET_HEADER=ASSET_HEADER,
 )
 
 # Produces
@@ -100,16 +100,16 @@ feature_out_v2: AssetsDefinition = feature_out.get_feature_out_v2(
 # - CONFIG_PARENT
 # if ConfigParent is or type FeatureBaseModel
 feature_in_parent: Union[AssetsDefinition, None] = group_in.get_feature_in_parent(
-    ASSET_HEADER=constants.ASSET_HEADER,
+    ASSET_HEADER=ASSET_HEADER,
     config_parent=ConfigParent,
 )
 
 
 @asset(
-    **constants.ASSET_HEADER,
+    **ASSET_HEADER,
     ins={
         "CONFIG": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "CONFIG"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
         ),
     },
     description=textwrap.dedent("""
@@ -175,10 +175,10 @@ def grafana_ini(
 
 
 @asset(
-    **constants.ASSET_HEADER,
+    **ASSET_HEADER,
     ins={
         "CONFIG": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "CONFIG"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
         ),
     },
     description=textwrap.dedent("""
@@ -224,10 +224,10 @@ def alloy_config(
 
 
 @asset(
-    **constants.ASSET_HEADER,
+    **ASSET_HEADER,
     ins={
         "CONFIG": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "CONFIG"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
         ),
     },
     description=textwrap.dedent("""
@@ -354,13 +354,13 @@ def loki_yaml(
 
 
 @asset(
-    **constants.ASSET_HEADER,
+    **ASSET_HEADER,
     ins={
         "feature_in": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "feature_in"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "feature_in"]),
         ),
         "CONFIG": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "CONFIG"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
         ),
     },
 )
@@ -457,16 +457,16 @@ def write_dockerfile_alloy(
 
 
 @asset(
-    **constants.ASSET_HEADER,
+    **ASSET_HEADER,
     ins={
         "feature_in": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "feature_in"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "feature_in"]),
         ),
         "CONFIG": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "CONFIG"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
         ),
         "write_dockerfile_alloy": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "write_dockerfile_alloy"])
+            AssetKey([*ASSET_HEADER["key_prefix"], "write_dockerfile_alloy"])
         ),
     },
 )
@@ -547,10 +547,10 @@ def build_docker_image_alloy(
 
 
 @asset(
-    **constants.ASSET_HEADER,
+    **ASSET_HEADER,
     ins={
         "CONFIG": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "CONFIG"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
         ),
     },
     description=textwrap.dedent("""
@@ -659,10 +659,10 @@ def prometheus_yaml(
 
 
 # @asset(
-#     **constants.ASSET_HEADER,
+#     **ASSET_HEADER,
 #     ins={
 #         "CONFIG": AssetIn(
-#             AssetKey([*constants.ASSET_HEADER["key_prefix"], "CONFIG"]),
+#             AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
 #         ),
 #     },
 #     description=textwrap.dedent(
@@ -760,10 +760,10 @@ def prometheus_yaml(
 
 
 @asset(
-    **constants.ASSET_HEADER,
+    **ASSET_HEADER,
     ins={
         "CONFIG": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "CONFIG"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
         ),
     },
     description=textwrap.dedent("""
@@ -873,10 +873,10 @@ def data_sources_grafana(
 
 # Todo
 @asset(
-    **constants.ASSET_HEADER,
+    **ASSET_HEADER,
     ins={
         "CONFIG": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "CONFIG"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
         ),
     },
     description=textwrap.dedent("""
@@ -1026,10 +1026,10 @@ def dashboards_grafana(
 
 
 # @asset(
-#     **constants.ASSET_HEADER,
+#     **ASSET_HEADER,
 #     ins={
 #         "CONFIG": AssetIn(
-#             AssetKey([*constants.ASSET_HEADER["key_prefix"], "CONFIG"]),
+#             AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
 #         ),
 #     },
 #     description=textwrap.dedent(
@@ -1101,10 +1101,10 @@ def dashboards_grafana(
 
 
 @asset(
-    **constants.ASSET_HEADER,
+    **ASSET_HEADER,
     ins={
         "CONFIG": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "CONFIG"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
         ),
     },
 )
@@ -1138,22 +1138,22 @@ def compose_networks(
 
 
 @asset(
-    **constants.ASSET_HEADER,
+    **ASSET_HEADER,
     ins={
         "CONFIG": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "CONFIG"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
         ),
         "compose_networks": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "compose_networks"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "compose_networks"]),
         ),
         "grafana_ini": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "grafana_ini"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "grafana_ini"]),
         ),
         "data_sources_grafana": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "data_sources_grafana"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "data_sources_grafana"]),
         ),
         "dashboards_grafana": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "dashboards_grafana"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "dashboards_grafana"]),
         ),
     },
 )
@@ -1305,19 +1305,19 @@ def compose_grafana(
 
 
 @asset(
-    **constants.ASSET_HEADER,
+    **ASSET_HEADER,
     ins={
         "CONFIG": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "CONFIG"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
         ),
         "compose_networks": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "compose_networks"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "compose_networks"]),
         ),
         # "mimir_yaml": AssetIn(
-        #     AssetKey([*constants.ASSET_HEADER["key_prefix"], "mimir_yaml"]),
+        #     AssetKey([*ASSET_HEADER["key_prefix"], "mimir_yaml"]),
         # ),
         "prometheus_yaml": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "prometheus_yaml"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "prometheus_yaml"]),
         ),
     },
     description=textwrap.dedent("""
@@ -1443,16 +1443,16 @@ def compose_prometheus(
 
 
 # @asset(
-#     **constants.ASSET_HEADER,
+#     **ASSET_HEADER,
 #     ins={
 #         "CONFIG": AssetIn(
-#             AssetKey([*constants.ASSET_HEADER["key_prefix"], "CONFIG"]),
+#             AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
 #         ),
 #         "compose_networks": AssetIn(
-#             AssetKey([*constants.ASSET_HEADER["key_prefix"], "compose_networks"]),
+#             AssetKey([*ASSET_HEADER["key_prefix"], "compose_networks"]),
 #         ),
 #         "mimir_yaml": AssetIn(
-#             AssetKey([*constants.ASSET_HEADER["key_prefix"], "mimir_yaml"]),
+#             AssetKey([*ASSET_HEADER["key_prefix"], "mimir_yaml"]),
 #         ),
 #     },
 # )
@@ -1571,16 +1571,16 @@ def compose_prometheus(
 
 
 @asset(
-    **constants.ASSET_HEADER,
+    **ASSET_HEADER,
     ins={
         "CONFIG": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "CONFIG"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
         ),
         "compose_networks": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "compose_networks"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "compose_networks"]),
         ),
         "loki_yaml": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "loki_yaml"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "loki_yaml"]),
         ),
     },
 )
@@ -1748,19 +1748,19 @@ def compose_loki(
 
 
 @asset(
-    **constants.ASSET_HEADER,
+    **ASSET_HEADER,
     ins={
         "compose_grafana": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "compose_grafana"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "compose_grafana"]),
         ),
         "compose_prometheus": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "compose_prometheus"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "compose_prometheus"]),
         ),
         # "compose_mimir": AssetIn(
-        #     AssetKey([*constants.ASSET_HEADER["key_prefix"], "compose_mimir"]),
+        #     AssetKey([*ASSET_HEADER["key_prefix"], "compose_mimir"]),
         # ),
         "compose_loki": AssetIn(
-            AssetKey([*constants.ASSET_HEADER["key_prefix"], "compose_loki"]),
+            AssetKey([*ASSET_HEADER["key_prefix"], "compose_loki"]),
         ),
     },
 )
