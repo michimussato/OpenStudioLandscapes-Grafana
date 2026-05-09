@@ -15,14 +15,8 @@ assets_base = load_assets_from_modules(
     modules=[OpenStudioLandscapes.Grafana.assets],
 )
 
-constants_base = load_assets_from_modules(
-    modules=[OpenStudioLandscapes.Grafana.constants],
-)
-
-
 defs = Definitions(
     assets=[
         *assets_base,
-        *constants_base,
     ],
 )
