@@ -28,27 +28,23 @@ class AlloyConfigTemplate(Template):
 
 
 class GrafanaDockerImage(enum.StrEnum):
-    enterprise = "docker.io/grafana/grafana-enterprise"
-    oss_legacy = "docker.io/grafana/grafana-oss"
-    oss = "docker.io/grafana/grafana"
+    ENTERPRISE = "docker.io/grafana/grafana-enterprise"
+    OSS_LEGACY = "docker.io/grafana/grafana-oss"
+    OSS = "docker.io/grafana/grafana"
 
 
 class GrafanaDockerImageVersion(enum.StrEnum):
-    latest = "latest"
-    latest_ubuntu = "latest-ubuntu"
-    main = "main"
-    main_ubuntu = "main-ubuntu"
-    version_11_6 = "11.6"
-    version_11_6_ubuntu = "11.6-ubuntu"
+    LATEST = "latest"
+    LATEST_UBUNTU = "latest-ubuntu"
+    MAIN = "main"
+    MAIN_UBUNTU = "main-ubuntu"
+    VERSION_11_6 = "11.6"
+    VERSION_11_6_UBUNTU = "11.6-ubuntu"
 
 
 class GrafanaLogLevel(enum.StrEnum):
     DEBUG = "debug"
     INFO = "info"
-    main = "main"
-    main_ubuntu = "main-ubuntu"
-    version_11_6 = "11.6"
-    version_11_6_ubuntu = "11.6-ubuntu"
 
 
 class GrafanaAlloyConfigs(enum.StrEnum):
@@ -899,12 +895,12 @@ class Config(FeatureBaseModel):
     # )
 
     grafana_image: GrafanaDockerImage = Field(
-        default=GrafanaDockerImage.oss,
+        default=GrafanaDockerImage.OSS,
         examples=[i.name for i in GrafanaDockerImage],
     )
 
     grafana_image_version: GrafanaDockerImageVersion = Field(
-        default=GrafanaDockerImageVersion.latest_ubuntu,
+        default=GrafanaDockerImageVersion.LATEST_UBUNTU,
         examples=[i.name for i in GrafanaDockerImageVersion],
     )
 

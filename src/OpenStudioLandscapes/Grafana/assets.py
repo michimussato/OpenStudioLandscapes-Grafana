@@ -1596,9 +1596,9 @@ def compose_loki(
 
     config_engine: ConfigEngine = CONFIG.config_engine
 
-    # network_dict = {}
-    # ports_dict = {}
-    #
+    network_dict_loki = {}
+    ports_dict_loki = {}
+
     # if "networks" in compose_networks:
     #     network_dict = {"networks": list(compose_networks.get("networks", {}).keys())}
     #     ports_dict = {

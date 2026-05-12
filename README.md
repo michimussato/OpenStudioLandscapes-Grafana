@@ -87,216 +87,185 @@ The following settings are available in `OpenStudioLandscapes-Grafana` and are b
 
 
 ```yaml
-$defs:
-  GrafanaDockerImage:
-    enum:
-    - docker.io/grafana/grafana-enterprise
-    - docker.io/grafana/grafana-oss
-    - docker.io/grafana/grafana
-    title: GrafanaDockerImage
+GF_PATHS_DATA:
+  default: '{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/var/lib/grafana'
+  format: path
+  title: Gf Paths Data
+  type: string
+alloy_apt_packages:
+  default:
+  - zfsutils-linux
+  items:
     type: string
-  GrafanaDockerImageVersion:
-    enum:
-    - latest
-    - latest-ubuntu
-    - main
-    - main-ubuntu
-    - '11.6'
-    - 11.6-ubuntu
-    title: GrafanaDockerImageVersion
-    type: string
-  GrafanaLogLevel:
-    enum:
-    - debug
-    - info
-    - main
-    - main-ubuntu
-    - '11.6'
-    - 11.6-ubuntu
-    title: GrafanaLogLevel
-    type: string
-properties:
-  GF_PATHS_DATA:
-    default: '{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/var/lib/grafana'
-    format: path
-    title: Gf Paths Data
-    type: string
-  alloy_apt_packages:
-    default:
-    - zfsutils-linux
-    items:
-      type: string
-    title: Alloy Apt Packages
-    type: array
-  alloy_image:
-    default: docker.io/grafana/alloy:latest
-    title: Alloy Image
-    type: string
-  compose_scope:
-    default: default
-    examples:
-    - default
-    - license_server
-    - worker
-    title: Compose Scope
-    type: string
-  docker_compose:
-    default: '{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml'
-    description: The path to the `docker-compose.yml` file.
-    format: path
-    title: Docker Compose
-    type: string
-  enabled:
-    default: true
-    description: Whether the Feature is enabled or not.
-    title: Enabled
-    type: boolean
-  endpoint_loki:
-    default: http://loki
-    title: Endpoint Loki
-    type: string
-  endpoint_prometheus:
-    default: http://prometheus
-    title: Endpoint Prometheus
-    type: string
-  env:
-    additionalProperties: true
-    title: Env
-    type: object
-  feature_name:
-    default: OpenStudioLandscapes-Grafana
-    title: Feature Name
-    type: string
-  grafana_admin_password:
-    default: openstudiolandscapes
-    description: https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#admin_password
-    title: Grafana Admin Password
-    type: string
-  grafana_admin_user:
-    default: openstudiolandscapes
-    description: https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#admin_user
-    title: Grafana Admin User
-    type: string
-  grafana_dashboards:
+  title: Alloy Apt Packages
+  type: array
+alloy_image:
+  default: docker.io/grafana/alloy:latest
+  title: Alloy Image
+  type: string
+compose_scope:
+  default: default
+  examples:
+  - default
+  - license_server
+  - worker
+  title: Compose Scope
+  type: string
+docker_compose:
+  default: '{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml'
+  description: The path to the `docker-compose.yml` file.
+  format: path
+  title: Docker Compose
+  type: string
+enabled:
+  default: true
+  description: Whether the Feature is enabled or not.
+  title: Enabled
+  type: boolean
+endpoint_loki:
+  default: http://loki
+  title: Endpoint Loki
+  type: string
+endpoint_prometheus:
+  default: http://prometheus
+  title: Endpoint Prometheus
+  type: string
+env:
+  additionalProperties: true
+  title: Env
+  type: object
+feature_name:
+  default: OpenStudioLandscapes-Grafana
+  title: Feature Name
+  type: string
+grafana_admin_password:
+  default: openstudiolandscapes
+  description: https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#admin_password
+  title: Grafana Admin Password
+  type: string
+grafana_admin_user:
+  default: openstudiolandscapes
+  description: https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#admin_user
+  title: Grafana Admin User
+  type: string
+grafana_dashboards:
+  additionalProperties:
     additionalProperties:
-      additionalProperties:
-        anyOf:
-        - type: string
-        - type: integer
-        - type: 'null'
-      type: object
-    default:
-      Node Exporter Full:
-        id: 1860
-        url: https://grafana.com/api/dashboards/1860/revisions/42/download
-      cAdvisor Docker Insights:
-        id: 19908
-        url: https://grafana.com/api/dashboards/19908/revisions/1/download
-    title: Grafana Dashboards
+      anyOf:
+      - type: string
+      - type: integer
+      - type: 'null'
     type: object
-  grafana_image:
-    $ref: '#/$defs/GrafanaDockerImage'
-    default: docker.io/grafana/grafana
-    examples:
-    - enterprise
-    - oss_legacy
-    - oss
-  grafana_image_version:
-    $ref: '#/$defs/GrafanaDockerImageVersion'
-    default: latest-ubuntu
-    examples:
-    - latest
-    - latest_ubuntu
-    - main
-    - main_ubuntu
-    - version_11_6
-    - version_11_6_ubuntu
-  grafana_loki_image:
-    default: docker.io/grafana/loki:latest
-    title: Grafana Loki Image
+  default:
+    Node Exporter Full:
+      id: 1860
+      url: https://grafana.com/api/dashboards/1860/revisions/42/download
+    cAdvisor Docker Insights:
+      id: 19908
+      url: https://grafana.com/api/dashboards/19908/revisions/1/download
+  title: Grafana Dashboards
+  type: object
+grafana_image:
+  $ref: '#/$defs/GrafanaDockerImage'
+  default: docker.io/grafana/grafana
+  examples:
+  - enterprise
+  - oss_legacy
+  - oss
+grafana_image_version:
+  $ref: '#/$defs/GrafanaDockerImageVersion'
+  default: latest-ubuntu
+  examples:
+  - latest
+  - latest_ubuntu
+  - main
+  - main_ubuntu
+  - version_11_6
+  - version_11_6_ubuntu
+grafana_loki_image:
+  default: docker.io/grafana/loki:latest
+  title: Grafana Loki Image
+  type: string
+grafana_loki_loglevel:
+  $ref: '#/$defs/GrafanaLogLevel'
+  default: info
+  description: The Grafana Loki loglevel.
+  examples:
+  - DEBUG
+  - INFO
+  - main
+  - main_ubuntu
+  - version_11_6
+  - version_11_6_ubuntu
+grafana_loki_port_container:
+  default: 3100
+  description: The Grafana Loki container port.
+  exclusiveMinimum: 0
+  title: Grafana Loki Port Container
+  type: integer
+grafana_loki_port_host:
+  default: 3100
+  description: The Grafana Loki host port.
+  exclusiveMinimum: 0
+  title: Grafana Loki Port Host
+  type: integer
+grafana_port_container:
+  default: 3000
+  description: The Grafana container port.
+  exclusiveMinimum: 0
+  title: Grafana Port Container
+  type: integer
+grafana_port_host:
+  default: 3030
+  description: The Grafana host port.
+  exclusiveMinimum: 0
+  title: Grafana Port Host
+  type: integer
+grafana_root_url:
+  default: http://localhost:3000
+  description: https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#root_url
+  title: Grafana Root Url
+  type: string
+group_name:
+  default: OpenStudioLandscapes_Grafana
+  title: Group Name
+  type: string
+key_prefixes:
+  default:
+  - OpenStudioLandscapes_Grafana
+  items:
     type: string
-  grafana_loki_loglevel:
-    $ref: '#/$defs/GrafanaLogLevel'
-    default: info
-    description: The Grafana Loki loglevel.
-    examples:
-    - DEBUG
-    - INFO
-    - main
-    - main_ubuntu
-    - version_11_6
-    - version_11_6_ubuntu
-  grafana_loki_port_container:
-    default: 3100
-    description: The Grafana Loki container port.
-    exclusiveMinimum: 0
-    title: Grafana Loki Port Container
-    type: integer
-  grafana_loki_port_host:
-    default: 3100
-    description: The Grafana Loki host port.
-    exclusiveMinimum: 0
-    title: Grafana Loki Port Host
-    type: integer
-  grafana_port_container:
-    default: 3000
-    description: The Grafana container port.
-    exclusiveMinimum: 0
-    title: Grafana Port Container
-    type: integer
-  grafana_port_host:
-    default: 3030
-    description: The Grafana host port.
-    exclusiveMinimum: 0
-    title: Grafana Port Host
-    type: integer
-  grafana_root_url:
-    default: http://localhost:3000
-    description: https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#root_url
-    title: Grafana Root Url
+  title: Key Prefixes
+  type: array
+local_bind_volumes:
+  description: Here you can define Feature specific, arbitrary, absolute bind volume
+    mappings.
+  items:
     type: string
-  group_name:
-    default: OpenStudioLandscapes_Grafana
-    title: Group Name
+  title: Local Bind Volumes
+  type: array
+local_environment_variables:
+  additionalProperties:
     type: string
-  key_prefixes:
-    default:
-    - OpenStudioLandscapes_Grafana
-    items:
-      type: string
-    title: Key Prefixes
-    type: array
-  local_bind_volumes:
-    description: Here you can define Feature specific, arbitrary, absolute bind volume
-      mappings.
-    items:
-      type: string
-    title: Local Bind Volumes
-    type: array
-  local_environment_variables:
-    additionalProperties:
-      type: string
-    description: Here you can define Feature specific, arbitrary environment variables.
-    title: Local Environment Variables
-    type: object
-  prometheus_image:
-    default: docker.io/prom/prometheus:main
-    title: Prometheus Image
-    type: string
-  prometheus_port_container:
-    default: 9090
-    description: The Prometheus container port.
-    exclusiveMinimum: 0
-    title: Prometheus Port Container
-    type: integer
-  prometheus_port_host:
-    default: 9090
-    description: The Prometheus host port.
-    exclusiveMinimum: 0
-    title: Prometheus Port Host
-    type: integer
-title: Config
-type: object
+  description: Here you can define Feature specific, arbitrary environment variables.
+  title: Local Environment Variables
+  type: object
+prometheus_image:
+  default: docker.io/prom/prometheus:main
+  title: Prometheus Image
+  type: string
+prometheus_port_container:
+  default: 9090
+  description: The Prometheus container port.
+  exclusiveMinimum: 0
+  title: Prometheus Port Container
+  type: integer
+prometheus_port_host:
+  default: 9090
+  description: The Prometheus host port.
+  exclusiveMinimum: 0
+  title: Prometheus Port Host
+  type: integer
 
 ```
 
@@ -410,4 +379,4 @@ To follow up on the previous LinkedIn publications, visit:
 
 ***
 
-Last changed: **2026-05-12 09:55:29 UTC**
+Last changed: **2026-05-12 11:50:54 UTC**
