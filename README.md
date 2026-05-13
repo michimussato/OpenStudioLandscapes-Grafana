@@ -169,19 +169,19 @@ grafana_image:
   $ref: '#/$defs/GrafanaDockerImage'
   default: docker.io/grafana/grafana
   examples:
-  - enterprise
-  - oss_legacy
-  - oss
+  - ENTERPRISE
+  - OSS_LEGACY
+  - OSS
 grafana_image_version:
   $ref: '#/$defs/GrafanaDockerImageVersion'
   default: latest-ubuntu
   examples:
-  - latest
-  - latest_ubuntu
-  - main
-  - main_ubuntu
-  - version_11_6
-  - version_11_6_ubuntu
+  - LATEST
+  - LATEST_UBUNTU
+  - MAIN
+  - MAIN_UBUNTU
+  - VERSION_11_6
+  - VERSION_11_6_UBUNTU
 grafana_loki_image:
   default: docker.io/grafana/loki:latest
   title: Grafana Loki Image
@@ -193,10 +193,6 @@ grafana_loki_loglevel:
   examples:
   - DEBUG
   - INFO
-  - main
-  - main_ubuntu
-  - version_11_6
-  - version_11_6_ubuntu
 grafana_loki_port_container:
   default: 3100
   description: The Grafana Loki container port.
@@ -379,4 +375,4 @@ To follow up on the previous LinkedIn publications, visit:
 
 ***
 
-Last changed: **2026-05-12 11:50:54 UTC**
+Last changed: **2026-05-13 13:29:11 UTC**
