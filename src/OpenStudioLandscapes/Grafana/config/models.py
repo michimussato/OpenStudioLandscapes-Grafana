@@ -541,7 +541,7 @@ class GrafanaAlloyConfigs(enum.StrEnum):
         
           rule {
             target_label = "instance"
-            replacement  = hostname
+            replacement  = constants.hostname
           }
         }
         
@@ -574,11 +574,11 @@ class GrafanaAlloyConfigs(enum.StrEnum):
           targets = prometheus.exporter.unix.metrics.targets
           rule {
             target_label = "instance"
-            replacement = hostname
+            replacement = constants.hostname
           }
           rule {
             target_label = "job"
-            replacement = string.format("%s-metrics", hostname)
+            replacement = string.format("%s-metrics", constants.hostname)
           }
         }
         
@@ -625,7 +625,7 @@ class GrafanaAlloyConfigs(enum.StrEnum):
       
           rule {
             target_label = "instance"
-            replacement  = hostname
+            replacement  = constants.hostname
           }
         }
         
@@ -671,7 +671,7 @@ class GrafanaAlloyConfigs(enum.StrEnum):
           // need to add the following path
           path = "/var/log/journal"
           labels = {
-            component = string.format("%s-journal", hostname),
+            component = string.format("%s-journal", constants.hostname),
           }
         }
         
@@ -682,10 +682,10 @@ class GrafanaAlloyConfigs(enum.StrEnum):
             __address__ = "localhost",
             // Collect standard system logs
             __path__ = "/var/log/{syslog,messages,*.log}",
-            // Add instance label with hostname
-            instance = hostname,
+            // Add instance label with constants.hostname
+            instance = constants.hostname,
             // Add job label for logs
-            job = string.format("%s-logs", hostname),
+            job = string.format("%s-logs", constants.hostname),
           }]
         }
         
