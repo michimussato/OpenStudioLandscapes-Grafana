@@ -29,7 +29,9 @@ from OpenStudioLandscapes.engine.common_assets import (
     group_in,
     group_out,
 )
-from OpenStudioLandscapes.engine.config.models import ConfigEngine, DockerConfigModel
+from OpenStudioLandscapes.engine.env.configurable_resources.config_engine import ConfigEngineConfigurableResource
+from OpenStudioLandscapes.engine.base.configurable_resources.docker_registry_resource import DockerRegistryConfigurableResource
+from OpenStudioLandscapes.engine.base.configurable_resources.docker_resource import DockerConfigurableResource
 from OpenStudioLandscapes.engine.constants import (
     ASSET_HEADER_BASE,
     ConfigParent,
@@ -366,16 +368,14 @@ def loki_yaml(
 )
 def write_dockerfile_alloy(
     context: AssetExecutionContext,
+    config_DockerRegistryConfigurableResource: DockerRegistryConfigurableResource,
+    config_DockerConfigurableResource: DockerConfigurableResource,
     feature_in: OpenStudioLandscapesFeatureIn,  # pylint: disable=redefined-outer-name
     CONFIG: config.models.Config,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
     """ """
 
     env: Dict = CONFIG.env
-
-    config_engine: ConfigEngine = CONFIG.config_engine
-
-    docker_config: DockerConfigModel = config_engine.openstudiolandscapes__docker_config
 
     docker_image: Dict = feature_in.openstudiolandscapes_base.docker_image_base
 
@@ -402,7 +402,8 @@ def write_dockerfile_alloy(
     ) = get_image_metadata(
         context=context,
         docker_image=docker_image,
-        docker_config=docker_config,
+        docker_config=config_DockerConfigurableResource,
+        config_DockerRegistryConfigurableResource=config_DockerRegistryConfigurableResource,
         env=env,
     )
 
@@ -472,6 +473,8 @@ def write_dockerfile_alloy(
 )
 def build_docker_image_alloy(
     context: AssetExecutionContext,
+    config_DockerRegistryConfigurableResource: DockerRegistryConfigurableResource,
+    config_DockerConfigurableResource: DockerConfigurableResource,
     feature_in: OpenStudioLandscapesFeatureIn,  # pylint: disable=redefined-outer-name
     CONFIG: config.models.Config,  # pylint: disable=redefined-outer-name
     write_dockerfile_alloy: pathlib.Path,  # pylint: disable=redefined-outer-name
@@ -490,10 +493,6 @@ def build_docker_image_alloy(
         feature_in.openstudiolandscapes_base.docker_config_json
     )
 
-    config_engine: ConfigEngine = CONFIG.config_engine
-
-    docker_config: DockerConfigModel = config_engine.openstudiolandscapes__docker_config
-
     docker_image: Dict = feature_in.openstudiolandscapes_base.docker_image_base
 
     #################################################
@@ -508,7 +507,8 @@ def build_docker_image_alloy(
     ) = get_image_metadata(
         context=context,
         docker_image=docker_image,
-        docker_config=docker_config,
+        docker_config=config_DockerConfigurableResource,
+        config_DockerRegistryConfigurableResource=config_DockerRegistryConfigurableResource,
         env=env,
     )
 
@@ -520,7 +520,8 @@ def build_docker_image_alloy(
         image_prefixes=image_prefixes,
         tags=tags,
         docker_image=docker_image,
-        docker_config=docker_config,
+        config_DockerConfigurableResource=config_DockerConfigurableResource,
+        config_DockerRegistryConfigurableResource=config_DockerRegistryConfigurableResource,
         docker_config_json=docker_config_json,
         docker_file=write_dockerfile_alloy,
     )
@@ -1159,6 +1160,7 @@ def compose_networks(
 )
 def compose_grafana(
     context: AssetExecutionContext,
+    config_ConfigEngineConfigurableResource: ConfigEngineConfigurableResource,
     CONFIG: config.models.Config,  # pylint: disable=redefined-outer-name
     compose_networks: Dict,  # pylint: disable=redefined-outer-name
     grafana_ini: pathlib.Path,  # pylint: disable=redefined-outer-name
@@ -1168,8 +1170,6 @@ def compose_grafana(
     """ """
 
     env: Dict = CONFIG.env
-
-    config_engine: ConfigEngine = CONFIG.config_engine
 
     network_dict = {}
     ports_dict = {}
@@ -1228,7 +1228,7 @@ def compose_grafana(
         "volumes": list(
             {
                 *_volume_relative,
-                *config_engine.global_bind_volumes,
+                *config_ConfigEngineConfigurableResource.global_bind_volumes,
                 *CONFIG.local_bind_volumes,
             }
         )
@@ -1239,7 +1239,7 @@ def compose_grafana(
         context=context,
         service_name=service_name,
         landscape_id=env.get("LANDSCAPE", "default"),
-        domain_lan=config_engine.openstudiolandscapes__domain_lan,
+        domain_lan=config_ConfigEngineConfigurableResource.openstudiolandscapes__domain_lan,
     )
 
     # Todo
@@ -1247,7 +1247,7 @@ def compose_grafana(
     # service: DockerComposeServiceDefinition = {
     #     "container_name": container_name,
     #     # "hostname": host_name,
-    #     "domainname": config_engine.openstudiolandscapes__domain_lan,
+    #     "domainname": config_ConfigEngineConfigurableResource.openstudiolandscapes__domain_lan,
     #     "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS,
     #     "image": f"{CONFIG.grafana_image}:{CONFIG.grafana_image_version}",
     #
@@ -1269,7 +1269,7 @@ def compose_grafana(
             service_name: {
                 "container_name": container_name,
                 # "hostname": host_name,
-                "domainname": config_engine.openstudiolandscapes__domain_lan,
+                "domainname": config_ConfigEngineConfigurableResource.openstudiolandscapes__domain_lan,
                 "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS.value,
                 "image": f"{CONFIG.grafana_image}:{CONFIG.grafana_image_version}",
                 "depends_on": {
@@ -1281,8 +1281,8 @@ def compose_grafana(
                     },
                 },
                 "environment": {
-                    "TZ": config_engine.tz,
-                    **config_engine.global_environment_variables,
+                    "TZ": config_ConfigEngineConfigurableResource.tz,
+                    **config_ConfigEngineConfigurableResource.global_environment_variables,
                     **CONFIG.local_environment_variables,
                 },
                 **copy.deepcopy(network_dict),
@@ -1331,6 +1331,7 @@ def compose_grafana(
 )
 def compose_prometheus(
     context: AssetExecutionContext,
+    config_ConfigEngineConfigurableResource: ConfigEngineConfigurableResource,
     CONFIG: config.models.Config,  # pylint: disable=redefined-outer-name
     compose_networks: Dict,  # pylint: disable=redefined-outer-name
     # mimir_yaml: pathlib.Path,  # pylint: disable=redefined-outer-name
@@ -1342,8 +1343,6 @@ def compose_prometheus(
     #  - [ ] https://prometheus.io/docs/guides/basic-auth/
 
     env: Dict = CONFIG.env
-
-    config_engine: ConfigEngine = CONFIG.config_engine
 
     network_dict = {}
     ports_dict = {}
@@ -1398,7 +1397,7 @@ def compose_prometheus(
         context=context,
         service_name=service_name,
         landscape_id=env.get("LANDSCAPE", "default"),
-        domain_lan=config_engine.openstudiolandscapes__domain_lan,
+        domain_lan=config_ConfigEngineConfigurableResource.openstudiolandscapes__domain_lan,
     )
 
     docker_dict = {
@@ -1406,12 +1405,12 @@ def compose_prometheus(
             service_name: {
                 "container_name": container_name,
                 # "hostname": host_name,
-                "domainname": config_engine.openstudiolandscapes__domain_lan,
+                "domainname": config_ConfigEngineConfigurableResource.openstudiolandscapes__domain_lan,
                 "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS.value,
                 "image": CONFIG.prometheus_image,
                 "environment": {
-                    "TZ": config_engine.tz,
-                    **config_engine.global_environment_variables,
+                    "TZ": config_ConfigEngineConfigurableResource.tz,
+                    **config_ConfigEngineConfigurableResource.global_environment_variables,
                     **CONFIG.local_environment_variables,
                 },
                 "command": [
@@ -1586,6 +1585,7 @@ def compose_prometheus(
 )
 def compose_loki(
     context: AssetExecutionContext,
+    config_ConfigEngineConfigurableResource: ConfigEngineConfigurableResource,
     CONFIG: config.models.Config,  # pylint: disable=redefined-outer-name
     compose_networks: Dict,  # pylint: disable=redefined-outer-name
     loki_yaml: pathlib.Path,  # pylint: disable=redefined-outer-name
@@ -1593,8 +1593,6 @@ def compose_loki(
     """ """
 
     env: Dict = CONFIG.env
-
-    config_engine: ConfigEngine = CONFIG.config_engine
 
     network_dict_loki = {}
     ports_dict_loki = {}
@@ -1700,7 +1698,7 @@ def compose_loki(
         "volumes": list(
             {
                 *_volume_relative_loki,
-                *config_engine.global_bind_volumes,
+                *config_ConfigEngineConfigurableResource.global_bind_volumes,
                 *CONFIG.local_bind_volumes,
             }
         )
@@ -1711,7 +1709,7 @@ def compose_loki(
         context=context,
         service_name=service_name_loki,
         landscape_id=env.get("LANDSCAPE", "default"),
-        domain_lan=config_engine.openstudiolandscapes__domain_lan,
+        domain_lan=config_ConfigEngineConfigurableResource.openstudiolandscapes__domain_lan,
     )
 
     docker_dict = {
@@ -1719,13 +1717,13 @@ def compose_loki(
             service_name_loki: {
                 "container_name": container_name_loki,
                 # "hostname": host_name_loki,
-                "domainname": config_engine.openstudiolandscapes__domain_lan,
+                "domainname": config_ConfigEngineConfigurableResource.openstudiolandscapes__domain_lan,
                 "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS.value,
                 "image": CONFIG.grafana_loki_image,
                 "command": ["-config.file=/etc/loki/local-config.yaml"],
                 "environment": {
-                    "TZ": config_engine.tz,
-                    **config_engine.global_environment_variables,
+                    "TZ": config_ConfigEngineConfigurableResource.tz,
+                    **config_ConfigEngineConfigurableResource.global_environment_variables,
                     **CONFIG.local_environment_variables,
                 },
                 **copy.deepcopy(network_dict_loki),
