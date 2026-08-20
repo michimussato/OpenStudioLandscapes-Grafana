@@ -10,7 +10,7 @@ from pydantic import (
     PositiveInt,
 )
 
-from OpenStudioLandscapes.Grafana import (
+from OpenStudioLandscapes.Grafana.constants import (
     ASSET_HEADER,
     LOGGER,
     dist,

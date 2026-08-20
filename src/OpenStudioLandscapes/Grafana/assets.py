@@ -51,11 +51,11 @@ from OpenStudioLandscapes.engine.utils.docker.compose_dicts import (
     get_network_dicts,
 )
 
-from OpenStudioLandscapes.Grafana import (
+from OpenStudioLandscapes.Grafana.constants import (
     ASSET_HEADER,
-    config,
     dist,
 )
+from OpenStudioLandscapes.Grafana.config import models
 
 # https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
 yaml.SafeDumper.add_multi_representer(
@@ -69,8 +69,8 @@ cmd: AssetsDefinition = cmd.get_feature__cmd(
 
 CONFIG: AssetsDefinition = feature.get_feature__CONFIG(
     ASSET_HEADER=ASSET_HEADER,
-    CONFIG_STR=config.models.CONFIG_STR,
-    search_model_of_type=config.models.Config,
+    CONFIG_STR=models.CONFIG_STR,
+    search_model_of_type=models.Config,
 )
 
 feature_in: AssetsDefinition = group_in.get_feature_in(
@@ -118,7 +118,7 @@ feature_in_parent: Union[AssetsDefinition, None] = group_in.get_feature_in_paren
 )
 def grafana_ini(
     context: AssetExecutionContext,
-    CONFIG: config.models.Config,  # pylint: disable=redefined-outer-name
+    CONFIG: models.Config,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
     env: Dict = CONFIG.env
 
@@ -191,7 +191,7 @@ def grafana_ini(
 )
 def alloy_config(
     context: AssetExecutionContext,
-    CONFIG: config.models.Config,  # pylint: disable=redefined-outer-name
+    CONFIG: models.Config,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 
     env: Dict = CONFIG.env
@@ -242,7 +242,7 @@ def alloy_config(
 )
 def loki_yaml(
     context: AssetExecutionContext,
-    CONFIG: config.models.Config,  # pylint: disable=redefined-outer-name
+    CONFIG: models.Config,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
     env: Dict = CONFIG.env
 
@@ -367,7 +367,7 @@ def loki_yaml(
 def write_dockerfile_alloy(
     context: AssetExecutionContext,
     feature_in: OpenStudioLandscapesFeatureIn,  # pylint: disable=redefined-outer-name
-    CONFIG: config.models.Config,  # pylint: disable=redefined-outer-name
+    CONFIG: models.Config,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
     """ """
 
@@ -473,7 +473,7 @@ def write_dockerfile_alloy(
 def build_docker_image_alloy(
     context: AssetExecutionContext,
     feature_in: OpenStudioLandscapesFeatureIn,  # pylint: disable=redefined-outer-name
-    CONFIG: config.models.Config,  # pylint: disable=redefined-outer-name
+    CONFIG: models.Config,  # pylint: disable=redefined-outer-name
     write_dockerfile_alloy: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[Dict] | AssetMaterialization, None, None]:
     """ """
@@ -565,7 +565,7 @@ def build_docker_image_alloy(
 )
 def prometheus_yaml(
     context: AssetExecutionContext,
-    CONFIG: config.models.Config,  # pylint: disable=redefined-outer-name
+    CONFIG: models.Config,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
     env: Dict = CONFIG.env
 
@@ -672,7 +672,7 @@ def prometheus_yaml(
 # )
 # def mimir_yaml(
 #         context: AssetExecutionContext,
-#         CONFIG: config.models.Config,  # pylint: disable=redefined-outer-name
+#         CONFIG: models.Config,  # pylint: disable=redefined-outer-name
 # ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 #     env: Dict = CONFIG.env
 #
@@ -773,7 +773,7 @@ def prometheus_yaml(
 )
 def data_sources_grafana(
     context: AssetExecutionContext,
-    CONFIG: config.models.Config,  # pylint: disable=redefined-outer-name
+    CONFIG: models.Config,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
     env: Dict = CONFIG.env
 
@@ -885,7 +885,7 @@ def data_sources_grafana(
 )
 def dashboards_grafana(
     context: AssetExecutionContext,
-    CONFIG: config.models.Config,  # pylint: disable=redefined-outer-name
+    CONFIG: models.Config,  # pylint: disable=redefined-outer-name
 ) -> Generator[
     Output[
         dict[
@@ -1039,7 +1039,7 @@ def dashboards_grafana(
 # )
 # def dashboard_minifarm(
 #         context: AssetExecutionContext,
-#         CONFIG: config.models.Config,  # pylint: disable=redefined-outer-name
+#         CONFIG: models.Config,  # pylint: disable=redefined-outer-name
 # ) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
 #     env: Dict = CONFIG.env
 #
@@ -1110,7 +1110,7 @@ def dashboards_grafana(
 )
 def compose_networks(
     context: AssetExecutionContext,
-    CONFIG: config.models.Config,  # pylint: disable=redefined-outer-name
+    CONFIG: models.Config,  # pylint: disable=redefined-outer-name
 ) -> Generator[
     Output[Dict[str, Dict[str, Dict[str, str]]]] | AssetMaterialization, None, None
 ]:
@@ -1159,7 +1159,7 @@ def compose_networks(
 )
 def compose_grafana(
     context: AssetExecutionContext,
-    CONFIG: config.models.Config,  # pylint: disable=redefined-outer-name
+    CONFIG: models.Config,  # pylint: disable=redefined-outer-name
     compose_networks: Dict,  # pylint: disable=redefined-outer-name
     grafana_ini: pathlib.Path,  # pylint: disable=redefined-outer-name
     data_sources_grafana: pathlib.Path,  # pylint: disable=redefined-outer-name
@@ -1331,7 +1331,7 @@ def compose_grafana(
 )
 def compose_prometheus(
     context: AssetExecutionContext,
-    CONFIG: config.models.Config,  # pylint: disable=redefined-outer-name
+    CONFIG: models.Config,  # pylint: disable=redefined-outer-name
     compose_networks: Dict,  # pylint: disable=redefined-outer-name
     # mimir_yaml: pathlib.Path,  # pylint: disable=redefined-outer-name
     prometheus_yaml: pathlib.Path,  # pylint: disable=redefined-outer-name
@@ -1458,7 +1458,7 @@ def compose_prometheus(
 # )
 # def compose_mimir(
 #         context: AssetExecutionContext,
-#         CONFIG: config.models.Config,  # pylint: disable=redefined-outer-name
+#         CONFIG: models.Config,  # pylint: disable=redefined-outer-name
 #         compose_networks: Dict,  # pylint: disable=redefined-outer-name
 #         mimir_yaml: pathlib.Path,  # pylint: disable=redefined-outer-name
 # ) -> Generator[Output[Dict] | AssetMaterialization, None, None]:
@@ -1586,7 +1586,7 @@ def compose_prometheus(
 )
 def compose_loki(
     context: AssetExecutionContext,
-    CONFIG: config.models.Config,  # pylint: disable=redefined-outer-name
+    CONFIG: models.Config,  # pylint: disable=redefined-outer-name
     compose_networks: Dict,  # pylint: disable=redefined-outer-name
     loki_yaml: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[Dict] | AssetMaterialization, None, None]:
