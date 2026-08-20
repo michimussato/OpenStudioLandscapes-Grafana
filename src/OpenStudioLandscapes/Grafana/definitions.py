@@ -4,7 +4,7 @@ from dagster import (
 )
 
 import OpenStudioLandscapes.Grafana.assets
-from OpenStudioLandscapes.Grafana import (
+from OpenStudioLandscapes.Grafana.constants import (
     LOGGER,
     dist,
 )
