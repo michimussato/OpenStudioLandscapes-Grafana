@@ -53,14 +53,14 @@ src/OpenStudioLandscapes/Grafana/assets.py:1767:0: C0116: Missing function or me
 ************* Module OpenStudioLandscapes.Grafana.definitions
 src/OpenStudioLandscapes/Grafana/definitions.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/Grafana/definitions.py:12:0: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+************* Module OpenStudioLandscapes.Grafana.constants
+src/OpenStudioLandscapes/Grafana/constants.py:14:5: W0511: TODO: Import directly (no need for conditional) when `python_requires = >= 3.8` (fixme)
+src/OpenStudioLandscapes/Grafana/constants.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+src/OpenStudioLandscapes/Grafana/constants.py:38:4: C0103: Constant name "fill" doesn't conform to UPPER_CASE naming style (invalid-name)
 ************* Module OpenStudioLandscapes.Grafana._definitions_with_upstream_specs
 src/OpenStudioLandscapes/Grafana/_definitions_with_upstream_specs.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-************* Module OpenStudioLandscapes.Grafana.__init__
-src/OpenStudioLandscapes/Grafana/__init__.py:15:5: W0511: TODO: Import directly (no need for conditional) when `python_requires = >= 3.8` (fixme)
 ************* Module OpenStudioLandscapes.Grafana
-src/OpenStudioLandscapes/Grafana/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/Grafana/__init__.py:1:0: C0103: Module name "Grafana" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/Grafana/__init__.py:39:4: C0103: Constant name "fill" doesn't conform to UPPER_CASE naming style (invalid-name)
 ************* Module OpenStudioLandscapes.Grafana.config.models
 src/OpenStudioLandscapes/Grafana/config/models.py:311:0: C0301: Line too long (110/100) (line-too-long)
 src/OpenStudioLandscapes/Grafana/config/models.py:754:0: C0301: Line too long (360/100) (line-too-long)
@@ -140,5 +140,5 @@ src/OpenStudioLandscapes/Grafana/doc/readme.py:1247:0: C0116: Missing function o
 src/OpenStudioLandscapes/Grafana/doc/readme.py:1276:8: C2801: Unnecessarily calls dunder method __str__. Use str built-in function. (unnecessary-dunder-call)
 
 ------------------------------------------------------------------
-Your code has been rated at 6.23/10 (previous run: 7.70/10, -1.47)
+Your code has been rated at 6.24/10 (previous run: 7.71/10, -1.47)
 
